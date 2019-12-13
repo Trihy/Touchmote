@@ -23,6 +23,8 @@ namespace WiiTUIO.Filters
         /// </summary>
         public int iSmoothIndex = 0;
 
+        public double smoothinWeight = Settings.Default.test_smoothingWeight;
+
         /// <summary>
         /// Create a new smoothing buffer with a default size.
         /// </summary>
@@ -94,7 +96,8 @@ namespace WiiTUIO.Filters
             int iIndex = iSmoothIndex % tSmoothBuffer.Length;
             tSmoothBuffer[iIndex].X = x;
             tSmoothBuffer[iIndex].Y = y;
-            ++iSmoothIndex;
+            //++iSmoothIndex;
+            iSmoothIndex = iIndex + 1;
         }
 
         /// <summary>
@@ -107,7 +110,8 @@ namespace WiiTUIO.Filters
 
         public void replaceLast(Vector vPoint) {
             // Insert the value then update the counter.
-            int lastIndex = (iSmoothIndex - 1) % tSmoothBuffer.Length;
+            //int lastIndex = (iSmoothIndex - 1) % tSmoothBuffer.Length;
+            int lastIndex = Math.Abs(iSmoothIndex - 1) % tSmoothBuffer.Length;
             if (lastIndex < 0) {
                 lastIndex = tSmoothBuffer.Length - 1;
             }
@@ -143,12 +147,28 @@ namespace WiiTUIO.Filters
             }
             */
             // Sum up the values in the array.
-            for (int i = 0; i < iMax; ++i) {
+            /*for (int i = 0; i < iMax; ++i) {
                 tSmooth += tSmoothBuffer[i];
             }
+            */
 
             // Divide to average.
-            tSmooth /= iMax;
+            //tSmooth /= iMax;
+
+            double currentWeight = 1.0;
+            double finalWeight = 0.0;
+            for (int i = 0, buflen = tSmoothBuffer.Length; i < buflen; i++)
+            {
+                int idx = (iSmoothIndex - i - 1 + buflen) % buflen;
+                tSmooth.X += tSmoothBuffer[idx].X * currentWeight;
+                tSmooth.Y += tSmoothBuffer[idx].Y * currentWeight;
+                finalWeight += currentWeight;
+                //currentWeight *= 0.4;
+                currentWeight *= smoothinWeight;
+            }
+
+            tSmooth.X /= finalWeight;
+            tSmooth.Y /= finalWeight;
 
             // Return the value.
             return tSmooth;

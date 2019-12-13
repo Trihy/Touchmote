@@ -347,6 +347,140 @@ namespace WiiTUIO.Properties
             }
         }
 
+        // Should delta acceleration be enabled.
+        private bool _test_deltaAccel = true;
+        public bool test_deltaAccel
+        {
+            get { return _test_deltaAccel; }
+            set
+            {
+                _test_deltaAccel = value;
+                OnPropertyChanged("test_deltaAccel");
+            }
+        }
+
+        // Maximum multiplier to use for delta acceleration.
+        private double _test_deltaAccelMulti = 4.0;
+        public double test_deltaAccelMulti
+        {
+            get { return _test_deltaAccelMulti; }
+            set
+            {
+                if (value >= 1.0 && value <= 20.0)
+                {
+                    _test_deltaAccelMulti = value;
+                    OnPropertyChanged("test_deltaAccelMulti");
+                }
+            }
+        }
+
+        // Minimum delta travel before delta acceleration is applied.
+        private double _test_deltaAccelMinTravel = 0.1;
+        public double test_deltaAccelMinTravel
+        {
+            get { return _test_deltaAccelMinTravel; }
+            set
+            {
+                if (value >= 0.01 && value <= 0.5)
+                {
+                    _test_deltaAccelMinTravel = value;
+                    OnPropertyChanged("test_deltaAccelMinTravel");
+                }
+            }
+        }
+
+        // Maximum duration that delta acceleration should be applied.
+        // Value is in seconds.
+        private double _test_deltaAccelEasingDuration = 0.05;
+        public double test_deltaAccelEasingDuration
+        {
+            get { return _test_deltaAccelEasingDuration; }
+            set
+            {
+                if (value >= 0.00 && value <= 10.0)
+                {
+                    _test_deltaAccelEasingDuration = value;
+                    OnPropertyChanged("test_deltaAccelEasingDuration");
+                }
+            }
+
+        }
+
+        // Maximum duration that easing is applied to upper acceleration
+        // region.
+        private double _test_regionEasingXDuration = 0.025;
+        public double test_regionEasingXDuration
+        {
+            get { return _test_regionEasingXDuration; }
+            set
+            {
+                if (value >= 0.00 && value <= 10.0)
+                {
+                    _test_regionEasingXDuration = value;
+                    OnPropertyChanged("test_regionEasingXDuration");
+                }
+            }
+        }
+
+        // Maximum delta travel before maximum delta acceleration is applied.
+        private double _test_deltaAccelMaxTravel = 0.5;
+        public double test_deltaAccelMaxTravel
+        {
+            get { return _test_deltaAccelMaxTravel; }
+            set
+            {
+                if (value >= 0.01 && value <= 0.5)
+                {
+                    _test_deltaAccelMaxTravel = value;
+                    OnPropertyChanged("test_deltaAccelMaxTravel");
+                }
+            }
+        }
+
+        private double _test_regionEasingXOffset = 0.8;
+        public double test_regionEasingXOffset
+        {
+            get { return _test_regionEasingXOffset; }
+            set
+            {
+                if (value >= 0.0 && value <= 1.0)
+                {
+                    _test_regionEasingXOffset = value;
+                    OnPropertyChanged("test_regionEasingXOffset");
+                }
+            }
+        }
+
+        // Weight multiplier used in smoothing routine.
+        private double _test_smoothingWeight = 0.4;
+        public double test_smoothingWeight
+        {
+            get { return _test_smoothingWeight; }
+            set
+            {
+                if (value >= 0.0 && value <= 1.0)
+                {
+                    _test_smoothingWeight = value;
+                    OnPropertyChanged("test_smoothingWeight");
+                }
+            }
+        }
+
+        // Initial mouse offset for fpsmouse calculations.
+        private double _test_fpsmouseOffset = 0.25;
+        public double test_fpsmouseOffset
+        {
+            get { return _test_fpsmouseOffset; }
+            set
+            {
+                if (value >= 0.0 && value <= 1.0)
+                {
+                    _test_fpsmouseOffset = value;
+                    OnPropertyChanged("test_fpsmouseOffset");
+                }
+            }
+        }
+
         private int _pointer_positionSmoothing = 3;
         public int pointer_positionSmoothing {
             get { return _pointer_positionSmoothing; }
