@@ -232,7 +232,7 @@ namespace WiiTUIO.Output.Handlers
                     //Point smoothedPos = cursorPositionHelper.getSmoothedPosition(new Point(cursorPos.RelativeX, cursorPos.RelativeY));
                     // Use proper IR values for full IR range and to take
                     // margins into account.
-                    Point smoothedPos = cursorPositionHelper.getFPSRelativePosition(new Point(cursorPos.X, cursorPos.Y));
+                    Point smoothedPos = cursorPositionHelper.getFPSRelativePosition(new Point(cursorPos.MarginX, cursorPos.MarginY));
 
                     /* TODO: Consider sensor bar position?
                     if (Settings.Default.pointer_sensorBarPos == "top")

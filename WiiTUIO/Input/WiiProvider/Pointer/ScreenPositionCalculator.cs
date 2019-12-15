@@ -81,6 +81,7 @@ namespace WiiTUIO.Provider
         {
             int x;
             int y;
+            double marginX, marginY = 0.0;
 
             IRState irState = wiimoteState.IRState;
 
@@ -194,8 +195,15 @@ namespace WiiTUIO.Provider
 
             //x = Convert.ToInt32((float)maxWidth * smoothedPoint.X + minXPos);
             //y = Convert.ToInt32((float)maxHeight * smoothedPoint.Y + minYPos) + offsetY;
-            x = Convert.ToInt32((float)3902 * relativePosition.X + (-1170)); // input: [0.3, 0.65]
-            y = Convert.ToInt32((float)2191 * relativePosition.Y + (-657)) + offsetY; // Input: [0.3, 0.65]
+            x = Convert.ToInt32((float)maxWidth * relativePosition.X + minXPos);
+            y = Convert.ToInt32((float)maxHeight * relativePosition.Y + minYPos) + offsetY;
+            //x = Convert.ToInt32((float)3902 * relativePosition.X + (-1170)); // input: [0.3, 0.65]
+            //y = Convert.ToInt32((float)2191 * relativePosition.Y + (-657)) + offsetY; // Input: [0.3, 0.65]
+
+            // input: [0.3, 0.65]
+            marginX = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.X - 0.857142857142857));
+            // input: [0.3, 0.65]
+            marginY = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.Y - 0.857142857142857));
 
             if (x <= 0)
             {
@@ -214,8 +222,11 @@ namespace WiiTUIO.Provider
                 y = primaryScreen.Bounds.Height - 1;
             }
 
+            //Console.WriteLine("{0} {1} {2}", relativePosition.X, marginX, x / (double)primaryScreen.Bounds.Width);
+
             //CursorPos result = new CursorPos(x, y, smoothedPoint.X, smoothedPoint.Y, smoothedRotation);
-            CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation);
+            CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation,
+                marginX, marginY);
             lastPos = result;
             return result;
         }

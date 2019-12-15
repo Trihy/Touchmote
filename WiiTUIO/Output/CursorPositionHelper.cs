@@ -55,11 +55,11 @@ namespace WiiTUIO.Output
             return new Point(vec.X / screenBounds.Width, vec.Y / screenBounds.Height);
         }
 
-        public Point getFPSRelativePosition(Point absPosition)
+        public Point getFPSRelativePosition(Point relativeMarginPosition)
         {
-            smoothingBuffer.addValue(new Vector(absPosition.X, absPosition.Y));
+            smoothingBuffer.addValue(new Vector(relativeMarginPosition.X, relativeMarginPosition.Y));
             Vector smoothedVec = smoothingBuffer.getSmoothedValue();
-            return new Point(smoothedVec.X / screenBounds.Width, smoothedVec.Y / screenBounds.Height);
+            return new Point(smoothedVec.X, smoothedVec.Y);
         }
     }
 }

@@ -14,8 +14,11 @@ namespace WiiTUIO.Provider
         public double RelativeY;
         public double Rotation;
         public bool OutOfReach;
+        public double MarginX;
+        public double MarginY;
 
-        public CursorPos(int x, int y, double relativeX, double relativeY, double rotation)
+        public CursorPos(int x, int y, double relativeX, double relativeY, double rotation,
+            double marginX = 0.0, double marginY = 0.0)
         {
             this.X = x;
             this.Y = y;
@@ -23,6 +26,8 @@ namespace WiiTUIO.Provider
             this.RelativeY = relativeY;
             this.Rotation = rotation;
             this.OutOfReach = false;
+            this.MarginX = marginX;
+            this.MarginY = marginY;
         }
     }
 }
