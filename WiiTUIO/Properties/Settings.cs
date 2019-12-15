@@ -467,7 +467,7 @@ namespace WiiTUIO.Properties
         }
 
         // Initial mouse offset for fpsmouse calculations.
-        private double _test_fpsmouseOffset = 0.25;
+        private double _test_fpsmouseOffset = 0.35;
         public double test_fpsmouseOffset
         {
             get { return _test_fpsmouseOffset; }
