@@ -23,7 +23,8 @@ namespace WiiTUIO.Output.Handlers
             IOutputHandler keyboardHandler = VmultiDevice.Current.isAvailable() ? (IOutputHandler)(VmultiKeyboardHandler.Default) : (IOutputHandler)(new KeyboardHandler());
             all.Add(keyboardHandler);
             all.Add(new MouseHandler());
-            all.Add(new XinputHandler(id));
+            //all.Add(new XinputHandler(id));
+            all.Add(new ViGEmHandler(id));
             all.Add(new TouchHandler(TouchOutputFactory.getCurrentProviderHandler(),id));
             return all;
         }
