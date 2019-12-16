@@ -119,25 +119,25 @@ namespace WiiTUIO.Output.Handlers.Xinput
                         device.report.SetAxis(Xbox360Axes.RightThumbX, 32767);
                         break;
                     case "stickrup":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, 32767);
+                        device.report.SetAxis(Xbox360Axes.RightThumbY, -32768);
                         break;
                     case "sticklright":
                         device.report.SetAxis(Xbox360Axes.LeftThumbX, 32767);
                         break;
                     case "sticklup":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 32767);
+                        device.report.SetAxis(Xbox360Axes.LeftThumbY, -32768);
                         break;
                     case "stickrleft":
                         device.report.SetAxis(Xbox360Axes.RightThumbX, -32768);
                         break;
                     case "stickrdown":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, -32768);
+                        device.report.SetAxis(Xbox360Axes.RightThumbY, 32767);
                         break;
                     case "sticklleft":
                         device.report.SetAxis(Xbox360Axes.LeftThumbX, -32768);
                         break;
                     case "stickldown":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, -32768);
+                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 32767);
                         break;
                     default:
                         return false; //No valid key code was found
@@ -279,28 +279,36 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 switch (key)
                 {
                     case "sticklright":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX, AxisScale(value, false));
+                        device.report.SetAxis(Xbox360Axes.LeftThumbX,
+                            AxisScale(0.5 * value + 0.5, false));
                         break;
                     case "sticklleft":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX, AxisScale(value, false));
+                        device.report.SetAxis(Xbox360Axes.LeftThumbX,
+                            AxisScale(0.5 * -value + 0.5, false));
                         break;
                     case "sticklup":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, AxisScale(value, true));
+                        device.report.SetAxis(Xbox360Axes.LeftThumbY,
+                            AxisScale(0.5 * -value + 0.5, true));
                         break;
                     case "stickldown":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, AxisScale(value, true));
+                        device.report.SetAxis(Xbox360Axes.LeftThumbY,
+                            AxisScale(0.5 * value + 0.5, true));
                         break;
                     case "stickrright":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX, AxisScale(value, false));
+                        device.report.SetAxis(Xbox360Axes.RightThumbX,
+                            AxisScale(0.5 * value + 0.5, false));
                         break;
                     case "stickrleft":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX, AxisScale(value, false));
+                        device.report.SetAxis(Xbox360Axes.RightThumbX,
+                            AxisScale(0.5 * -value + 0.5, false));
                         break;
                     case "stickrup":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, AxisScale(value, true));
+                        device.report.SetAxis(Xbox360Axes.RightThumbY,
+                            AxisScale(0.5 * -value + 0.5, true));
                         break;
                     case "stickrdown":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, AxisScale(value, true));
+                        device.report.SetAxis(Xbox360Axes.RightThumbY,
+                            AxisScale(0.5 * value + 0.5, true));
                         break;
                     case "triggerr":
                         device.report.RightTrigger = (byte)(value * 255);
