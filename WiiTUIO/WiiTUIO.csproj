@@ -144,10 +144,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ScpControl, Version=1.0.0.103, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ScpControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -237,12 +233,6 @@
     <Compile Include="Output\Handlers\Xinput\ViGEmBusClient.cs" />
     <Compile Include="Output\Handlers\Xinput\ViGEmBusClientSingleton.cs" />
     <Compile Include="Output\Handlers\Xinput\ViGEmHandler.cs" />
-    <Compile Include="Output\Handlers\Xinput\XinputBus.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Output\Handlers\Xinput\XinputHandler.cs" />
-    <Compile Include="Output\Handlers\Xinput\XinputReport.cs" />
-    <Compile Include="Output\Handlers\Xinput\XinputDevice.cs" />
     <Compile Include="KeymapConfig\KeymapOutputRow.xaml.cs">
       <DependentUpon>KeymapOutputRow.xaml</DependentUpon>
     </Compile>
