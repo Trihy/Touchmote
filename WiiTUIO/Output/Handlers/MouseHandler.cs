@@ -108,6 +108,12 @@ namespace WiiTUIO.Output.Handlers
                         this.inputSimulator.Mouse.RightButtonDown();
                         mouseRightDown = true;
                         break;
+                    case MouseCode.MOUSEWHEELDOWN:
+                        this.inputSimulator.Mouse.VerticalScroll(-1);
+                        break;
+                    case MouseCode.MOUSEWHEELUP:
+                        this.inputSimulator.Mouse.VerticalScroll(1);
+                        break;
                     default:
                         return false;
                 }
@@ -788,6 +794,8 @@ namespace WiiTUIO.Output.Handlers
     public enum MouseCode
     {
         MOUSELEFT,
-        MOUSERIGHT
+        MOUSERIGHT,
+        MOUSEWHEELUP,
+        MOUSEWHEELDOWN,
     }
 }
