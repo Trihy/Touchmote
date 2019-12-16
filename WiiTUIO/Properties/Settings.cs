@@ -452,7 +452,7 @@ namespace WiiTUIO.Properties
         }
 
         // Weight multiplier used in smoothing routine.
-        private double _test_smoothingWeight = 0.4;
+        private double _test_smoothingWeight = 0.3;
         public double test_smoothingWeight
         {
             get { return _test_smoothingWeight; }
@@ -467,7 +467,7 @@ namespace WiiTUIO.Properties
         }
 
         // Initial mouse offset for fpsmouse calculations.
-        private double _test_fpsmouseOffset = 0.35;
+        private double _test_fpsmouseOffset = 0.36;
         public double test_fpsmouseOffset
         {
             get { return _test_fpsmouseOffset; }
