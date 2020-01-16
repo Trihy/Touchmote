@@ -25,8 +25,10 @@ Please use the GitHub Issue tracker to report bugs. Always include the following
 
 How to build
 ==============
-*First install:*<br />
-Microsoft Visual Studio 2013<br />
+*First install:*  
+Microsoft Visual Studio 2019  
+Install **.NET desktop development** Workload  
+Install **Desktop development with C++** Workload  
 Direct X SDK
 
 1. Install the Touchmote drivers and test certificate by running the installer from touchmote.net<br />
