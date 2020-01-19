@@ -119,25 +119,25 @@ namespace WiiTUIO.Output.Handlers.Xinput
                         device.report.SetAxis(Xbox360Axes.RightThumbX, 32767);
                         break;
                     case "stickrup":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, -32768);
+                        device.report.SetAxis(Xbox360Axes.RightThumbY, 32767);
                         break;
                     case "sticklright":
                         device.report.SetAxis(Xbox360Axes.LeftThumbX, 32767);
                         break;
                     case "sticklup":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, -32768);
+                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 32767);
                         break;
                     case "stickrleft":
                         device.report.SetAxis(Xbox360Axes.RightThumbX, -32768);
                         break;
                     case "stickrdown":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, 32767);
+                        device.report.SetAxis(Xbox360Axes.RightThumbY, -32768);
                         break;
                     case "sticklleft":
                         device.report.SetAxis(Xbox360Axes.LeftThumbX, -32768);
                         break;
                     case "stickldown":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 32767);
+                        device.report.SetAxis(Xbox360Axes.LeftThumbY, -32768);
                         break;
                     default:
                         return false; //No valid key code was found
