@@ -336,7 +336,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_FPS = 120;
+        private int _pointer_FPS = 100;
         public int pointer_FPS
         {
             get { return _pointer_FPS; }
@@ -375,7 +375,7 @@ namespace WiiTUIO.Properties
         }
 
         // Minimum delta travel before delta acceleration is applied.
-        private double _test_deltaAccelMinTravel = 0.1;
+        private double _test_deltaAccelMinTravel = 0.02;
         public double test_deltaAccelMinTravel
         {
             get { return _test_deltaAccelMinTravel; }
@@ -391,7 +391,7 @@ namespace WiiTUIO.Properties
 
         // Maximum duration that delta acceleration should be applied.
         // Value is in seconds.
-        private double _test_deltaAccelEasingDuration = 0.05;
+        private double _test_deltaAccelEasingDuration = 0.2;
         public double test_deltaAccelEasingDuration
         {
             get { return _test_deltaAccelEasingDuration; }
@@ -408,7 +408,7 @@ namespace WiiTUIO.Properties
 
         // Maximum duration that easing is applied to upper acceleration
         // region.
-        private double _test_regionEasingXDuration = 0.025;
+        private double _test_regionEasingXDuration = 0.24;
         public double test_regionEasingXDuration
         {
             get { return _test_regionEasingXDuration; }
@@ -423,7 +423,7 @@ namespace WiiTUIO.Properties
         }
 
         // Maximum delta travel before maximum delta acceleration is applied.
-        private double _test_deltaAccelMaxTravel = 0.5;
+        private double _test_deltaAccelMaxTravel = 0.425;
         public double test_deltaAccelMaxTravel
         {
             get { return _test_deltaAccelMaxTravel; }
@@ -452,7 +452,7 @@ namespace WiiTUIO.Properties
         }
 
         // Weight multiplier used in smoothing routine.
-        private double _test_smoothingWeight = 0.3;
+        private double _test_smoothingWeight = 0.25;
         public double test_smoothingWeight
         {
             get { return _test_smoothingWeight; }
@@ -467,7 +467,7 @@ namespace WiiTUIO.Properties
         }
 
         // Initial mouse offset for fpsmouse calculations.
-        private double _test_fpsmouseOffset = 0.36;
+        private double _test_fpsmouseOffset = 0.65;
         public double test_fpsmouseOffset
         {
             get { return _test_fpsmouseOffset; }
@@ -481,7 +481,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _pointer_positionSmoothing = 3;
+        private int _pointer_positionSmoothing = 2;
         public int pointer_positionSmoothing {
             get { return _pointer_positionSmoothing; }
             set {
@@ -499,7 +499,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _fpsmouse_deadzone = 0.03;
+        private double _fpsmouse_deadzone = 0.01875;
         public double fpsmouse_deadzone
         {
             get { return _fpsmouse_deadzone; }
@@ -510,7 +510,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private int _fpsmouse_speed = 30;
+        private int _fpsmouse_speed = 35;
         public int fpsmouse_speed
         {
             get { return _fpsmouse_speed; }
