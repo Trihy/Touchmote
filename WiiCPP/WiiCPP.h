@@ -55,6 +55,7 @@ namespace WiiCPP {
 		void onPairingProgress(WiiPairReport ^report);
 	};
 
+	[System::Security::SuppressUnmanagedCodeSecurityAttribute]
 	public ref class WiiPair
 	{
 	private:
@@ -424,6 +425,7 @@ namespace WiiCPP {
 		String^ FriendlyName;
 	};
 
+	[System::Security::SuppressUnmanagedCodeSecurityAttribute]
 	public ref class Monitors
 	{
 	public:
