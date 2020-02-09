@@ -408,7 +408,7 @@ namespace WiiTUIO.Properties
 
         // Maximum duration that easing is applied to upper acceleration
         // region.
-        private double _test_regionEasingXDuration = 0.24;
+        private double _test_regionEasingXDuration = 0.1;
         public double test_regionEasingXDuration
         {
             get { return _test_regionEasingXDuration; }
@@ -467,7 +467,7 @@ namespace WiiTUIO.Properties
         }
 
         // Initial mouse offset for fpsmouse calculations.
-        private double _test_fpsmouseOffset = 0.65;
+        private double _test_fpsmouseOffset = 0.8;
         public double test_fpsmouseOffset
         {
             get { return _test_fpsmouseOffset; }
@@ -499,7 +499,7 @@ namespace WiiTUIO.Properties
             }
         }
 
-        private double _fpsmouse_deadzone = 0.01875;
+        private double _fpsmouse_deadzone = 0.021;
         public double fpsmouse_deadzone
         {
             get { return _fpsmouse_deadzone; }
