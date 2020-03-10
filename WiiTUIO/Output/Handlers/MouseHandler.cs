@@ -18,6 +18,7 @@ namespace WiiTUIO.Output.Handlers
         private InputSimulator inputSimulator;
 
         private bool mouseLeftDown = false;
+        private bool mouseMiddleDown = false;
         private bool mouseRightDown = false;
 
         // Remainder values used for partial mouse distance calculations.
@@ -90,6 +91,10 @@ namespace WiiTUIO.Output.Handlers
             {
                 setButtonUp("mouseright");
             }
+            if (mouseMiddleDown)
+            {
+                setButtonUp("mousemiddle");
+            }
             return true;
         }
 
@@ -103,6 +108,10 @@ namespace WiiTUIO.Output.Handlers
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonDown();
                         mouseLeftDown = true;
+                        break;
+                    case MouseCode.MOUSEMIDDLE:
+                        this.inputSimulator.Mouse.MiddleButtonDown();
+                        mouseMiddleDown = true;
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonDown();
@@ -131,6 +140,10 @@ namespace WiiTUIO.Output.Handlers
                 {
                     case MouseCode.MOUSELEFT:
                         this.inputSimulator.Mouse.LeftButtonUp();
+                        mouseLeftDown = false;
+                        break;
+                    case MouseCode.MOUSEMIDDLE:
+                        this.inputSimulator.Mouse.MiddleButtonUp();
                         mouseLeftDown = false;
                         break;
                     case MouseCode.MOUSERIGHT:
@@ -794,6 +807,7 @@ namespace WiiTUIO.Output.Handlers
     public enum MouseCode
     {
         MOUSELEFT,
+        MOUSEMIDDLE,
         MOUSERIGHT,
         MOUSEWHEELUP,
         MOUSEWHEELDOWN,
