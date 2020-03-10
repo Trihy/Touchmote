@@ -8,6 +8,8 @@ using System.Windows;
 //using Hardcodet.Wpf.TaskbarNotification;
 using System.Windows.Controls;
 using System.Diagnostics;
+using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace WiiTUIO
 {
@@ -35,7 +37,9 @@ namespace WiiTUIO
             //TB = (TaskbarIcon)FindResource("tbNotifyIcon");
             //TB.ShowBalloonTip("Touchmote is running", "Click here to set it up", BalloonIcon.Info);
 
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             Application.Current.Exit += appWillExit;
+
 
             base.OnStartup(e);
         }
