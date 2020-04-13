@@ -320,9 +320,17 @@ namespace WiiTUIO.Output.Handlers
                     double signshiftX = (shiftX >= 0) ? 1.0 : -1.0;
                     double signshiftY = (shiftY >= 0) ? 1.0 : -1.0;
 
+                    double sideX = shiftX; double sideY = shiftY;
+                    double capX = unitX * 1.0; double capY = unitY * 1.0;
+
+                    if (Math.Abs(sideX) > capX) capX = Math.Abs(sideX);
+                    if (Math.Abs(sideY) > capY) capY = Math.Abs(sideY);
+                    double tempRatioX = sideX / capX;
+                    double tempRatioY = sideY / capY;
+
                     // Need absolute values for later calculations
-                    double absX = Math.Abs(shiftX);
-                    double absY = Math.Abs(shiftY);
+                    double absX = Math.Abs(tempRatioX);
+                    double absY = Math.Abs(tempRatioY);
 
                     if (absX <= 0.75 && regionEasingX.IsRunning)
                     {
@@ -391,6 +399,8 @@ namespace WiiTUIO.Output.Handlers
                         shiftX = 1.9376 * tempAbsx - 0.9376;
                     }
 
+                    shiftX *= capX;
+
                     // Use three types of acceleration depending on distance
                     // away from dead zone. Will need to change later.
                     if (absY <= 0.4)
@@ -408,6 +418,8 @@ namespace WiiTUIO.Output.Handlers
                         //shiftY = 1.968 * absY - 0.968;
                         shiftY = 1.9376 * absY - 0.9376;
                     }
+
+                    shiftY *= capY;
 
                     // Add sign bit
                     shiftX = signshiftX * shiftX;
