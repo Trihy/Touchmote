@@ -325,8 +325,8 @@ namespace WiiTUIO.Output.Handlers
 
                     if (Math.Abs(sideX) > capX) capX = Math.Abs(sideX);
                     if (Math.Abs(sideY) > capY) capY = Math.Abs(sideY);
-                    double tempRatioX = sideX / capX;
-                    double tempRatioY = sideY / capY;
+                    double tempRatioX = capX > 0.0 ? sideX / capX : 0.0;
+                    double tempRatioY = capY > 0.0 ? sideY / capY : 0.0;
 
                     // Need absolute values for later calculations
                     double absX = Math.Abs(tempRatioX);
