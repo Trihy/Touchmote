@@ -323,8 +323,9 @@ namespace WiiTUIO.Output.Handlers
                     double sideX = shiftX; double sideY = shiftY;
                     double capX = unitX * 1.0; double capY = unitY * 1.0;
 
-                    if (Math.Abs(sideX) > capX) capX = Math.Abs(sideX);
-                    if (Math.Abs(sideY) > capY) capY = Math.Abs(sideY);
+                    double absSideX = Math.Abs(sideX); double absSideY = Math.Abs(sideY);
+                    if (absSideX > capX) capX = absSideX;
+                    if (absSideY > capY) capY = absSideY;
                     double tempRatioX = capX > 0.0 ? sideX / capX : 0.0;
                     double tempRatioY = capY > 0.0 ? sideY / capY : 0.0;
 
