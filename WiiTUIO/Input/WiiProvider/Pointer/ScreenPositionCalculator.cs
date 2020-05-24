@@ -22,6 +22,7 @@ namespace WiiTUIO.Provider
         private int maxYPos;
         private int maxHeight;
         private int SBPositionOffset;
+        private double CalcMarginOffsetY;
 
         private double smoothedX, smoothedZ, smoothedRotation;
         private int orientation;
@@ -75,6 +76,7 @@ namespace WiiTUIO.Provider
             maxYPos = screen.Bounds.Height + (int)(screen.Bounds.Height * Settings.Default.pointer_marginsTopBottom);
             maxHeight = maxYPos - minYPos;
             SBPositionOffset = (int)(screen.Bounds.Height * Settings.Default.pointer_sensorBarPosCompensation);
+            CalcMarginOffsetY = 2.8571428571428568 * (0.3 - (Settings.Default.pointer_sensorBarPosCompensation * 0.5));
         }
 
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
@@ -161,14 +163,17 @@ namespace WiiTUIO.Provider
             }
 
             int offsetY = 0;
+            double marginOffsetY = 0.0;
 
             if (Properties.Settings.Default.pointer_sensorBarPos == "top")
             {
                 offsetY = -SBPositionOffset;
+                marginOffsetY = -CalcMarginOffsetY;
             }
             else if (Properties.Settings.Default.pointer_sensorBarPos == "bottom")
             {
                 offsetY = SBPositionOffset;
+                marginOffsetY = CalcMarginOffsetY;
             }
 
             relativePosition.X = 1 - relativePosition.X;
@@ -203,7 +208,7 @@ namespace WiiTUIO.Provider
             // input: [0.3, 0.65]
             marginX = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.X - 0.857142857142857));
             // input: [0.3, 0.65]
-            marginY = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.Y - 0.857142857142857));
+            marginY = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.Y + (marginOffsetY - 0.857142857142857)));
 
             if (x <= 0)
             {
