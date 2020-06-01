@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace HidLibrary
 {
+    [System.Security.SuppressUnmanagedCodeSecurity]
     internal static class NativeMethods
     {
 	    internal const int FILE_FLAG_OVERLAPPED = 0x40000000;
