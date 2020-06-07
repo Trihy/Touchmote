@@ -13,18 +13,15 @@ namespace WiiTUIO.Output.Handlers.Xinput
     {
         public const int outputResolution = 32767 - (-32768);
 
-        private Xbox360Controller cont;
-        public Xbox360Report report;
+        private IXbox360Controller cont;
         public event Action<byte, byte> OnRumble;
 
-        public Xbox360Controller Cont { get => cont; }
-        //public Xbox360Report Report { get => report; }
+        public IXbox360Controller Cont { get => cont; }
 
         public ViGEmBus360Device(ViGEmClient client)
         {
-            cont = new Xbox360Controller(client);
-            report = new Xbox360Report();
-
+            cont = client.CreateXbox360Controller();
+            cont.AutoSubmitReport = false;
             cont.FeedbackReceived += FeedbackProcess;
         }
 
@@ -42,19 +39,20 @@ namespace WiiTUIO.Output.Handlers.Xinput
         public bool Disconnect()
         {
             cont.Disconnect();
-            cont.Dispose();
+            //cont.Dispose();
             return true;
         }
 
         public bool Update()
         {
-            cont.SendReport(report);
+            cont.SubmitReport();
             return true;
         }
 
         public void Reset()
         {
-            report = new Xbox360Report();
+            cont.ResetReport();
+            //report = new Xbox360Report();
         }
     }
 }

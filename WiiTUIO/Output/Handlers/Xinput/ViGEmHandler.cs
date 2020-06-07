@@ -65,79 +65,79 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 switch (button)
                 {
                     case "triggerr":
-                        device.report.RightTrigger = 255;
+                        device.Cont.RightTrigger = 255;
                         break;
                     case "triggerl":
-                        device.report.LeftTrigger = 255;
+                        device.Cont.LeftTrigger = 255;
                         break;
                     case "a":
-                        device.report.SetButtonState(Xbox360Buttons.A, true);
+                        device.Cont.SetButtonState(Xbox360Button.A, true);
                         break;
                     case "b":
-                        device.report.SetButtonState(Xbox360Buttons.B, true);
+                        device.Cont.SetButtonState(Xbox360Button.B, true);
                         break;
                     case "x":
-                        device.report.SetButtonState(Xbox360Buttons.X, true);
+                        device.Cont.SetButtonState(Xbox360Button.X, true);
                         break;
                     case "y":
-                        device.report.SetButtonState(Xbox360Buttons.Y, true);
+                        device.Cont.SetButtonState(Xbox360Button.Y, true);
                         break;
                     case "back":
-                        device.report.SetButtonState(Xbox360Buttons.Back, true);
+                        device.Cont.SetButtonState(Xbox360Button.Back, true);
                         break;
                     case "start":
-                        device.report.SetButtonState(Xbox360Buttons.Start, true);
+                        device.Cont.SetButtonState(Xbox360Button.Start, true);
                         break;
                     case "stickpressl":
-                        device.report.SetButtonState(Xbox360Buttons.LeftThumb, true);
+                        device.Cont.SetButtonState(Xbox360Button.LeftThumb, true);
                         break;
                     case "stickpressr":
-                        device.report.SetButtonState(Xbox360Buttons.RightThumb, true);
+                        device.Cont.SetButtonState(Xbox360Button.RightThumb, true);
                         break;
                     case "up":
-                        device.report.SetButtonState(Xbox360Buttons.Up, true);
+                        device.Cont.SetButtonState(Xbox360Button.Up, true);
                         break;
                     case "down":
-                        device.report.SetButtonState(Xbox360Buttons.Down, true);
+                        device.Cont.SetButtonState(Xbox360Button.Down, true);
                         break;
                     case "right":
-                        device.report.SetButtonState(Xbox360Buttons.Right, true);
+                        device.Cont.SetButtonState(Xbox360Button.Right, true);
                         break;
                     case "left":
-                        device.report.SetButtonState(Xbox360Buttons.Left, true);
+                        device.Cont.SetButtonState(Xbox360Button.Left, true);
                         break;
                     case "guide":
-                        device.report.SetButtonState(Xbox360Buttons.Guide, true);
+                        device.Cont.SetButtonState(Xbox360Button.Guide, true);
                         break;
                     case "bumperl":
-                        device.report.SetButtonState(Xbox360Buttons.LeftShoulder, true);
+                        device.Cont.SetButtonState(Xbox360Button.LeftShoulder, true);
                         break;
                     case "bumperr":
-                        device.report.SetButtonState(Xbox360Buttons.RightShoulder, true);
+                        device.Cont.SetButtonState(Xbox360Button.RightShoulder, true);
                         break;
                     case "stickrright":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX, 32767);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbX, 32767);
                         break;
                     case "stickrup":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, 32767);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbY, 32767);
                         break;
                     case "sticklright":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX, 32767);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, 32767);
                         break;
                     case "sticklup":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 32767);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, 32767);
                         break;
                     case "stickrleft":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX, -32768);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbX, -32768);
                         break;
                     case "stickrdown":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, -32768);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbY, -32768);
                         break;
                     case "sticklleft":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX, -32768);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, -32768);
                         break;
                     case "stickldown":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, -32768);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, -32768);
                         break;
                     default:
                         return false; //No valid key code was found
@@ -155,79 +155,79 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 switch (button)
                 {
                     case "triggerr":
-                        device.report.RightTrigger = 0;
+                        device.Cont.RightTrigger = 0;
                         break;
                     case "triggerl":
-                        device.report.LeftTrigger = 0;
+                        device.Cont.LeftTrigger = 0;
                         break;
                     case "a":
-                        device.report.SetButtonState(Xbox360Buttons.A, false);
+                        device.Cont.SetButtonState(Xbox360Button.A, false);
                         break;
                     case "b":
-                        device.report.SetButtonState(Xbox360Buttons.B, false);
+                        device.Cont.SetButtonState(Xbox360Button.B, false);
                         break;
                     case "x":
-                        device.report.SetButtonState(Xbox360Buttons.X, false);
+                        device.Cont.SetButtonState(Xbox360Button.X, false);
                         break;
                     case "y":
-                        device.report.SetButtonState(Xbox360Buttons.Y, false);
+                        device.Cont.SetButtonState(Xbox360Button.Y, false);
                         break;
                     case "back":
-                        device.report.SetButtonState(Xbox360Buttons.Back, false);
+                        device.Cont.SetButtonState(Xbox360Button.Back, false);
                         break;
                     case "start":
-                        device.report.SetButtonState(Xbox360Buttons.Start, false);
+                        device.Cont.SetButtonState(Xbox360Button.Start, false);
                         break;
                     case "stickpressl":
-                        device.report.SetButtonState(Xbox360Buttons.LeftThumb, false);
+                        device.Cont.SetButtonState(Xbox360Button.LeftThumb, false);
                         break;
                     case "stickpressr":
-                        device.report.SetButtonState(Xbox360Buttons.RightThumb, false);
+                        device.Cont.SetButtonState(Xbox360Button.RightThumb, false);
                         break;
                     case "up":
-                        device.report.SetButtonState(Xbox360Buttons.Up, false);
+                        device.Cont.SetButtonState(Xbox360Button.Up, false);
                         break;
                     case "down":
-                        device.report.SetButtonState(Xbox360Buttons.Down, false);
+                        device.Cont.SetButtonState(Xbox360Button.Down, false);
                         break;
                     case "right":
-                        device.report.SetButtonState(Xbox360Buttons.Right, false);
+                        device.Cont.SetButtonState(Xbox360Button.Right, false);
                         break;
                     case "left":
-                        device.report.SetButtonState(Xbox360Buttons.Left, false);
+                        device.Cont.SetButtonState(Xbox360Button.Left, false);
                         break;
                     case "guide":
-                        device.report.SetButtonState(Xbox360Buttons.Guide, false);
+                        device.Cont.SetButtonState(Xbox360Button.Guide, false);
                         break;
                     case "bumperl":
-                        device.report.SetButtonState(Xbox360Buttons.LeftShoulder, false);
+                        device.Cont.SetButtonState(Xbox360Button.LeftShoulder, false);
                         break;
                     case "bumperr":
-                        device.report.SetButtonState(Xbox360Buttons.RightShoulder, false);
+                        device.Cont.SetButtonState(Xbox360Button.RightShoulder, false);
                         break;
                     case "stickrright":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbX, 0);
                         break;
                     case "stickrup":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbY, 0);
                         break;
                     case "sticklright":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, 0);
                         break;
                     case "sticklup":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, 0);
                         break;
                     case "stickrleft":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbX, 0);
                         break;
                     case "stickrdown":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbY, 0);
                         break;
                     case "sticklleft":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, 0);
                         break;
                     case "stickldown":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY, 0);
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, 0);
                         break;
                     default:
                         return false; //No valid key code was found
@@ -253,12 +253,12 @@ namespace WiiTUIO.Output.Handlers.Xinput
                     switch (key)
                     {
                         case "360.stickl":
-                            device.report.SetAxis(Xbox360Axes.LeftThumbX, AxisScale(smoothedX, false));
-                            device.report.SetAxis(Xbox360Axes.LeftThumbY, AxisScale(smoothedY, true));
+                            device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, AxisScale(smoothedX, false));
+                            device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, AxisScale(smoothedY, true));
                             break;
                         case "360.stickr":
-                            device.report.SetAxis(Xbox360Axes.RightThumbX, AxisScale(smoothedX, false));
-                            device.report.SetAxis(Xbox360Axes.RightThumbY, AxisScale(smoothedY, true));
+                            device.Cont.SetAxisValue(Xbox360Axis.RightThumbX, AxisScale(smoothedX, false));
+                            device.Cont.SetAxisValue(Xbox360Axis.RightThumbY, AxisScale(smoothedY, true));
                             break;
                     }
                     return true;
@@ -279,42 +279,42 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 switch (key)
                 {
                     case "sticklright":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX,
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX,
                             AxisScale(0.5 * value + 0.5, false));
                         break;
                     case "sticklleft":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbX,
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX,
                             AxisScale(0.5 * -value + 0.5, false));
                         break;
                     case "sticklup":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY,
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY,
                             AxisScale(0.5 * -value + 0.5, true));
                         break;
                     case "stickldown":
-                        device.report.SetAxis(Xbox360Axes.LeftThumbY,
+                        device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY,
                             AxisScale(0.5 * value + 0.5, true));
                         break;
                     case "stickrright":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX,
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbX,
                             AxisScale(0.5 * value + 0.5, false));
                         break;
                     case "stickrleft":
-                        device.report.SetAxis(Xbox360Axes.RightThumbX,
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbX,
                             AxisScale(0.5 * -value + 0.5, false));
                         break;
                     case "stickrup":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY,
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbY,
                             AxisScale(0.5 * -value + 0.5, true));
                         break;
                     case "stickrdown":
-                        device.report.SetAxis(Xbox360Axes.RightThumbY,
+                        device.Cont.SetAxisValue(Xbox360Axis.RightThumbY,
                             AxisScale(0.5 * value + 0.5, true));
                         break;
                     case "triggerr":
-                        device.report.RightTrigger = (byte)(value * 255);
+                        device.Cont.RightTrigger = (byte)(value * 255);
                         break;
                     case "triggerl":
-                        device.report.LeftTrigger = (byte)(value * 255);
+                        device.Cont.LeftTrigger = (byte)(value * 255);
                         break;
                     default:
                         return false; //No valid key was found
