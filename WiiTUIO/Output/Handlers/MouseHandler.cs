@@ -350,12 +350,12 @@ namespace WiiTUIO.Output.Handlers
                     if (absX <= 0.4)
                     {
                         //shiftX = 0.395 * absX;
-                        shiftX = 0.414 * absX;
+                        shiftX = 0.5 * absX;
                     }
                     else if (absX <= 0.75)
                     {
                         //shiftX = 1.0 * absX - 0.242;
-                        shiftX = 1.0 * absX - 0.2344;
+                        shiftX = 1.0 * absX - 0.2;
                     }
                     else
                     {
@@ -397,7 +397,7 @@ namespace WiiTUIO.Output.Handlers
                         }
 
                         //shiftX = 1.968 * tempAbsx - 0.968;
-                        shiftX = 1.9376 * tempAbsx - 0.9376;
+                        shiftX = 1.80 * tempAbsx - 0.80;
                     }
 
                     shiftX *= capX;
@@ -407,17 +407,17 @@ namespace WiiTUIO.Output.Handlers
                     if (absY <= 0.4)
                     {
                         //shiftY = 0.395 * absY;
-                        shiftY = 0.414 * absY;
+                        shiftY = 0.5 * absY;
                     }
                     else if (absY <= 0.75)
                     {
                         //shiftY = 1.0 * absY - 0.242;
-                        shiftY = 1.0 * absY - 0.2344;
+                        shiftY = 1.0 * absY - 0.2;
                     }
                     else
                     {
                         //shiftY = 1.968 * absY - 0.968;
-                        shiftY = 1.9376 * absY - 0.9376;
+                        shiftY = 1.80 * absY - 0.80;
                     }
 
                     shiftY *= capY;
