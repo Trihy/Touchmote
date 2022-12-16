@@ -29,15 +29,22 @@ namespace WiiTUIO.Output.Handlers
         private double previousPointerY = 0.5;
 
         // Check elapsed time that delta acceleration is applied.
-        private Stopwatch deltaEasingTimeX;
-        private Stopwatch deltaEasingTimeY;
+        //private Stopwatch deltaEasingTimeX;
+        //private Stopwatch deltaEasingTimeY;
+
+        double previousPointerRadial = 0.0;
+        double accelCurrentMultiRadial = 0.0;
+        double accelEasingMultiRadial = 0.0;
+        double accelTravelRadial = 0.0;
+        Stopwatch deltaEasingTimeRadial = new Stopwatch();
+        double totalTravelRadial = 0.0;
 
         // Keep track of current acceleration multiplier in directions.
-        private double accelHelperX = 0.0;
-        private double accelHelperY = 0.0;
-        // Keep track of travel value that caused acceleration
-        private double accelTravelX = 0.0;
-        private double accelTravelY = 0.0;
+        //private double accelHelperX = 0.0;
+        //private double accelHelperY = 0.0;
+        //// Keep track of travel value that caused acceleration
+        //private double accelTravelX = 0.0;
+        //private double accelTravelY = 0.0;
 
         // Add period of mouse movement when remote is out of IR range.
         private Stopwatch outOfReachElapsed;
@@ -74,8 +81,8 @@ namespace WiiTUIO.Output.Handlers
             cursorPositionHelper = new CursorPositionHelper();
             this.inputSimulator = new InputSimulator();
             cursorPositionHelper = new CursorPositionHelper();
-            this.deltaEasingTimeX = new Stopwatch();
-            this.deltaEasingTimeY = new Stopwatch();
+            //this.deltaEasingTimeX = new Stopwatch();
+            //this.deltaEasingTimeY = new Stopwatch();
             this.outOfReachElapsed = new Stopwatch();
             this.initialInReachElapsed = new Stopwatch();
             this.regionEasingX = new Stopwatch();
@@ -351,13 +358,15 @@ namespace WiiTUIO.Output.Handlers
                     {
                         //shiftX = 0.395 * absX;
                         //shiftX = 0.5 * absX;
-                        shiftX = 0.6 * absX;
+                        //shiftX = 0.6 * absX;
+                        shiftX = 0.65 * absX;
                     }
                     else if (absX <= 0.75)
                     {
                         //shiftX = 1.0 * absX - 0.242;
                         //shiftX = 1.0 * absX - 0.2;
-                        shiftX = 1.0 * absX - 0.16;
+                        //shiftX = 1.0 * absX - 0.16;
+                        shiftX = 1.0 * absX - 0.14;
                     }
                     else
                     {
@@ -400,7 +409,8 @@ namespace WiiTUIO.Output.Handlers
 
                         //shiftX = 1.968 * tempAbsx - 0.968;
                         //shiftX = 1.80 * tempAbsx - 0.80;
-                        shiftX = 1.64 * tempAbsx - 0.64;
+                        //shiftX = 1.64 * tempAbsx - 0.64;
+                        shiftX = 1.56 * tempAbsx - 0.56;
                     }
 
                     shiftX *= capX;
@@ -411,240 +421,360 @@ namespace WiiTUIO.Output.Handlers
                     {
                         //shiftY = 0.395 * absY;
                         //shiftY = 0.5 * absY;
-                        shiftY = 0.6 * absY;
+                        shiftY = 0.65 * absY;
                     }
                     else if (absY <= 0.75)
                     {
                         //shiftY = 1.0 * absY - 0.242;
                         //shiftY = 1.0 * absY - 0.2;
-                        shiftY = 1.0 * absY - 0.16;
+                        shiftY = 1.0 * absY - 0.14;
                     }
                     else
                     {
                         //shiftY = 1.968 * absY - 0.968;
                         //shiftY = 1.80 * absY - 0.80;
-                        shiftY = 1.64 * absY - 0.64;
+                        shiftY = 1.56 * absY - 0.56;
                     }
 
                     shiftY *= capY;
 
-                    // Add sign bit
-                    shiftX = signshiftX * shiftX;
-                    shiftY = signshiftY * shiftY;
+                    double minfactor = Math.Max(1.0, 1.2); // default 1.0
+                    double minTravelStop = Math.Max(0.05, testAccelMinTravel);
 
                     // Calculate delta acceleration slope and offset.
-                    double accelSlope = (testAccelMulti - 1.0) / (testAccelMaxTravel - testAccelMinTravel);
-                    double accelOffset = 1.0 - (accelSlope * testAccelMinTravel);
+                    double accelSlope = (testAccelMulti - minfactor) / (testAccelMaxTravel - testAccelMinTravel);
+                    double accelOffset = minfactor - (accelSlope * testAccelMinTravel);
+
+                    double hyp = Math.Sqrt((smoothedPos.X * smoothedPos.X) + (smoothedPos.Y * smoothedPos.Y));
+
+                    if (testDeltaAccel)
+                    {
+                        if (hyp > 0.0 &&
+                            Math.Abs(hyp - previousPointerRadial) >= testAccelMinTravel &&
+                            (hyp - previousPointerRadial >= 0.0))
+                        {
+                            double tempTravel = Math.Abs(hyp - previousPointerRadial);
+                            double tempDist = tempTravel;
+
+                            if (totalTravelRadial == 0.0)
+                            {
+                                totalTravelRadial = tempTravel;
+                                accelEasingMultiRadial = (accelSlope * tempDist + accelOffset);
+                            }
+                            else
+                            {
+                                totalTravelRadial += tempDist;
+                                double tempEasingDist = totalTravelRadial;
+                                //tempDist = tempEasingDist;
+                                //tempTravel = tempDist;
+                                accelEasingMultiRadial = (accelSlope * tempEasingDist + accelOffset);
+                            }
+
+
+                            accelCurrentMultiRadial = (accelSlope * tempDist + accelOffset);
+                            shiftX = shiftX * accelCurrentMultiRadial;
+                            shiftY = shiftY * accelCurrentMultiRadial;
+                            accelTravelRadial = tempTravel;
+
+                            deltaEasingTimeRadial.Restart();
+
+                            previousPointerRadial = hyp;
+                            previousPointerX = smoothedPos.X;
+                            previousPointerY = smoothedPos.Y;
+                        }
+                        else if (hyp > 0.0 && accelCurrentMultiRadial > 0.0 &&
+                            Math.Abs(previousPointerRadial - hyp) < minTravelStop &&
+                            !(
+                            (previousPointerX >= 0.5) != (smoothedPos.X >= 0.5) &&
+                            (previousPointerY >= 0.5) != (smoothedPos.Y >= 0.5))
+                            )
+                        {
+                            double timeElapsed = deltaEasingTimeRadial.ElapsedMilliseconds;
+                            //currentTime = Stopwatch.GetTimestamp();
+                            //double timeElapsed = (currentTime - previousTime) * (1.0 / Stopwatch.Frequency) * 1000.0;
+                            double elapsedDiff = 1.0;
+                            double tempAccel = accelCurrentMultiRadial;
+                            double tempTravel = accelTravelRadial;
+
+                            if (hyp - previousPointerRadial <= 0.0)
+                            {
+                                double tempmix2 = Math.Abs(hyp - previousPointerRadial);
+                                tempmix2 = Math.Min(tempmix2, minTravelStop);
+                                double tempmixslope = (testAccelMinTravel - tempTravel) / minTravelStop;
+                                double tempshitintercept = tempTravel;
+                                double finalmanham = (tempmixslope * tempmix2 + tempshitintercept);
+
+                                tempTravel = finalmanham;
+                                tempAccel = (accelSlope * (tempTravel) + accelOffset);
+                            }
+
+                            double elapsedDuration = testAccelEasingDuration * (accelEasingMultiRadial / testAccelMulti);
+                            //Trace.WriteLine($"TIME ELAPSED: {timeElapsed} {tempAccel} {elapsedDuration}");
+                            if (elapsedDuration > 0.0 && (timeElapsed * 0.001) < elapsedDuration)
+                            {
+                                elapsedDiff = ((timeElapsed * 0.001) / elapsedDuration);
+                                elapsedDiff = (1.0 - tempAccel) * (elapsedDiff * elapsedDiff * elapsedDiff) + tempAccel;
+                                shiftX = elapsedDiff * shiftX;
+                                shiftY = elapsedDiff * shiftY;
+
+                                //Trace.WriteLine($"CONITNUING {elapsedDiff}");
+                            }
+                            else
+                            {
+                                // Easing time has ended. Reset values.
+                                previousPointerRadial = hyp;
+                                accelCurrentMultiRadial = 0.0;
+                                accelTravelRadial = 0.0;
+                                deltaEasingTimeRadial.Reset();
+                                accelEasingMultiRadial = 0.0;
+                                totalTravelRadial = 0.0;
+                                //previousTime = currentTime;
+                                previousPointerX = smoothedPos.X;
+                                previousPointerY = smoothedPos.Y;
+                                //inDuration = false;
+
+                                //Trace.WriteLine($"DURATION ENDED");
+                            }
+                        }
+                        else
+                        {
+                            previousPointerRadial = hyp;
+                            accelCurrentMultiRadial = 0.0;
+                            accelTravelRadial = 0.0;
+                            accelEasingMultiRadial = 0.0;
+                            totalTravelRadial = 0.0;
+                            deltaEasingTimeRadial.Reset();
+                            previousPointerX = smoothedPos.X;
+                            previousPointerY = smoothedPos.Y;
+                        }
+                    }
+                    else
+                    {
+                        previousPointerRadial = hyp;
+                        previousPointerX = smoothedPos.X;
+                        previousPointerY = smoothedPos.Y;
+                        accelCurrentMultiRadial = 0.0;
+                        accelTravelRadial = 0.0;
+                        accelEasingMultiRadial = 0.0;
+                        totalTravelRadial = 0.0;
+                        {
+                            deltaEasingTimeRadial.Reset();
+                        }
+                    }
 
                     // If deltaX >= 0.1 and displacement is increasing then
                     // use acceleration multiplier.
-                    if (absX > 0.0 && testDeltaAccel && !initialMouseMove &&
-                        Math.Abs(previousPointerX - smoothedPos.X) >= testAccelMinTravel &&
-                       (smoothedPos.X - previousPointerX >= 0.0) == (smoothedPos.X >= 0.5))
-                    {
-                        double tempTravel = Math.Min(Math.Abs(previousPointerX - smoothedPos.X), testAccelMaxTravel);
-                        if (accelHelperX > 1.0)
-                        {
-                            // Already in acceleration mode. Add accel
-                            // dead zone to travel.
-                            //tempTravel = Math.Min(tempTravel + testAccelMinTravel, testAccelMaxTravel);
-                        }
+                    //if (absX > 0.0 && testDeltaAccel && !initialMouseMove &&
+                    //    Math.Abs(previousPointerX - smoothedPos.X) >= testAccelMinTravel &&
+                    //   (smoothedPos.X - previousPointerX >= 0.0) == (smoothedPos.X >= 0.5))
+                    //{
+                    //    double tempTravel = Math.Min(Math.Abs(previousPointerX - smoothedPos.X), testAccelMaxTravel);
+                    //    if (accelHelperX > 1.0)
+                    //    {
+                    //        // Already in acceleration mode. Add accel
+                    //        // dead zone to travel.
+                    //        //tempTravel = Math.Min(tempTravel + testAccelMinTravel, testAccelMaxTravel);
+                    //    }
 
-                        //double tempDist = Math.Min(tempTravel / 0.5, 1.0);
-                        double tempDist = Math.Min(tempTravel, testAccelMaxTravel);
+                    //    //double tempDist = Math.Min(tempTravel / 0.5, 1.0);
+                    //    double tempDist = Math.Min(tempTravel, testAccelMaxTravel);
 
-                        /*double currentAccelMultiTemp = (accelSlope * tempDist + accelOffset);
-                        double getMultiDiff = (currentAccelMultiTemp - 1.0) / (testAccelMulti - 1.0);
-                        //currentAccelMultiTemp = -(testAccelMulti - 1.0) / (getMultiDiff * (getMultiDiff - 2.0)) + 1.0;
-                        currentAccelMultiTemp = (testAccelMulti - 1.0) / Math.Sin(getMultiDiff * (Math.PI / 2.0)) + 1.0;
+                    //    /*double currentAccelMultiTemp = (accelSlope * tempDist + accelOffset);
+                    //    double getMultiDiff = (currentAccelMultiTemp - 1.0) / (testAccelMulti - 1.0);
+                    //    //currentAccelMultiTemp = -(testAccelMulti - 1.0) / (getMultiDiff * (getMultiDiff - 2.0)) + 1.0;
+                    //    currentAccelMultiTemp = (testAccelMulti - 1.0) / Math.Sin(getMultiDiff * (Math.PI / 2.0)) + 1.0;
 
-                        shiftX = shiftX * currentAccelMultiTemp;
-                        previousPointerX = smoothedPos.X;
-                        accelHelperX = currentAccelMultiTemp;
-                        accelTravelX = tempTravel;
-                        deltaEasingTimeX.Restart();
-                        */
+                    //    shiftX = shiftX * currentAccelMultiTemp;
+                    //    previousPointerX = smoothedPos.X;
+                    //    accelHelperX = currentAccelMultiTemp;
+                    //    accelTravelX = tempTravel;
+                    //    deltaEasingTimeX.Restart();
+                    //    */
 
-                        shiftX = shiftX * (accelSlope * tempDist + accelOffset);
-                        previousPointerX = smoothedPos.X;
-                        accelHelperX = (accelSlope * tempDist + accelOffset);
-                        accelTravelX = tempTravel;
-                        deltaEasingTimeX.Restart();
-                    }
-                    else if (absX > 0.0 && testDeltaAccel && !initialMouseMove && testAccelEasingDuration > 0.00 &&
-                            accelHelperX > 0.0 &&
-                            Math.Abs(smoothedPos.X - previousPointerX) < testAccelMinTravel &&
-                            (previousPointerX >= 0.5) == (smoothedPos.X >= 0.5))
-                    {
-                        double timeElapsed = deltaEasingTimeX.ElapsedMilliseconds;
-                        double elapsedDiff = 1.0;
-                        double tempAccel = accelHelperX;
-                        double tempTravel = accelTravelX;
+                    //    shiftX = shiftX * (accelSlope * tempDist + accelOffset);
+                    //    previousPointerX = smoothedPos.X;
+                    //    accelHelperX = (accelSlope * tempDist + accelOffset);
+                    //    accelTravelX = tempTravel;
+                    //    deltaEasingTimeX.Restart();
+                    //}
+                    //else if (absX > 0.0 && testDeltaAccel && !initialMouseMove && testAccelEasingDuration > 0.00 &&
+                    //        accelHelperX > 0.0 &&
+                    //        Math.Abs(smoothedPos.X - previousPointerX) < testAccelMinTravel &&
+                    //        (previousPointerX >= 0.5) == (smoothedPos.X >= 0.5))
+                    //{
+                    //    double timeElapsed = deltaEasingTimeX.ElapsedMilliseconds;
+                    //    double elapsedDiff = 1.0;
+                    //    double tempAccel = accelHelperX;
+                    //    double tempTravel = accelTravelX;
 
-                        if ((smoothedPos.X - previousPointerX >= 0.0) != (smoothedPos.X >= 0.5))
-                        {
-                            // Travelling towards dead zone. Decrease acceleration and duration.
-                            double minstop2 = Math.Min(testAccelMinTravel, tempTravel);
-                            double tempmix2 = Math.Abs(smoothedPos.X - previousPointerX);
-                            tempmix2 = Math.Min(tempmix2, minstop2);
+                    //    if ((smoothedPos.X - previousPointerX >= 0.0) != (smoothedPos.X >= 0.5))
+                    //    {
+                    //        // Travelling towards dead zone. Decrease acceleration and duration.
+                    //        double minstop2 = Math.Min(testAccelMinTravel, tempTravel);
+                    //        double tempmix2 = Math.Abs(smoothedPos.X - previousPointerX);
+                    //        tempmix2 = Math.Min(tempmix2, minstop2);
 
-                            double tempmixslope = (testAccelMinTravel - tempTravel) / (minstop2);
-                            double tempshitintercept = tempTravel;
+                    //        double tempmixslope = (testAccelMinTravel - tempTravel) / (minstop2);
+                    //        double tempshitintercept = tempTravel;
 
-                            double finalmanham = (tempmixslope * tempmix2 + tempshitintercept);
-                            //tempAccel = finalmanham;
-                            tempTravel = finalmanham;
-                            tempAccel = (accelSlope * tempTravel + accelOffset);
+                    //        double finalmanham = (tempmixslope * tempmix2 + tempshitintercept);
+                    //        //tempAccel = finalmanham;
+                    //        tempTravel = finalmanham;
+                    //        tempAccel = (accelSlope * tempTravel + accelOffset);
 
-                            /*tempTravel = Math.Min(Math.Abs(previousPointerX - smoothedPos.X), testAccelMaxTravel);
-                            tempTravel = Math.Max(Math.Min((accelTravelX - tempTravel), testAccelMaxTravel), testAccelMinTravel);
-                            tempAccel = (accelSlope * tempTravel + accelOffset);
-                            */
-                        }
+                    //        /*tempTravel = Math.Min(Math.Abs(previousPointerX - smoothedPos.X), testAccelMaxTravel);
+                    //        tempTravel = Math.Max(Math.Min((accelTravelX - tempTravel), testAccelMaxTravel), testAccelMinTravel);
+                    //        tempAccel = (accelSlope * tempTravel + accelOffset);
+                    //        */
+                    //    }
 
-                        double elapsedDuration = testAccelEasingDuration * (tempAccel / testAccelMulti);
+                    //    double elapsedDuration = testAccelEasingDuration * (tempAccel / testAccelMulti);
 
-                        /*double getMultiDiff = (tempAccel - 1.0) / (testAccelMulti - 1.0);
-                        //double tempinner = getMultiDiff * (getMultiDiff - 2.0);
-                        //timeElapsed = (-testAccelEasingDuration * tempinner + 0.0);
-                        //double currentAccelMultiTemp = -(testAccelMulti - 1.0) * tempinner + 1.0;
-                        double tempinner = Math.Sin(getMultiDiff * (Math.PI / 2.0));
-                        timeElapsed = testAccelEasingDuration * tempinner + 0.0;
-                        double currentAccelMultiTemp = (testAccelMulti - 1.0) * tempinner + 1.0;
-                        tempAccel = currentAccelMultiTemp;
-                        */
+                    //    /*double getMultiDiff = (tempAccel - 1.0) / (testAccelMulti - 1.0);
+                    //    //double tempinner = getMultiDiff * (getMultiDiff - 2.0);
+                    //    //timeElapsed = (-testAccelEasingDuration * tempinner + 0.0);
+                    //    //double currentAccelMultiTemp = -(testAccelMulti - 1.0) * tempinner + 1.0;
+                    //    double tempinner = Math.Sin(getMultiDiff * (Math.PI / 2.0));
+                    //    timeElapsed = testAccelEasingDuration * tempinner + 0.0;
+                    //    double currentAccelMultiTemp = (testAccelMulti - 1.0) * tempinner + 1.0;
+                    //    tempAccel = currentAccelMultiTemp;
+                    //    */
 
-                        if (elapsedDuration > 0.0 && (timeElapsed * 0.001) < elapsedDuration)
-                        {
-                            elapsedDiff = ((timeElapsed * 0.001) / elapsedDuration);
-                            elapsedDiff = (1.0 - tempAccel) * (elapsedDiff * elapsedDiff * elapsedDiff) + tempAccel;
-                            shiftX = elapsedDiff * shiftX;
-                        }
-                        else
-                        {
-                            // Easing time has ended. Reset values.
-                            previousPointerX = smoothedPos.X;
-                            accelHelperX = 0.0;
-                            accelTravelX = 0.0;
-                            deltaEasingTimeX.Stop();
-                            //regionEasingX.Stop();
-                        }
-                    }
-                    else
-                    {
-                        // Don't apply acceleration. Reset values.
-                        previousPointerX = smoothedPos.X;
-                        accelHelperX = 0.0;
-                        accelTravelX = 0.0;
-                        if (deltaEasingTimeX.IsRunning)
-                        {
-                            deltaEasingTimeX.Stop();
-                        }
-                    }
+                    //    if (elapsedDuration > 0.0 && (timeElapsed * 0.001) < elapsedDuration)
+                    //    {
+                    //        elapsedDiff = ((timeElapsed * 0.001) / elapsedDuration);
+                    //        elapsedDiff = (1.0 - tempAccel) * (elapsedDiff * elapsedDiff * elapsedDiff) + tempAccel;
+                    //        shiftX = elapsedDiff * shiftX;
+                    //    }
+                    //    else
+                    //    {
+                    //        // Easing time has ended. Reset values.
+                    //        previousPointerX = smoothedPos.X;
+                    //        accelHelperX = 0.0;
+                    //        accelTravelX = 0.0;
+                    //        deltaEasingTimeX.Stop();
+                    //        //regionEasingX.Stop();
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // Don't apply acceleration. Reset values.
+                    //    previousPointerX = smoothedPos.X;
+                    //    accelHelperX = 0.0;
+                    //    accelTravelX = 0.0;
+                    //    if (deltaEasingTimeX.IsRunning)
+                    //    {
+                    //        deltaEasingTimeX.Stop();
+                    //    }
+                    //}
 
-                    // If deltaY >= 0.1 and displacement is increasing then
-                    // use acceleration multiplier.
-                    if (absY > 0.0 && testDeltaAccel && !initialMouseMove && Math.Abs(previousPointerY - smoothedPos.Y) >= testAccelMinTravel &&
-                       (smoothedPos.Y - previousPointerY >= 0.0) == (smoothedPos.Y >= 0.5))
-                    {
-                        double tempTravel = Math.Min(Math.Abs(previousPointerY - smoothedPos.Y), testAccelMaxTravel);
-                        if (accelHelperY > 1.0)
-                        {
-                            // Already in acceleration mode. Add accel
-                            // dead zone to travel.
-                            //tempTravel = Math.Min(tempTravel + testAccelMinTravel, testAccelMaxTravel);
-                        }
+                    //// If deltaY >= 0.1 and displacement is increasing then
+                    //// use acceleration multiplier.
+                    //if (absY > 0.0 && testDeltaAccel && !initialMouseMove && Math.Abs(previousPointerY - smoothedPos.Y) >= testAccelMinTravel &&
+                    //   (smoothedPos.Y - previousPointerY >= 0.0) == (smoothedPos.Y >= 0.5))
+                    //{
+                    //    double tempTravel = Math.Min(Math.Abs(previousPointerY - smoothedPos.Y), testAccelMaxTravel);
+                    //    if (accelHelperY > 1.0)
+                    //    {
+                    //        // Already in acceleration mode. Add accel
+                    //        // dead zone to travel.
+                    //        //tempTravel = Math.Min(tempTravel + testAccelMinTravel, testAccelMaxTravel);
+                    //    }
 
-                        //double tempDist = Math.Min(tempTravel / 0.5, 1.0);
-                        double tempDist = Math.Min(tempTravel, testAccelMaxTravel);
+                    //    //double tempDist = Math.Min(tempTravel / 0.5, 1.0);
+                    //    double tempDist = Math.Min(tempTravel, testAccelMaxTravel);
 
-                        /*double currentAccelMultiTemp = (accelSlope * tempDist + accelOffset);
-                        double getMultiDiff = (currentAccelMultiTemp - 1.0) / (testAccelMulti - 1.0);
-                        //currentAccelMultiTemp = -(testAccelMulti - 1.0) / (getMultiDiff * (getMultiDiff - 2.0)) + 1.0;
-                        currentAccelMultiTemp = (testAccelMulti - 1.0) / Math.Sin(getMultiDiff * (Math.PI / 2.0)) + 1.0;
+                    //    /*double currentAccelMultiTemp = (accelSlope * tempDist + accelOffset);
+                    //    double getMultiDiff = (currentAccelMultiTemp - 1.0) / (testAccelMulti - 1.0);
+                    //    //currentAccelMultiTemp = -(testAccelMulti - 1.0) / (getMultiDiff * (getMultiDiff - 2.0)) + 1.0;
+                    //    currentAccelMultiTemp = (testAccelMulti - 1.0) / Math.Sin(getMultiDiff * (Math.PI / 2.0)) + 1.0;
 
-                        shiftY = shiftY * currentAccelMultiTemp;
-                        previousPointerY = smoothedPos.Y;
-                        accelHelperY = currentAccelMultiTemp;
-                        accelTravelY = tempTravel;
-                        deltaEasingTimeY.Restart();
-                        */
+                    //    shiftY = shiftY * currentAccelMultiTemp;
+                    //    previousPointerY = smoothedPos.Y;
+                    //    accelHelperY = currentAccelMultiTemp;
+                    //    accelTravelY = tempTravel;
+                    //    deltaEasingTimeY.Restart();
+                    //    */
 
-                        shiftY = shiftY * (accelSlope * tempDist + accelOffset);
-                        previousPointerY = smoothedPos.Y;
-                        accelHelperY = (accelSlope * tempDist + accelOffset);
-                        accelTravelY = tempTravel;
-                        deltaEasingTimeY.Restart();
-                    }
-                    else if (absY > 0.0 && testDeltaAccel && !initialMouseMove && testAccelEasingDuration > 0.00 &&
-                            accelHelperY > 0.0 &&
-                            Math.Abs(smoothedPos.Y - previousPointerY) < testAccelMinTravel &&
-                            (previousPointerY >= 0.5) == (smoothedPos.Y >= 0.5))
-                    {
-                        double timeElapsed = deltaEasingTimeY.ElapsedMilliseconds;
-                        double elapsedDiff = 1.0;
-                        double tempAccel = accelHelperY;
-                        double tempTravel = accelTravelY;
+                    //    shiftY = shiftY * (accelSlope * tempDist + accelOffset);
+                    //    previousPointerY = smoothedPos.Y;
+                    //    accelHelperY = (accelSlope * tempDist + accelOffset);
+                    //    accelTravelY = tempTravel;
+                    //    deltaEasingTimeY.Restart();
+                    //}
+                    //else if (absY > 0.0 && testDeltaAccel && !initialMouseMove && testAccelEasingDuration > 0.00 &&
+                    //        accelHelperY > 0.0 &&
+                    //        Math.Abs(smoothedPos.Y - previousPointerY) < testAccelMinTravel &&
+                    //        (previousPointerY >= 0.5) == (smoothedPos.Y >= 0.5))
+                    //{
+                    //    double timeElapsed = deltaEasingTimeY.ElapsedMilliseconds;
+                    //    double elapsedDiff = 1.0;
+                    //    double tempAccel = accelHelperY;
+                    //    double tempTravel = accelTravelY;
 
-                        if ((smoothedPos.Y - previousPointerY >= 0.0) != (smoothedPos.Y >= 0.5))
-                        {
-                            // Travelling towards dead zone. Decrease acceleration and duration.
-                            double minstop2 = Math.Min(testAccelMinTravel, tempTravel);
-                            double tempmix2 = Math.Abs(smoothedPos.Y - previousPointerY);
-                            tempmix2 = Math.Min(tempmix2, minstop2);
+                    //    if ((smoothedPos.Y - previousPointerY >= 0.0) != (smoothedPos.Y >= 0.5))
+                    //    {
+                    //        // Travelling towards dead zone. Decrease acceleration and duration.
+                    //        double minstop2 = Math.Min(testAccelMinTravel, tempTravel);
+                    //        double tempmix2 = Math.Abs(smoothedPos.Y - previousPointerY);
+                    //        tempmix2 = Math.Min(tempmix2, minstop2);
 
-                            double tempmixslope = (testAccelMinTravel - tempTravel) / (minstop2);
-                            double tempshitintercept = tempTravel;
+                    //        double tempmixslope = (testAccelMinTravel - tempTravel) / (minstop2);
+                    //        double tempshitintercept = tempTravel;
 
-                            double finalmanham = (tempmixslope * tempmix2 + tempshitintercept);
-                            //tempAccel = finalmanham;
-                            tempTravel = finalmanham;
-                            tempAccel = (accelSlope * tempTravel + accelOffset);
+                    //        double finalmanham = (tempmixslope * tempmix2 + tempshitintercept);
+                    //        //tempAccel = finalmanham;
+                    //        tempTravel = finalmanham;
+                    //        tempAccel = (accelSlope * tempTravel + accelOffset);
 
-                            /*tempTravel = Math.Min(Math.Abs(previousPointerY - smoothedPos.Y), testAccelMaxTravel);
-                            tempTravel = Math.Max(Math.Min((accelTravelY - tempTravel), testAccelMaxTravel), testAccelMinTravel);
-                            tempAccel = (accelSlope * tempTravel + accelOffset);
-                            */
-                        }
+                    //        /*tempTravel = Math.Min(Math.Abs(previousPointerY - smoothedPos.Y), testAccelMaxTravel);
+                    //        tempTravel = Math.Max(Math.Min((accelTravelY - tempTravel), testAccelMaxTravel), testAccelMinTravel);
+                    //        tempAccel = (accelSlope * tempTravel + accelOffset);
+                    //        */
+                    //    }
 
-                        double elapsedDuration = testAccelEasingDuration * (tempAccel / testAccelMulti);
+                    //    double elapsedDuration = testAccelEasingDuration * (tempAccel / testAccelMulti);
 
-                        /*double getMultiDiff = (tempAccel - 1.0) / (testAccelMulti - 1.0);
-                        //double tempinner = getMultiDiff * (getMultiDiff - 2.0);
-                        //timeElapsed = -testAccelEasingDuration * tempinner + 0.0;
-                        //double currentAccelMultiTemp = -(testAccelMulti - 1.0) * tempinner + 1.0;
-                        double tempinner = Math.Sin(getMultiDiff * (Math.PI / 2.0));
-                        timeElapsed = testAccelEasingDuration * tempinner + 0.0;
-                        double currentAccelMultiTemp = (testAccelMulti - 1.0) * tempinner + 1.0;
-                        tempAccel = currentAccelMultiTemp;
-                        */
+                    //    /*double getMultiDiff = (tempAccel - 1.0) / (testAccelMulti - 1.0);
+                    //    //double tempinner = getMultiDiff * (getMultiDiff - 2.0);
+                    //    //timeElapsed = -testAccelEasingDuration * tempinner + 0.0;
+                    //    //double currentAccelMultiTemp = -(testAccelMulti - 1.0) * tempinner + 1.0;
+                    //    double tempinner = Math.Sin(getMultiDiff * (Math.PI / 2.0));
+                    //    timeElapsed = testAccelEasingDuration * tempinner + 0.0;
+                    //    double currentAccelMultiTemp = (testAccelMulti - 1.0) * tempinner + 1.0;
+                    //    tempAccel = currentAccelMultiTemp;
+                    //    */
 
-                        if (elapsedDuration > 0.0 && (timeElapsed * 0.001) < elapsedDuration)
-                        {
-                            elapsedDiff = ((timeElapsed * 0.001) / elapsedDuration);
-                            elapsedDiff = (1.0 - tempAccel) * (elapsedDiff * elapsedDiff * elapsedDiff) + tempAccel;
-                            shiftY = elapsedDiff * shiftY;
-                        }
-                        else
-                        {
-                            // Easing time has ended. Reset values.
-                            previousPointerY = smoothedPos.Y;
-                            accelHelperY = 0.0;
-                            accelTravelY = 0.0;
-                            deltaEasingTimeY.Stop();
-                        }
-                    }
-                    else
-                    {
-                        // Don't apply acceleration. Reset values.
-                        previousPointerY = smoothedPos.Y;
-                        accelHelperY = 0.0;
-                        accelTravelY = 0.0;
-                        if (deltaEasingTimeY.IsRunning)
-                        {
-                            deltaEasingTimeY.Stop();
-                        }
-                    }
+                    //    if (elapsedDuration > 0.0 && (timeElapsed * 0.001) < elapsedDuration)
+                    //    {
+                    //        elapsedDiff = ((timeElapsed * 0.001) / elapsedDuration);
+                    //        elapsedDiff = (1.0 - tempAccel) * (elapsedDiff * elapsedDiff * elapsedDiff) + tempAccel;
+                    //        shiftY = elapsedDiff * shiftY;
+                    //    }
+                    //    else
+                    //    {
+                    //        // Easing time has ended. Reset values.
+                    //        previousPointerY = smoothedPos.Y;
+                    //        accelHelperY = 0.0;
+                    //        accelTravelY = 0.0;
+                    //        deltaEasingTimeY.Stop();
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // Don't apply acceleration. Reset values.
+                    //    previousPointerY = smoothedPos.Y;
+                    //    accelHelperY = 0.0;
+                    //    accelTravelY = 0.0;
+                    //    if (deltaEasingTimeY.IsRunning)
+                    //    {
+                    //        deltaEasingTimeY.Stop();
+                    //    }
+                    //}
+
+                    // Add sign bit
+                    shiftX = signshiftX * shiftX;
+                    shiftY = signshiftY * shiftY;
 
                     //double currentoffset = 0.037;
                     //double currentoffset = 0.0426;
@@ -749,29 +879,43 @@ namespace WiiTUIO.Output.Handlers
                     remainderX = 0.0;
                     remainderY = 0.0;
 
-                    accelHelperX = 0.0;
-                    accelHelperY = 0.0;
-                    accelTravelX = 0.0;
-                    accelTravelY = 0.0;
+                    //accelHelperX = 0.0;
+                    //accelHelperY = 0.0;
+                    //accelTravelX = 0.0;
+                    //accelTravelY = 0.0;
 
                     previousPointerX = 0.5;
                     previousPointerY = 0.5;
 
-                    if (deltaEasingTimeX.IsRunning)
-                    {
-                        deltaEasingTimeX.Stop();
-                    }
+                    previousPointerRadial = 0.0;
+                    accelCurrentMultiRadial = 0.0;
+                    accelTravelRadial = 0.0;
+                    accelEasingMultiRadial = 0.0;
+                    totalTravelRadial = 0.0;
+                    //{
+                    //    deltaEasingTimeRadial.Reset();
+                    //}
 
-                    if (deltaEasingTimeY.IsRunning)
+                    //if (deltaEasingTimeX.IsRunning)
+                    //{
+                    //    deltaEasingTimeX.Stop();
+                    //}
+
+                    //if (deltaEasingTimeY.IsRunning)
+                    //{
+                    //    deltaEasingTimeY.Stop();
+                    //}
+
+                    if (deltaEasingTimeRadial.IsRunning)
                     {
-                        deltaEasingTimeY.Stop();
+                        deltaEasingTimeRadial.Reset();
                     }
 
                     initialInReachStatus = true;
 
                     if (regionEasingX.IsRunning)
                     {
-                        regionEasingX.Stop();
+                        regionEasingX.Reset();
                     }
                 }
             }

@@ -24,6 +24,11 @@ namespace WiiTUIO.Provider
         private int SBPositionOffset;
         private double CalcMarginOffsetY;
 
+        private double marginXSlope;
+        private double marginYSlope;
+        private double minMarginX;
+        private double minMarginY;
+
         private double smoothedX, smoothedZ, smoothedRotation;
         private int orientation;
 
@@ -76,7 +81,15 @@ namespace WiiTUIO.Provider
             maxYPos = screen.Bounds.Height + (int)(screen.Bounds.Height * Settings.Default.pointer_marginsTopBottom);
             maxHeight = maxYPos - minYPos;
             SBPositionOffset = (int)(screen.Bounds.Height * Settings.Default.pointer_sensorBarPosCompensation);
-            CalcMarginOffsetY = 2.8571428571428568 * (0.3 - (Settings.Default.pointer_sensorBarPosCompensation * 0.5));
+            //CalcMarginOffsetY = 2.8571428571428568 * (0.3 - (Settings.Default.pointer_sensorBarPosCompensation * 0.5));
+            CalcMarginOffsetY = Settings.Default.pointer_sensorBarPosCompensation;
+
+            double midMarginX = Settings.Default.pointer_marginsLeftRight * 0.5;
+            double midMarginY = Settings.Default.pointer_marginsTopBottom * 0.5;
+            marginXSlope = 1.0 / ((1.0 - midMarginX) - midMarginX);
+            marginYSlope = 1.0 / ((1.0 - midMarginY) - midMarginY);
+            minMarginX = -(marginXSlope * midMarginX);
+            minMarginY = -(marginYSlope * midMarginY);
         }
 
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
@@ -205,10 +218,14 @@ namespace WiiTUIO.Provider
             //x = Convert.ToInt32((float)3902 * relativePosition.X + (-1170)); // input: [0.3, 0.65]
             //y = Convert.ToInt32((float)2191 * relativePosition.Y + (-657)) + offsetY; // Input: [0.3, 0.65]
 
-            // input: [0.3, 0.65]
-            marginX = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.X - 0.857142857142857));
-            // input: [0.3, 0.65]
-            marginY = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.Y + (marginOffsetY - 0.857142857142857)));
+            //// input: [0.3, 0.65]
+            //marginX = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.X - 0.857142857142857));
+            //// input: [0.3, 0.65]
+            //marginY = Math.Min(1.0, Math.Max(0.0, 2.8571428571428568 * relativePosition.Y + (marginOffsetY - 0.857142857142857)));
+            marginX = Math.Min(1.0, Math.Max(0.0, marginXSlope * relativePosition.X + minMarginX));
+            marginY = Math.Min(1.0, Math.Max(0.0, marginYSlope * relativePosition.Y + (marginOffsetY + minMarginY)));
+
+            //System.Diagnostics.Trace.WriteLine($"{marginY} | {relativePosition.Y}");
 
             if (x <= 0)
             {

@@ -244,7 +244,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
             {
                 if (!cursorPos.OutOfReach)
                 {
-                    Point smoothedPos = cursorPositionHelper.getSmoothedPosition(new Point(cursorPos.RelativeX, cursorPos.RelativeY));
+                    Point smoothedPos = cursorPositionHelper.getFPSRelativePosition(new Point(cursorPos.MarginX, cursorPos.MarginY));
 
                     double smoothedX = smoothedPos.X;
                     //double smoothedY = 1 - smoothedPos.Y; // Y is inverted
