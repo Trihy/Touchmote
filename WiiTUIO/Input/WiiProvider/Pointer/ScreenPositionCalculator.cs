@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using WiimoteLib;
 using WiiTUIO.Filters;
 using WiiTUIO.Properties;
+using Point = WiimoteLib.Point;
 
 namespace WiiTUIO.Provider
 {
@@ -28,6 +29,13 @@ namespace WiiTUIO.Provider
         private double marginYSlope;
         private double minMarginX;
         private double minMarginY;
+
+        private PointF topLeftPt;
+        private PointF centerPt;
+        private double lightbarXSlope;
+        private double lightbarYSlope;
+        private double lightbarXIntercept;
+        private double lightbarYIntercept;
 
         private double smoothedX, smoothedZ, smoothedRotation;
         private int orientation;
@@ -53,6 +61,9 @@ namespace WiiTUIO.Provider
 
             coordFilter = new CoordFilter();
             this.smoothingBuffer = new RadiusBuffer(Settings.Default.pointer_positionSmoothing);
+
+            //topLeftPt = new PointF() { X = 0.0f, Y = 0.0f };
+            //centerPt = new PointF() { X = 0.5f, Y = 0.5f };
         }
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -90,6 +101,20 @@ namespace WiiTUIO.Provider
             marginYSlope = 1.0 / ((1.0 - midMarginY) - midMarginY);
             minMarginX = -(marginXSlope * midMarginX);
             minMarginY = -(marginYSlope * midMarginY);
+
+            //topLeftPt = new PointF() { X = 0.76f, Y = 0.02f };
+            //centerPt = new PointF() { X = 0.48f, Y = 0.25f };
+            //topLeftPt = new PointF() { X = 0.22f, Y = 0.02f };
+            //centerPt = new PointF() { X = 0.50f, Y = 0.40f };
+            topLeftPt = new PointF() { X = 0.22f, Y = 0.02f };
+            centerPt = new PointF() { X = 0.46f, Y = 0.17f };
+
+            //lightbarXSlope = ((topLeftPt.X - centerPt.X) * 2.0) / (0.8 - 0.2);
+            //lightbarYSlope = ((centerPt.Y - topLeftPt.Y) * 2.0) / (0.8 - 0.2);
+            lightbarXSlope = 1.0 / ((centerPt.X - topLeftPt.X) * 2.0);
+            lightbarYSlope = 1.0 / ((centerPt.Y - topLeftPt.Y) * 2.0);
+            lightbarXIntercept = 1.0 - (lightbarXSlope * (centerPt.X + (centerPt.X - topLeftPt.X)));
+            lightbarYIntercept = 1.0 - (lightbarYSlope * (centerPt.Y + (centerPt.Y - topLeftPt.Y)));
         }
 
         public CursorPos CalculateCursorPos(WiimoteState wiimoteState)
@@ -97,6 +122,8 @@ namespace WiiTUIO.Provider
             int x;
             int y;
             double marginX, marginY = 0.0;
+            double lightbarX = 0.0;
+            double lightbarY = 0.0;
 
             IRState irState = wiimoteState.IRState;
 
@@ -227,6 +254,14 @@ namespace WiiTUIO.Provider
 
             //System.Diagnostics.Trace.WriteLine($"{marginY} | {relativePosition.Y}");
 
+            lightbarX = Math.Min(1.0,
+                Math.Max(0.0, lightbarXSlope * relativePosition.X + lightbarXIntercept));
+            lightbarY = Math.Min(1.0,
+                Math.Max(0.0, lightbarYSlope * relativePosition.Y + lightbarYIntercept));
+
+            System.Diagnostics.Trace.WriteLine($"X {lightbarX} | {relativePosition.X}");
+            System.Diagnostics.Trace.WriteLine($"Y {lightbarY} | {relativePosition.Y}");
+
             if (x <= 0)
             {
                 x = 0;
@@ -248,7 +283,7 @@ namespace WiiTUIO.Provider
 
             //CursorPos result = new CursorPos(x, y, smoothedPoint.X, smoothedPoint.Y, smoothedRotation);
             CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation,
-                marginX, marginY);
+                marginX, marginY, lightbarX, lightbarY);
             lastPos = result;
             return result;
         }

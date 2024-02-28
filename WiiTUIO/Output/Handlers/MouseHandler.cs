@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using WiiTUIO.Filters;
 using WiiTUIO.Properties;
 using WiiTUIO.Provider;
 using WindowsInput;
@@ -58,10 +59,13 @@ namespace WiiTUIO.Output.Handlers
         // for X axis
         private Stopwatch regionEasingX;
         //private bool enableRegionEasing = true;
+        private Stopwatch shitTestDuration = new Stopwatch();
 
         private double mouseOffset = Settings.Default.test_fpsmouseOffset;
 
         private CursorPositionHelper cursorPositionHelper;
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(2.5, 0.90, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(2.5, 0.90, 1.0);
 
         // Measured in milliseconds
         public const int OUTOFREACH_ELAPSED_TIME = 1000;
@@ -178,7 +182,7 @@ namespace WiiTUIO.Output.Handlers
                 }
             }
 
-            if (key.Equals("fpsmouse"))
+            else if (key.Equals("fpsmouse"))
             {
                 bool shouldMoveFPSCursor = !outOfReachStatus;
                 initialMouseMove = false;
@@ -917,6 +921,47 @@ namespace WiiTUIO.Output.Handlers
                     {
                         regionEasingX.Reset();
                     }
+                }
+            }
+
+            else if (key.Equals("lightgunmouse"))
+            {
+                //if (!shitTestDuration.IsRunning)
+                //{
+                //    shitTestDuration.Start();
+                //}
+
+                if (!cursorPos.OutOfReach)
+                {
+                    //Point smoothedPos = cursorPositionHelper.GetLightbarRelativePosition(new Point(cursorPos.LightbarX, cursorPos.LightbarY));
+                    Point smoothedPos = new Point();
+                    // Adjust sensitivity to work around rounding in filter method
+                    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / 0.008);
+                    smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / 0.008);
+
+                    // Filter does not go back to absolute zero for reasons. Check
+                    // for low number and reset to zero
+                    if (Math.Abs(smoothedPos.X) < 0.0001) smoothedPos.X = 0.0;
+                    if (Math.Abs(smoothedPos.Y) < 0.0001) smoothedPos.Y = 0.0;
+
+                    // Clamp values
+                    smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
+                    smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
+
+                    //Trace.WriteLine($"{cursorPos.LightbarX} | {smoothedPos.X} | {shitTestDuration.ElapsedMilliseconds}");
+                    //Trace.WriteLine($"{cursorPos.LightbarY} | {smoothedPos.Y} | {shitTestDuration.ElapsedMilliseconds}");
+
+                    //this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
+                    //this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
+                    DS4Windows.InputMethods.MoveAbsoluteMouse(smoothedPos.X, smoothedPos.Y);
+
+                    //shitTestDuration.Restart();
+                    return true;
+                }
+                else
+                {
+                    testLightFilterX.Filter(0.0, 1.0 / 0.008);
+                    testLightFilterY.Filter(0.0, 1.0 / 0.008);
                 }
             }
 

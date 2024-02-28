@@ -109,6 +109,7 @@ namespace WiiTUIO
 
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Cursor", "mouse", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Camera/View", "fpsmouse", false, false, true, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Lightbar mouse", "lightgunmouse", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Left", "mouseleft"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Middle", "mousemiddle"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.MOUSE, "Mouse Right", "mouseright"));

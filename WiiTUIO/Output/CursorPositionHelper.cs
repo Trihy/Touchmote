@@ -18,11 +18,13 @@ namespace WiiTUIO.Output
     class CursorPositionHelper
     {
         private SmoothingBuffer smoothingBuffer;
+        private SmoothingBuffer lightbarSmoothingBuffer;
         private System.Drawing.Rectangle screenBounds;
         
         public CursorPositionHelper()
         {
             smoothingBuffer = new SmoothingBuffer(Settings.Default.pointer_positionSmoothing);
+            lightbarSmoothingBuffer = new SmoothingBuffer(Settings.Default.pointer_positionSmoothing);
             screenBounds = DeviceUtils.DeviceUtil.GetScreen(Settings.Default.primaryMonitor).Bounds;
 
             Settings.Default.PropertyChanged += SettingsChanged;
@@ -59,6 +61,13 @@ namespace WiiTUIO.Output
         {
             smoothingBuffer.addValue(new Vector(relativeMarginPosition.X, relativeMarginPosition.Y));
             Vector smoothedVec = smoothingBuffer.getSmoothedValue();
+            return new Point(smoothedVec.X, smoothedVec.Y);
+        }
+
+        public Point GetLightbarRelativePosition(Point lightbarPos)
+        {
+            lightbarSmoothingBuffer.addValue(new Vector(lightbarPos.X, lightbarPos.Y));
+            Vector smoothedVec = lightbarSmoothingBuffer.getSmoothedValue();
             return new Point(smoothedVec.X, smoothedVec.Y);
         }
     }
