@@ -64,8 +64,8 @@ namespace WiiTUIO.Output.Handlers
         private double mouseOffset = Settings.Default.test_fpsmouseOffset;
 
         private CursorPositionHelper cursorPositionHelper;
-        private OneEuroFilter testLightFilterX = new OneEuroFilter(2.5, 0.90, 1.0);
-        private OneEuroFilter testLightFilterY = new OneEuroFilter(2.5, 0.90, 1.0);
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(2.5, 0.92, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(2.5, 0.92, 1.0);
 
         // Measured in milliseconds
         public const int OUTOFREACH_ELAPSED_TIME = 1000;
@@ -78,6 +78,7 @@ namespace WiiTUIO.Output.Handlers
         //private double sinAngle = 0.0;
         private double unitX = 0.0;
         private double unitY = 0.0;
+        private Point previousLightCursorPoint = new Point(0.5, 0.5);
 
         public MouseHandler()
         {
@@ -955,13 +956,17 @@ namespace WiiTUIO.Output.Handlers
                     //this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
                     DS4Windows.InputMethods.MoveAbsoluteMouse(smoothedPos.X, smoothedPos.Y);
 
+                    previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
+
                     //shitTestDuration.Restart();
                     return true;
                 }
                 else
                 {
-                    testLightFilterX.Filter(0.0, 1.0 / 0.008);
-                    testLightFilterY.Filter(0.0, 1.0 / 0.008);
+                    //testLightFilterX.Filter(0.5, 1.0 / 0.008);
+                    //testLightFilterY.Filter(0.5, 1.0 / 0.008);
+                    testLightFilterX.Filter(previousLightCursorPoint.X * 1.001, 1.0 / 0.008);
+                    testLightFilterY.Filter(previousLightCursorPoint.Y * 1.001, 1.0 / 0.008);
                 }
             }
 
