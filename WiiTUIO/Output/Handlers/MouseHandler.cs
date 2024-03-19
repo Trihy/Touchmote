@@ -64,8 +64,8 @@ namespace WiiTUIO.Output.Handlers
         private double mouseOffset = Settings.Default.test_fpsmouseOffset;
 
         private CursorPositionHelper cursorPositionHelper;
-        private OneEuroFilter testLightFilterX = new OneEuroFilter(2.5, 0.92, 1.0);
-        private OneEuroFilter testLightFilterY = new OneEuroFilter(2.5, 0.92, 1.0);
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(1.2, 0.92, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(1.2, 0.92, 1.0);
 
         // Measured in milliseconds
         public const int OUTOFREACH_ELAPSED_TIME = 1000;
@@ -79,6 +79,7 @@ namespace WiiTUIO.Output.Handlers
         private double unitX = 0.0;
         private double unitY = 0.0;
         private Point previousLightCursorPoint = new Point(0.5, 0.5);
+        private long previousLightTime = 0;
 
         public MouseHandler()
         {
@@ -932,13 +933,19 @@ namespace WiiTUIO.Output.Handlers
                 //    shitTestDuration.Start();
                 //}
 
+                long currentTime = Stopwatch.GetTimestamp();
+                long timeElapsed = currentTime - previousLightTime;
+                double elapsedMs = timeElapsed * (1.0 / Stopwatch.Frequency);
+                //Trace.WriteLine($"ELAPSED DUR: {elapsed}");
+                previousLightTime = currentTime;
+
                 if (!cursorPos.OutOfReach)
                 {
                     //Point smoothedPos = cursorPositionHelper.GetLightbarRelativePosition(new Point(cursorPos.LightbarX, cursorPos.LightbarY));
                     Point smoothedPos = new Point();
                     // Adjust sensitivity to work around rounding in filter method
-                    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / 0.008);
-                    smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / 0.008);
+                    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
+                    smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
 
                     // Filter does not go back to absolute zero for reasons. Check
                     // for low number and reset to zero
@@ -959,15 +966,17 @@ namespace WiiTUIO.Output.Handlers
                     previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
 
                     //shitTestDuration.Restart();
-                    return true;
                 }
                 else
                 {
                     //testLightFilterX.Filter(0.5, 1.0 / 0.008);
                     //testLightFilterY.Filter(0.5, 1.0 / 0.008);
-                    testLightFilterX.Filter(previousLightCursorPoint.X * 1.001, 1.0 / 0.008);
-                    testLightFilterY.Filter(previousLightCursorPoint.Y * 1.001, 1.0 / 0.008);
+                    // Save last known position to smoothing buffer
+                    testLightFilterX.Filter(previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
+                    testLightFilterY.Filter(previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
                 }
+
+                return true;
             }
 
             return false;
