@@ -7,6 +7,8 @@ using WiiTUIO.Provider;
 using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
 using System.Windows;
+using System.Diagnostics;
+using WiiTUIO.Filters;
 
 namespace WiiTUIO.Output.Handlers.Xinput
 {
@@ -18,6 +20,11 @@ namespace WiiTUIO.Output.Handlers.Xinput
         private ViGEmBus360Device device;
         private long id;
         private CursorPositionHelper cursorPositionHelper;
+
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(1.2, 0.92, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(1.2, 0.92, 1.0);
+        private Point previousLightCursorPoint = new Point(0.5, 0.5);
+        private long previousLightTime = 0;
 
         public Action<byte, byte> OnRumble { get; set; }
 
@@ -265,6 +272,48 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
                 }
             }
+            else if (key.Equals("360.stickl-light"))
+            {
+                long currentTime = Stopwatch.GetTimestamp();
+                long timeElapsed = currentTime - previousLightTime;
+                double elapsedMs = timeElapsed * (1.0 / Stopwatch.Frequency);
+                //Trace.WriteLine($"ELAPSED DUR: {elapsed}");
+                previousLightTime = currentTime;
+
+                if (!cursorPos.OutOfReach)
+                {
+                    Point smoothedPos = new Point();
+                    // Adjust sensitivity to work around rounding in filter method
+                    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
+                    smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
+
+                    // Filter does not go back to absolute zero for reasons. Check
+                    // for low number and reset to zero
+                    if (Math.Abs(smoothedPos.X) < 0.0001) smoothedPos.X = 0.0;
+                    if (Math.Abs(smoothedPos.Y) < 0.0001) smoothedPos.Y = 0.0;
+
+                    // Clamp values
+                    smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
+                    smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
+
+                    device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, AxisScale(smoothedPos.X, false));
+                    device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, AxisScale(smoothedPos.Y, true));
+
+                    previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
+                }
+                else
+                {
+                    //testLightFilterX.Filter(0.5, 1.0 / 0.008);
+                    //testLightFilterY.Filter(0.5, 1.0 / 0.008);
+                    // Save last known position to smoothing buffer
+                    testLightFilterX.Filter(previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
+                    testLightFilterY.Filter(previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
+                }
+
+                return true;
+            }
+
+
             return false;
         }
 
