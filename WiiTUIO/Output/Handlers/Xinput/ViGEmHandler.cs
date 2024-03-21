@@ -21,8 +21,8 @@ namespace WiiTUIO.Output.Handlers.Xinput
         private long id;
         private CursorPositionHelper cursorPositionHelper;
 
-        private OneEuroFilter testLightFilterX = new OneEuroFilter(1.2, 0.92, 1.0);
-        private OneEuroFilter testLightFilterY = new OneEuroFilter(1.2, 0.92, 1.0);
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(1.6, 0.92, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(1.6, 0.92, 1.0);
         private Point previousLightCursorPoint = new Point(0.5, 0.5);
         private long previousLightTime = 0;
 
