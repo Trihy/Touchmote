@@ -117,8 +117,8 @@ namespace WiiTUIO.Provider
             // NEWER WORKING
             //topLeftPt = new PointF() { X = 0.18f, Y = 0.01f };
             //centerPt = new PointF() { X = 0.50f, Y = 0.19f };
-            topLeftPt = new PointF() { X = 0.18f, Y = 0.01f };
-            centerPt = new PointF() { X = 0.46f, Y = 0.19f };
+            topLeftPt = new PointF() { X = 0.166f, Y = 0.004f };
+            centerPt = new PointF() { X = 0.44f, Y = 0.19f };
 
             // topLeftPt = new PointF() { X = 0.21f, Y = 0.01f };
             // centerPt = new PointF() { X = 0.46f, Y = 0.17f };
