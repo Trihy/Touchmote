@@ -78,8 +78,10 @@ namespace WiiTUIO.Output.Handlers
         //private double sinAngle = 0.0;
         private double unitX = 0.0;
         private double unitY = 0.0;
-        private Point previousLightCursorPoint = new Point(0.5, 0.5);
+        private Point previousLightCursorCoorPoint = new Point(0.5, 0.5);
+        private Point previousLightOutputCursorPoint = new Point(0.5, 0.5);
         private long previousLightTime = 0;
+        private bool wasInReach;
 
         public MouseHandler()
         {
@@ -939,13 +941,48 @@ namespace WiiTUIO.Output.Handlers
                 //Trace.WriteLine($"ELAPSED DUR: {elapsed}");
                 previousLightTime = currentTime;
 
+                const double LIGHT_FUZZ = 0.003;
+                const bool useFuzz = false;
                 if (!cursorPos.OutOfReach)
                 {
                     //Point smoothedPos = cursorPositionHelper.GetLightbarRelativePosition(new Point(cursorPos.LightbarX, cursorPos.LightbarY));
                     Point smoothedPos = new Point();
-                    // Adjust sensitivity to work around rounding in filter method
+
+                    bool moveCursor = true;
                     smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
                     smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
+
+                    if (useFuzz)
+                    {
+                        double diffX = smoothedPos.X - previousLightOutputCursorPoint.X;
+                        double diffY = smoothedPos.Y - previousLightOutputCursorPoint.Y;
+                        double magSqu = (diffX * diffX) + (diffY * diffY);
+                        double deltaSqu = LIGHT_FUZZ * LIGHT_FUZZ;
+
+                        //bool fuzzReached = (diffX > (LIGHT_FUZZ * ratioX)) ||
+                        //    (diffY > (LIGHT_FUZZ * ratioY));
+                        bool fuzzReached = magSqu >= deltaSqu;
+                        moveCursor = !wasInReach || fuzzReached;
+                    }
+
+                    //Trace.WriteLine($"{cursorPos.LightbarX} {cursorPos.LightbarY} {diffX} {diffY} {moveCursor}");
+                    //if (moveCursor)
+                    //{
+                    //    // Use current IR coordinates
+                    //    // Adjust sensitivity to work around rounding in filter method
+                    //    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
+                    //    smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
+                    //}
+                    //else
+                    //{
+                    //    // Use previously saved cursor coordinates.
+                    //    // Adjust sensitivity to work around rounding in filter method
+                    //    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
+                    //    smoothedPos.Y = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
+
+                    //    //Trace.WriteLine($"SMOOTHED {smoothedPos.X} {smoothedPos.Y}");
+                    //    //Trace.WriteLine($"PREV {cursorPos.LightbarX} {cursorPos.LightbarY}");
+                    //}
 
                     // Filter does not go back to absolute zero for reasons. Check
                     // for low number and reset to zero
@@ -961,19 +998,33 @@ namespace WiiTUIO.Output.Handlers
 
                     //this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
                     //this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
-                    DS4Windows.InputMethods.MoveAbsoluteMouse(smoothedPos.X, smoothedPos.Y);
+                    if (moveCursor)
+                    {
+                        //Trace.WriteLine("MOVE CURSOR");
 
-                    previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
+                        DS4Windows.InputMethods.MoveAbsoluteMouse(smoothedPos.X, smoothedPos.Y);
+
+                        // Save current IR position
+                        previousLightCursorCoorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
+                        if (useFuzz)
+                        {
+                            previousLightOutputCursorPoint = new Point(smoothedPos.X, smoothedPos.Y);
+                        }
+                    }
 
                     //shitTestDuration.Restart();
+
+                    wasInReach = true;
                 }
                 else
                 {
                     //testLightFilterX.Filter(0.5, 1.0 / 0.008);
                     //testLightFilterY.Filter(0.5, 1.0 / 0.008);
                     // Save last known position to smoothing buffer
-                    testLightFilterX.Filter(previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
-                    testLightFilterY.Filter(previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
+                    testLightFilterX.Filter(previousLightCursorCoorPoint.X * 1.001, 1.0 / elapsedMs);
+                    testLightFilterY.Filter(previousLightCursorCoorPoint.Y * 1.001, 1.0 / elapsedMs);
+
+                    wasInReach = false;
                 }
 
                 return true;

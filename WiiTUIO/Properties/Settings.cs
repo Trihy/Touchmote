@@ -481,6 +481,54 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _test_topLeftGunX = 0.15;
+        public double test_topLeftGunX
+        {
+            get => _test_topLeftGunX;
+            set
+            {
+                if (_test_topLeftGunX == value) return;
+                _test_topLeftGunX = Math.Min(1.0, Math.Max(0.0, value));
+                OnPropertyChanged("test_topLeftGunX");
+            }
+        }
+
+        private double _test_topLeftGunY = 0.002;
+        public double test_topLeftGunY
+        {
+            get => _test_topLeftGunY;
+            set
+            {
+                if (_test_topLeftGunY == value) return;
+                _test_topLeftGunY = Math.Min(1.0, Math.Max(0.0, value));
+                OnPropertyChanged("test_topLeftGunY");
+            }
+        }
+
+        private double _test_centerGunX = 0.43;
+        public double test_centerGunX
+        {
+            get => _test_centerGunX;
+            set
+            {
+                if (_test_centerGunX == value) return;
+                _test_centerGunX = Math.Min(1.0, Math.Max(0.0, value));
+                OnPropertyChanged("test_centerGunX");
+            }
+        }
+
+        private double _test_centerGunY = 0.205;
+        public double test_centerGunY
+        {
+            get => _test_centerGunY;
+            set
+            {
+                if (_test_centerGunY == value) return;
+                _test_centerGunY = Math.Min(1.0, Math.Max(0.0, value));
+                OnPropertyChanged("test_centerGunY");
+            }
+        }
+
         private int _pointer_positionSmoothing = 2;
         public int pointer_positionSmoothing {
             get { return _pointer_positionSmoothing; }

@@ -30,8 +30,8 @@ namespace WiiTUIO.Provider
         private double minMarginX;
         private double minMarginY;
 
-        private PointF topLeftPt;
-        private PointF centerPt;
+        private PointF topLeftPt = new PointF();
+        private PointF centerPt = new PointF();
         private double lightbarXSlope;
         private double lightbarYSlope;
         private double lightbarXIntercept;
@@ -77,6 +77,25 @@ namespace WiiTUIO.Provider
                 Console.WriteLine("Setting primary monitor for screen position calculator to " + this.primaryScreen.Bounds);
                 this.recalculateScreenBounds(this.primaryScreen);
             }
+            else
+            {
+                switch (e.PropertyName)
+                {
+                    case "test_topLeftGunX":
+                        topLeftPt.X = (float)Settings.Default.test_topLeftGunX;
+                        break;
+                    case "test_topLeftGunY":
+                        topLeftPt.Y = (float)Settings.Default.test_topLeftGunY;
+                        break;
+                    case "test_centerGunX":
+                        centerPt.X = (float)Settings.Default.test_centerGunX;
+                        break;
+                    case "test_centerGunY":
+                        centerPt.Y = (float)Settings.Default.test_centerGunY;
+                        break;
+                    default: break;
+                }
+            }
         }
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
@@ -117,8 +136,18 @@ namespace WiiTUIO.Provider
             // NEWER WORKING
             //topLeftPt = new PointF() { X = 0.18f, Y = 0.01f };
             //centerPt = new PointF() { X = 0.50f, Y = 0.19f };
-            topLeftPt = new PointF() { X = 0.166f, Y = 0.004f };
-            centerPt = new PointF() { X = 0.44f, Y = 0.19f };
+            //topLeftPt = new PointF() { X = 0.166f, Y = 0.004f };
+            //centerPt = new PointF() { X = 0.44f, Y = 0.19f };
+
+            //topLeftPt = new PointF() { X = 0.15f, Y = 0.002f };
+            //centerPt = new PointF() { X = 0.43f, Y = 0.205f };
+
+            topLeftPt = new PointF() { X = (float)Settings.Default.test_topLeftGunX,
+                Y = (float)Settings.Default.test_topLeftGunY
+            };
+            centerPt = new PointF() { X = (float)Settings.Default.test_centerGunX,
+                Y = (float)Settings.Default.test_centerGunY
+            };
 
             // topLeftPt = new PointF() { X = 0.21f, Y = 0.01f };
             // centerPt = new PointF() { X = 0.46f, Y = 0.17f };
