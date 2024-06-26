@@ -14,6 +14,14 @@ namespace WiiTUIO.Output.Handlers.Xinput
 {
     public class ViGEmHandler : IButtonHandler, IStickHandler, IRumbleFeedback, ICursorHandler
     {
+        private class StickLightData
+        {
+            public OneEuroFilter testLightFilterX = new OneEuroFilter(1.6, 0.92, 1.0);
+            public OneEuroFilter testLightFilterY = new OneEuroFilter(1.6, 0.92, 1.0);
+            public Point previousLightCursorPoint = new Point(0.5, 0.5);
+            public long previousLightTime = Stopwatch.GetTimestamp();
+        }
+
         private const string PREFIX = "360.";
 
         private ViGEmBusClient viGEmClient;
@@ -21,10 +29,8 @@ namespace WiiTUIO.Output.Handlers.Xinput
         private long id;
         private CursorPositionHelper cursorPositionHelper;
 
-        private OneEuroFilter testLightFilterX = new OneEuroFilter(1.6, 0.92, 1.0);
-        private OneEuroFilter testLightFilterY = new OneEuroFilter(1.6, 0.92, 1.0);
-        private Point previousLightCursorPoint = new Point(0.5, 0.5);
-        private long previousLightTime = 0;
+        private StickLightData leftStickLight = new StickLightData();
+        private StickLightData rightStickLight = new StickLightData();
 
         public Action<byte, byte> OnRumble { get; set; }
 
@@ -272,20 +278,23 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
                 }
             }
-            else if (key.Equals("360.stickl-light"))
+            else if (key.Equals("360.stickl-light") || key.Equals("360.stickr-light"))
             {
                 long currentTime = Stopwatch.GetTimestamp();
-                long timeElapsed = currentTime - previousLightTime;
+                StickLightData tempStickData = key.Equals("360.stickl-light") ?
+                    leftStickLight : rightStickLight;
+
+                long timeElapsed = currentTime - tempStickData.previousLightTime;
                 double elapsedMs = timeElapsed * (1.0 / Stopwatch.Frequency);
                 //Trace.WriteLine($"ELAPSED DUR: {elapsed}");
-                previousLightTime = currentTime;
+                tempStickData.previousLightTime = currentTime;
 
                 if (!cursorPos.OutOfReach)
                 {
                     Point smoothedPos = new Point();
                     // Adjust sensitivity to work around rounding in filter method
-                    smoothedPos.X = testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
-                    smoothedPos.Y = testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
+                    smoothedPos.X = tempStickData.testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
+                    smoothedPos.Y = tempStickData.testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
 
                     // Filter does not go back to absolute zero for reasons. Check
                     // for low number and reset to zero
@@ -299,15 +308,15 @@ namespace WiiTUIO.Output.Handlers.Xinput
                     device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, AxisScale(smoothedPos.X, false));
                     device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, AxisScale(smoothedPos.Y, true));
 
-                    previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
+                    tempStickData.previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
                 }
                 else
                 {
                     //testLightFilterX.Filter(0.5, 1.0 / 0.008);
                     //testLightFilterY.Filter(0.5, 1.0 / 0.008);
                     // Save last known position to smoothing buffer
-                    testLightFilterX.Filter(previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
-                    testLightFilterY.Filter(previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
+                    tempStickData.testLightFilterX.Filter(tempStickData.previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
+                    tempStickData.testLightFilterY.Filter(tempStickData.previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
                 }
 
                 return true;
