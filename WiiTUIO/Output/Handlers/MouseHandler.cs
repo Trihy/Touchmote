@@ -159,7 +159,7 @@ namespace WiiTUIO.Output.Handlers
                         break;
                     case MouseCode.MOUSEMIDDLE:
                         this.inputSimulator.Mouse.MiddleButtonUp();
-                        mouseLeftDown = false;
+                        mouseMiddleDown = false;
                         break;
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonUp();
