@@ -22,6 +22,9 @@ namespace WiiTUIO.Output.Handlers
         private bool mouseMiddleDown = false;
         private bool mouseRightDown = false;
 
+        private bool mouseXButton1Down = false;
+        private bool mouseXButton2Down = false;
+
         // Remainder values used for partial mouse distance calculations.
         private double remainderX = 0.0;
         private double remainderY = 0.0;
@@ -110,6 +113,14 @@ namespace WiiTUIO.Output.Handlers
             {
                 setButtonUp("mousemiddle");
             }
+            if (mouseXButton1Down)
+            {
+                setButtonUp("mousexbutton1");
+            }
+            if (mouseXButton2Down)
+            {
+                setButtonUp("mousexbutton2");
+            }
             return true;
         }
 
@@ -138,6 +149,14 @@ namespace WiiTUIO.Output.Handlers
                     case MouseCode.MOUSEWHEELUP:
                         this.inputSimulator.Mouse.VerticalScroll(1);
                         break;
+                    case MouseCode.MOUSEXBUTTON1:
+                        this.inputSimulator.Mouse.XButtonDown(1);
+                        mouseXButton1Down = true;
+                        break;
+                    case MouseCode.MOUSEXBUTTON2:
+                        this.inputSimulator.Mouse.XButtonDown(2);
+                        mouseXButton2Down = true;
+                        break;
                     default:
                         return false;
                 }
@@ -164,6 +183,14 @@ namespace WiiTUIO.Output.Handlers
                     case MouseCode.MOUSERIGHT:
                         this.inputSimulator.Mouse.RightButtonUp();
                         mouseRightDown = false;
+                        break;
+                    case MouseCode.MOUSEXBUTTON1:
+                        this.inputSimulator.Mouse.XButtonUp(1);
+                        mouseXButton1Down = false;
+                        break;
+                    case MouseCode.MOUSEXBUTTON2:
+                        this.inputSimulator.Mouse.XButtonUp(2);
+                        mouseXButton2Down = false;
                         break;
                     default:
                         return false;
@@ -1084,5 +1111,7 @@ namespace WiiTUIO.Output.Handlers
         MOUSERIGHT,
         MOUSEWHEELUP,
         MOUSEWHEELDOWN,
+        MOUSEXBUTTON1,
+        MOUSEXBUTTON2,
     }
 }
