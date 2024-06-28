@@ -16,10 +16,24 @@ namespace WiiTUIO.Output.Handlers.Xinput
     {
         private class StickLightData
         {
-            public OneEuroFilter testLightFilterX = new OneEuroFilter(1.6, 0.92, 1.0);
-            public OneEuroFilter testLightFilterY = new OneEuroFilter(1.6, 0.92, 1.0);
-            public Point previousLightCursorPoint = new Point(0.5, 0.5);
+            private const double MIN_CUTOFF_DEFAULT = 1.6;
+            private const double BETA_DEFAULT = 0.92;
+            private const double CENTER_PT_DEFAULT = 0.5;
+
+            public OneEuroFilter testLightFilterX = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
+            public OneEuroFilter testLightFilterY = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
+            public Point previousLightCursorPoint = new Point(CENTER_PT_DEFAULT, CENTER_PT_DEFAULT);
             public long previousLightTime = Stopwatch.GetTimestamp();
+
+            public void Reset()
+            {
+                // Create empty smoothing filters on profile reset
+                testLightFilterX = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
+                testLightFilterY = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
+
+                previousLightCursorPoint = new Point(CENTER_PT_DEFAULT, CENTER_PT_DEFAULT);
+                previousLightTime = Stopwatch.GetTimestamp();
+            }
         }
 
         private const string PREFIX = "360.";
@@ -405,6 +419,10 @@ namespace WiiTUIO.Output.Handlers.Xinput
         public bool reset()
         {
             device.Reset();
+
+            // Reset stick lightgun data on profile change
+            leftStickLight.Reset();
+            rightStickLight.Reset();
             return true;
         }
 
