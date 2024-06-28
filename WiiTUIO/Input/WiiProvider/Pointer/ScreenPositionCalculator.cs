@@ -83,15 +83,19 @@ namespace WiiTUIO.Provider
                 {
                     case "test_topLeftGunX":
                         topLeftPt.X = (float)Settings.Default.test_topLeftGunX;
+                        recalculateLightgunCoordBounds();
                         break;
                     case "test_topLeftGunY":
                         topLeftPt.Y = (float)Settings.Default.test_topLeftGunY;
+                        recalculateLightgunCoordBounds();
                         break;
                     case "test_centerGunX":
                         centerPt.X = (float)Settings.Default.test_centerGunX;
+                        recalculateLightgunCoordBounds();
                         break;
                     case "test_centerGunY":
                         centerPt.Y = (float)Settings.Default.test_centerGunY;
+                        recalculateLightgunCoordBounds();
                         break;
                     default: break;
                 }
@@ -157,6 +161,11 @@ namespace WiiTUIO.Provider
 
             //lightbarXSlope = ((topLeftPt.X - centerPt.X) * 2.0) / (0.8 - 0.2);
             //lightbarYSlope = ((centerPt.Y - topLeftPt.Y) * 2.0) / (0.8 - 0.2);
+            recalculateLightgunCoordBounds();
+        }
+
+        private void recalculateLightgunCoordBounds()
+        {
             lightbarXSlope = 1.0 / ((centerPt.X - topLeftPt.X) * 2.0);
             lightbarYSlope = 1.0 / ((centerPt.Y - topLeftPt.Y) * 2.0);
             lightbarXIntercept = 1.0 - (lightbarXSlope * (centerPt.X + (centerPt.X - topLeftPt.X)));
