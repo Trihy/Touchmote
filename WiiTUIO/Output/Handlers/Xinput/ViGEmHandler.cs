@@ -281,7 +281,8 @@ namespace WiiTUIO.Output.Handlers.Xinput
             else if (key.Equals("360.stickl-light") || key.Equals("360.stickr-light"))
             {
                 long currentTime = Stopwatch.GetTimestamp();
-                StickLightData tempStickData = key.Equals("360.stickl-light") ?
+                bool useLeftStick = key.Equals("360.stickl-light");
+                StickLightData tempStickData = useLeftStick ?
                     leftStickLight : rightStickLight;
 
                 long timeElapsed = currentTime - tempStickData.previousLightTime;
@@ -305,8 +306,11 @@ namespace WiiTUIO.Output.Handlers.Xinput
                     smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
                     smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
 
-                    device.Cont.SetAxisValue(Xbox360Axis.LeftThumbX, AxisScale(smoothedPos.X, false));
-                    device.Cont.SetAxisValue(Xbox360Axis.LeftThumbY, AxisScale(smoothedPos.Y, true));
+                    device.Cont.SetAxisValue(useLeftStick ? Xbox360Axis.LeftThumbX : Xbox360Axis.RightThumbX,
+                        AxisScale(smoothedPos.X, false));
+
+                    device.Cont.SetAxisValue(useLeftStick ? Xbox360Axis.LeftThumbY : Xbox360Axis.RightThumbY,
+                        AxisScale(smoothedPos.Y, true));
 
                     tempStickData.previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
                 }
