@@ -278,10 +278,10 @@ namespace WiiTUIO.Provider
                     }
                     
                 }
-                if (!keymapFound)
-                {
-                    this.setKeymap(this.fallbackKeymap);
-                }
+                //if (!keymapFound)
+                //{
+                //    this.setKeymap(this.fallbackKeymap);
+                //}
 
             }
             catch (Exception e)
