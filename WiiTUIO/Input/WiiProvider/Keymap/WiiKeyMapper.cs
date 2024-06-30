@@ -127,6 +127,7 @@ namespace WiiTUIO.Provider
 
         private Keymap defaultKeymap; //Always default.json
         private Keymap fallbackKeymap; //Decided by the layout chooser
+        private Keymap applicationKeymap; // Loaded by auto profile system
 
         private Timer homeButtonTimer;
 
@@ -233,6 +234,7 @@ namespace WiiTUIO.Provider
         public void SetFallbackKeymap(string filename)
         {
             this.fallbackKeymap = this.loadKeyMap(filename);
+            this.applicationKeymap = null;
         }
         public string GetFallbackKeymap()
         {
@@ -273,15 +275,19 @@ namespace WiiTUIO.Provider
 
                     if (appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
                     {
-                        this.loadKeyMap(searchSetting.Keymap);
+                        this.applicationKeymap = this.loadKeyMap(searchSetting.Keymap);
                         keymapFound = true;
                     }
                     
                 }
-                //if (!keymapFound)
-                //{
-                //    this.setKeymap(this.fallbackKeymap);
-                //}
+
+                // Only switch keymap if search failed but old auto profile
+                // is still in use
+                if (!keymapFound && this.applicationKeymap != null)
+                {
+                    this.setKeymap(this.fallbackKeymap);
+                    this.applicationKeymap = null;
+                }
 
             }
             catch (Exception e)
