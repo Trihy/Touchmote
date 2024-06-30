@@ -264,12 +264,14 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Press", "360.stickpressr"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick", "360.stickl", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Light", "360.stickl-light", false, false, true, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Light 4:3", "360.stickl-light-4:3", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Up", "360.sticklup", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Down", "360.stickldown", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Left", "360.sticklleft", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Stick Right", "360.sticklright", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick", "360.stickr", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Light", "360.stickr-light", false, false, true, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Light 4:3", "360.stickr-light-4:3", false, false, true, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Up", "360.stickrup", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Down", "360.stickrdown", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Left", "360.stickrleft", true, true, false, false));

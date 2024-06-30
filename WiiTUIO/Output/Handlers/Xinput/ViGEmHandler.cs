@@ -292,10 +292,11 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
                 }
             }
-            else if (key.Equals("360.stickl-light") || key.Equals("360.stickr-light"))
+            else if (key.Equals("360.stickl-light") || key.Equals("360.stickr-light") ||
+                key.Equals("360.stickl-light-4:3") || key.Equals("360.stickr-light-4:3"))
             {
                 long currentTime = Stopwatch.GetTimestamp();
-                bool useLeftStick = key.Equals("360.stickl-light");
+                bool useLeftStick = key.Equals("360.stickl-light") || key.Equals("360.stickl-light-4:3");
                 StickLightData tempStickData = useLeftStick ?
                     leftStickLight : rightStickLight;
 

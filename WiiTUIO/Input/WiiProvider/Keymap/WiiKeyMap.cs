@@ -15,6 +15,7 @@ namespace WiiTUIO.Provider
     public class WiiKeyMap
     {
         private Dictionary<string, KeymapOutConfig> config;
+        public Dictionary<string, KeymapOutConfig> Config => config;
         private Keymap keymap;
 
         public Action<WiiButtonEvent> OnButtonUp;

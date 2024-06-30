@@ -229,6 +229,36 @@ namespace WiiTUIO.Provider
                 handler.endUpdate();
             }
             this.KeyMap.SetKeymap(keymap);
+
+            if (this.KeyMap.Config.TryGetValue("Pointer", out KeymapOutConfig pointerConfig))
+            {
+                foreach (KeymapOutput output in pointerConfig.Stack)
+                {
+                    switch (output.Key)
+                    {
+                        case "360.stickl-light":
+                        case "360.stickr-light":
+                        case "lightgunmouse":
+                            screenPositionCalculator.RecalculateFullLightgun();
+                            break;
+                        case "360.stickl-light-4:3":
+                            screenPositionCalculator.RecalculateLightgunAspect(1.3334);
+                            break;
+                        case "360.stickr-light-4:3":
+                            screenPositionCalculator.RecalculateLightgunAspect(1.3334);
+                            break;
+                        case "360.stickl-light-16:9":
+                            screenPositionCalculator.RecalculateLightgunAspect(1.7778);
+                            break;
+                        case "360.stickr-light-16:9":
+                            screenPositionCalculator.RecalculateLightgunAspect(1.7778);
+                            break;
+                        default:
+                            screenPositionCalculator.RecalculateFullLightgun();
+                            break;
+                    }
+                }
+            }
         }
 
         public void SetFallbackKeymap(string filename)

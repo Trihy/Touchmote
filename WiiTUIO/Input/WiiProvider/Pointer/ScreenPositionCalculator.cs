@@ -36,6 +36,8 @@ namespace WiiTUIO.Provider
         private double lightbarYSlope;
         private double lightbarXIntercept;
         private double lightbarYIntercept;
+        // Use 0.0 to mean use full mapped range
+        private double targetAspectRatio = 0.0;
 
         private double smoothedX, smoothedZ, smoothedRotation;
         private int orientation;
@@ -146,12 +148,28 @@ namespace WiiTUIO.Provider
             //topLeftPt = new PointF() { X = 0.15f, Y = 0.002f };
             //centerPt = new PointF() { X = 0.43f, Y = 0.205f };
 
-            topLeftPt = new PointF() { X = (float)Settings.Default.test_topLeftGunX,
-                Y = (float)Settings.Default.test_topLeftGunY
-            };
-            centerPt = new PointF() { X = (float)Settings.Default.test_centerGunX,
-                Y = (float)Settings.Default.test_centerGunY
-            };
+            if (targetAspectRatio == 0.0)
+            {
+                topLeftPt = new PointF()
+                {
+                    X = (float)Settings.Default.test_topLeftGunX,
+                    Y = (float)Settings.Default.test_topLeftGunY
+                };
+                //topLeftPt = new PointF() { X = (float)0.22010275999999998,
+                //    Y = (float)Settings.Default.test_topLeftGunY
+                //};
+                centerPt = new PointF()
+                {
+                    X = (float)Settings.Default.test_centerGunX,
+                    Y = (float)Settings.Default.test_centerGunY
+                };
+
+                recalculateLightgunCoordBounds();
+            }
+            else
+            {
+                RecalculateLightgunAspect(targetAspectRatio);
+            }
 
             // topLeftPt = new PointF() { X = 0.21f, Y = 0.01f };
             // centerPt = new PointF() { X = 0.46f, Y = 0.17f };
@@ -161,7 +179,6 @@ namespace WiiTUIO.Provider
 
             //lightbarXSlope = ((topLeftPt.X - centerPt.X) * 2.0) / (0.8 - 0.2);
             //lightbarYSlope = ((centerPt.Y - topLeftPt.Y) * 2.0) / (0.8 - 0.2);
-            recalculateLightgunCoordBounds();
         }
 
         private void recalculateLightgunCoordBounds()
@@ -391,5 +408,54 @@ namespace WiiTUIO.Provider
             return result;
         }
 
+        public void RecalculateFullLightgun()
+        {
+            targetAspectRatio = 0.0;
+
+            topLeftPt = new PointF()
+            {
+                X = (float) Settings.Default.test_topLeftGunX,
+                Y = (float)Settings.Default.test_topLeftGunY
+            };
+            //topLeftPt = new PointF() { X = (float)0.22010275999999998,
+            //    Y = (float)Settings.Default.test_topLeftGunY
+            //};
+            centerPt = new PointF()
+            {
+                X = (float) Settings.Default.test_centerGunX,
+                Y = (float)Settings.Default.test_centerGunY
+            };
+
+            recalculateLightgunCoordBounds();
+        }
+
+        public void RecalculateLightgunAspect(double targetAspect)
+        {
+            this.targetAspectRatio = targetAspect;
+
+            int outputWidth = (int)(targetAspect * primaryScreen.Bounds.Height);
+            double scaleFactor = outputWidth / (double)primaryScreen.Bounds.Width;
+            double target_topLeftX = Settings.Default.test_centerGunX -
+                ((Settings.Default.test_centerGunX - Settings.Default.test_topLeftGunX) *
+                scaleFactor);
+
+            //Trace.WriteLine($"{outputWidth} {target_topLeftX} {scaleFactor}");
+
+            topLeftPt = new PointF()
+            {
+                X = (float)target_topLeftX,
+                Y = (float)Settings.Default.test_topLeftGunY
+            };
+            //topLeftPt = new PointF() { X = (float)0.22010275999999998,
+            //    Y = (float)Settings.Default.test_topLeftGunY
+            //};
+            centerPt = new PointF()
+            {
+                X = (float)Settings.Default.test_centerGunX,
+                Y = (float)Settings.Default.test_centerGunY
+            };
+
+            recalculateLightgunCoordBounds();
+        }
     }
 }
