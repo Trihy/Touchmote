@@ -501,7 +501,7 @@ copy "$(ProjectDir)VMultiDll_$(PlatformName).dll" "$(TargetDir)VMultiDll.dll" /Y
 xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
 
-"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.verisign.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"
+"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.digicert.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"
 
 :END</PostBuildEvent>
   </PropertyGroup>
