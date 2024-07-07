@@ -682,11 +682,6 @@ namespace WiiTUIO
                 if (report.numberPaired > 0)
                 {
                     Settings.Default.pairedOnce = true;
-
-                    if (report.deviceNames.Contains(@"Nintendo RVL-CNT-01-TR"))
-                    {
-                        this.ShowMessage("At least one of your Wiimotes is not compatible with the Microsoft Bluetooth Stack, use only Wiimotes manufactured before November 2011 or try the instructions on touchmote.net/wiimotetr ",MessageType.Info);
-                    }
                 }
             }
             else
