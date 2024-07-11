@@ -38,6 +38,8 @@ namespace WiiTUIO
 
             allInputs = new List<KeymapInput>();
             allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, false, true));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Rotation+", "Rotation+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Rotation-", "Rotation-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
