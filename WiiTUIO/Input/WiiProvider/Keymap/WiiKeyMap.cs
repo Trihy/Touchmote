@@ -33,6 +33,8 @@ namespace WiiTUIO.Provider
 
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
+            {"Rotation+",false},
+            {"Rotation-",false},
             {"AccelX+",false},
             {"AccelX-",false},
             {"AccelY+",false},
@@ -137,13 +139,63 @@ namespace WiiTUIO.Provider
                         {
                             if (output.Cursor)
                             {
-                                if (cursorHandler.setPosition(output.Key,cursorPosition))
+                                if (cursorHandler.setPosition(output.Key, cursorPosition))
                                 {
                                     break; // we will break for the first accepting handler, for each output key
                                 }
                             }
                         }
                     }
+                }
+            }
+            if (this.config.TryGetValue("Rotation-", out outConfig))
+            {
+                if (!cursorPosition.OutOfReach)
+                {
+                    if (cursorPosition.Rotation < 0)
+                        updateStickHandlers(outConfig, -cursorPosition.Rotation);
+                }
+                else
+                {
+                    updateStickHandlers(outConfig, 0);
+                    PressedButtons["Rotation-"] = false;
+                    this.executeButtonUp("Rotation-");
+                }
+
+                if (-cursorPosition.Rotation > outConfig.Threshold && !PressedButtons["Rotation-"])
+                {
+                    PressedButtons["Rotation-"] = true;
+                    this.executeButtonDown("Rotation-");
+                }
+                else if (-cursorPosition.Rotation < outConfig.Threshold && PressedButtons["Rotation-"])
+                {
+                    PressedButtons["Rotation-"] = false;
+                    this.executeButtonUp("Rotation-");
+                }
+            }
+            if (this.config.TryGetValue("Rotation+", out outConfig))
+            {
+                if (!cursorPosition.OutOfReach)
+                {
+                    if (cursorPosition.Rotation > 0)
+                        updateStickHandlers(outConfig, cursorPosition.Rotation);
+                }
+                else
+                {
+                    updateStickHandlers(outConfig, 0);
+                    PressedButtons["Rotation+"] = false;
+                    this.executeButtonUp("Rotation+");
+                }
+
+                if (cursorPosition.Rotation > outConfig.Threshold && !PressedButtons["Rotation+"])
+                {
+                    PressedButtons["Rotation+"] = true;
+                    this.executeButtonDown("Rotation+");
+                }
+                else if (cursorPosition.Rotation < outConfig.Threshold && PressedButtons["Rotation+"])
+                {
+                    PressedButtons["Rotation+"] = false;
+                    this.executeButtonUp("Rotation+");
                 }
             }
         }
