@@ -148,9 +148,19 @@ namespace WiiTUIO.Provider
                 handler.connect();
             }
 
-            this.initialize();
-
+            // Need process monitor and screen position calculator here
             this.processMonitor = SystemProcessMonitor.Default;
+            this.screenPositionCalculator = new ScreenPositionCalculator();
+
+            // Do not launch config changed event yet. Wait.
+            this.initialize(callConfigChangedEvt: false);
+
+            CheckAppKeymap();
+
+            // Send config changed event here.
+            this.SendConfigChangedEvt();
+
+            // Set window monitor hook
             this.processMonitor.ProcessChanged += processChanged;
             this.processMonitor.Start();
 
@@ -159,12 +169,10 @@ namespace WiiTUIO.Provider
             homeButtonTimer.AutoReset = true;
             homeButtonTimer.Elapsed += homeButtonTimer_Elapsed;
 
-            this.screenPositionCalculator = new ScreenPositionCalculator();
-
             KeymapConfigWindow.Instance.OnConfigChanged += keymapConfigWindow_OnConfigChanged;
         }
 
-        private void initialize()
+        private void initialize(bool callConfigChangedEvt=true)
         {
             this.defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
 
@@ -179,7 +187,10 @@ namespace WiiTUIO.Provider
             this.KeyMap.OnConfigChanged += keyMap_onConfigChanged;
             this.KeyMap.OnRumble += keyMap_onRumble;
 
-            this.SendConfigChangedEvt();
+            if (callConfigChangedEvt)
+            {
+                this.SendConfigChangedEvt();
+            }
         }
 
         private JObject loadApplicationsJSON()
@@ -287,6 +298,16 @@ namespace WiiTUIO.Provider
             {
                 this.setKeymap(this.defaultKeymap);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
+            }
+        }
+
+        private void CheckAppKeymap()
+        {
+            System.Diagnostics.Process lastProcess = this.processMonitor.GetLastProcess();
+            if (lastProcess != null)
+            {
+                ProcessChangedEvent evt = new ProcessChangedEvent(lastProcess);
+                processChanged(evt);
             }
         }
 
