@@ -38,7 +38,9 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
         public bool Disconnect()
         {
+            cont.FeedbackReceived -= FeedbackProcess;
             cont.Disconnect();
+            cont = null;
             //cont.Dispose();
             return true;
         }
