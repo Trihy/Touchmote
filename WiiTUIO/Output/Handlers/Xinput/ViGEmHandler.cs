@@ -78,6 +78,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
             if (viGEmClient.VigemTestClient != null)
             {
                 device.Disconnect();
+                viGEmClient = null;
                 return true;
             }
 
