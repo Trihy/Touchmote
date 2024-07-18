@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Nefarius.ViGEm.Client;
@@ -31,8 +32,15 @@ namespace WiiTUIO.Output.Handlers.Xinput
         {
             if (vigemTestClient != null)
             {
-                vigemTestClient.Dispose();
-                vigemTestClient = null;
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+
+                    vigemTestClient.Dispose();
+                    vigemTestClient = null;
+
+                    Thread.Sleep(1000);
+                }).Wait();
             }
         }
     }
