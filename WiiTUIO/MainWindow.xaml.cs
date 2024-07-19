@@ -32,6 +32,7 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using WiiTUIO.DeviceUtils;
 using WiiCPP;
+using WiiTUIO.Output.Handlers.Xinput;
 
 namespace WiiTUIO
 {
@@ -330,6 +331,8 @@ namespace WiiTUIO
         {
             this.stopWiiPair();
             this.disconnectProvider();
+
+            ViGEmBusClientSingleton.Disconnect();
             //this.disconnectProviderHandler();
         }
 

@@ -21,14 +21,9 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 vigemTestClient = new ViGEmClient();
             }
             catch (Exception) { }
-
-            App.Current.Dispatcher.BeginInvoke(new Action(delegate ()
-            {
-                App.Current.Exit += OnAppExit;
-            }), null);
         }
 
-        private void OnAppExit(object sender, ExitEventArgs e)
+        public void Disconnect()
         {
             if (vigemTestClient != null)
             {

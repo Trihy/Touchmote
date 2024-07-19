@@ -22,5 +22,14 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 return defaultInstance;
             }
         }
+
+        public static void Disconnect()
+        {
+            if (defaultInstance != null)
+            {
+                defaultInstance.Disconnect();
+                defaultInstance = null;
+            }
+        }
     }
 }
