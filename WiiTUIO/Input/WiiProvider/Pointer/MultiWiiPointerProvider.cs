@@ -408,7 +408,7 @@ namespace WiiTUIO.Provider
             }
             else
             {
-                OnDisconnect(0, 0);
+                OnDisconnect?.Invoke(0, 0);
             }
         }
 
@@ -441,7 +441,7 @@ namespace WiiTUIO.Provider
                 pDevice.Disconnect();
                 pDevice.Dispose();
 
-                OnDisconnect(wiimoteid, this.pWiimoteMap.Count);
+                OnDisconnect?.Invoke(wiimoteid, this.pWiimoteMap.Count);
             }
         }
         #endregion
