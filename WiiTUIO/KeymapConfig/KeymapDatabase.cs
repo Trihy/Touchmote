@@ -38,8 +38,8 @@ namespace WiiTUIO
 
             allInputs = new List<KeymapInput>();
             allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, false, true));
-            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Rotation+", "Rotation+", true, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Rotation-", "Rotation-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Rotation-   ", "Rotation-", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Rotation+   ", "Rotation+", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
@@ -64,8 +64,8 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight", true, true, false));
-            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation+", "Nunchuk.Rotation+"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation-", "Nunchuk.Rotation-"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation+", "Nunchuk.Rotation+"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X-", "Nunchuk.AccelX-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X+", "Nunchuk.AccelX+", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y-", "Nunchuk.AccelY-", true, true, false));
