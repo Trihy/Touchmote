@@ -25,6 +25,7 @@ namespace WiiTUIO
         private uint lastProcessId = 0;
 
         private System.Timers.Timer pollingTimer;
+        private bool inEvent;
 
         private static SystemProcessMonitor defaultInstance;
         public static SystemProcessMonitor Default
@@ -49,6 +50,8 @@ namespace WiiTUIO
 
         private void pollingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            inEvent = true;
+
             IntPtr foregroundWindow = GetForegroundWindow();
             uint procId = 0;
             GetWindowThreadProcessId(foregroundWindow, out procId);
@@ -62,6 +65,19 @@ namespace WiiTUIO
                 }
                 this.lastProcessId = procId;
             }
+
+            inEvent = false;
+        }
+
+        public Process GetLastProcess()
+        {
+            Process process = null;
+            if (lastProcessId > 0)
+            {
+                process = Process.GetProcessById((int)lastProcessId);
+            }
+
+            return process;
         }
 
         public void Start()
@@ -71,6 +87,13 @@ namespace WiiTUIO
 
         public void Stop()
         {
+            pollingTimer.Elapsed -= pollingTimer_Elapsed;
+
+            while (inEvent)
+            {
+                Thread.SpinWait(500);
+            }
+
             pollingTimer.Stop();
         }
 
