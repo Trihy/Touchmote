@@ -27,15 +27,12 @@ namespace WiiTUIO.Output.Handlers.Xinput
         {
             if (vigemTestClient != null)
             {
-                Task.Run(() =>
-                {
-                    Thread.Sleep(1000);
+                // Allow some time for controllers to disconnect
+                // before disconnecting from ViGEmBus
+                Thread.Sleep(500);
 
-                    vigemTestClient.Dispose();
-                    vigemTestClient = null;
-
-                    Thread.Sleep(1000);
-                }).Wait();
+                vigemTestClient.Dispose();
+                vigemTestClient = null;
             }
         }
     }
