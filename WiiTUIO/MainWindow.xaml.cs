@@ -63,7 +63,10 @@ namespace WiiTUIO
         private IProvider pWiiProvider = null;
 
         WiiCPP.WiiPair wiiPair = null;
-        
+
+        System.Windows.Threading.Dispatcher overlayDispatcher = null;
+        Thread overlayUIThread = null;
+
         /// <summary>
         /// Boolean to tell if we are connected to the mote and network.
         /// </summary>
@@ -153,7 +156,7 @@ namespace WiiTUIO
             this.spInfoMsg.Visibility = Visibility.Collapsed;
             this.animateExpand(this.mainPanel);
 
-            Thread overlayUIThread = new Thread(() =>
+            overlayUIThread = new Thread(() =>
             {
                 OverlayWindow.Current.Show();
 
@@ -165,7 +168,10 @@ namespace WiiTUIO
                     }));
                 }
 
+                // Grab dispatcher for current thread
+                overlayDispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
                 System.Windows.Threading.Dispatcher.Run();
+                Console.WriteLine("Overlay UI Thread Ended");
             });
             overlayUIThread.SetApartmentState(ApartmentState.STA);
             overlayUIThread.IsBackground = true;
@@ -329,6 +335,15 @@ namespace WiiTUIO
         
         private void appWillExit(object sender, ExitEventArgs e)
         {
+            if (overlayDispatcher != null)
+            {
+                overlayDispatcher.InvokeShutdown();
+                overlayDispatcher = null;
+            }
+
+            overlayUIThread.Join();
+            overlayUIThread = null;
+
             this.stopWiiPair();
             this.disconnectProvider();
 
