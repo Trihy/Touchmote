@@ -67,8 +67,8 @@ namespace WiiTUIO.Output.Handlers
         private double mouseOffset = Settings.Default.test_fpsmouseOffset;
 
         private CursorPositionHelper cursorPositionHelper;
-        private OneEuroFilter testLightFilterX = new OneEuroFilter(1.6, 0.92, 1.0);
-        private OneEuroFilter testLightFilterY = new OneEuroFilter(1.6, 0.92, 1.0);
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(2.0, 0.92, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(2.0, 0.92, 1.0);
 
         // Measured in milliseconds
         public const int OUTOFREACH_ELAPSED_TIME = 1000;

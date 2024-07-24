@@ -16,7 +16,7 @@ namespace WiiTUIO.Output.Handlers.Xinput
     {
         private class StickLightData
         {
-            private const double MIN_CUTOFF_DEFAULT = 1.6;
+            private const double MIN_CUTOFF_DEFAULT = 2.0;
             private const double BETA_DEFAULT = 0.92;
             private const double CENTER_PT_DEFAULT = 0.5;
 
