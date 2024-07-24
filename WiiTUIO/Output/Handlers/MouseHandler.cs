@@ -67,8 +67,10 @@ namespace WiiTUIO.Output.Handlers
         private double mouseOffset = Settings.Default.test_fpsmouseOffset;
 
         private CursorPositionHelper cursorPositionHelper;
-        private OneEuroFilter testLightFilterX = new OneEuroFilter(2.0, 0.92, 1.0);
-        private OneEuroFilter testLightFilterY = new OneEuroFilter(2.0, 0.92, 1.0);
+        private OneEuroFilter testLightFilterX = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+            Settings.Default.test_lightgun_oneeuro_beta, 1.0);
+        private OneEuroFilter testLightFilterY = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+            Settings.Default.test_lightgun_oneeuro_beta, 1.0);
 
         // Measured in milliseconds
         public const int OUTOFREACH_ELAPSED_TIME = 1000;
@@ -121,6 +123,17 @@ namespace WiiTUIO.Output.Handlers
             {
                 setButtonUp("mousexbutton2");
             }
+
+            // Create empty smoothing filters on profile reset
+            testLightFilterX = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+                Settings.Default.test_lightgun_oneeuro_beta, 1.0);
+            testLightFilterY = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+                Settings.Default.test_lightgun_oneeuro_beta, 1.0);
+
+            previousLightCursorCoorPoint = new Point(0.5, 0.5);
+            previousLightOutputCursorPoint = new Point(0.5, 0.5);
+            previousLightTime = Stopwatch.GetTimestamp();
+
             return true;
         }
 

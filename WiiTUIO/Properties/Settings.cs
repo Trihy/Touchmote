@@ -257,7 +257,7 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("pointer_cursorSize");
             }
         }
-        
+
         private double _pointer_marginsTopBottom = 0.5;
         public double pointer_marginsTopBottom
         {
@@ -268,7 +268,7 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("pointer_marginsTopBottom");
             }
         }
-        
+
         private double _pointer_marginsLeftRight = 0.4;
         public double pointer_marginsLeftRight
         {
@@ -526,6 +526,34 @@ namespace WiiTUIO.Properties
                 if (_test_centerGunY == value) return;
                 _test_centerGunY = Math.Min(1.0, Math.Max(0.0, value));
                 OnPropertyChanged("test_centerGunY");
+            }
+        }
+
+        private double _test_lightgun_oneeuro_mincutoff = 2.0;
+        public double test_lightgun_oneeuro_mincutoff
+        {
+            get => _test_lightgun_oneeuro_mincutoff;
+            set
+            {
+                if (value >= 0.0 && value <= 10.0)
+                {
+                    _test_lightgun_oneeuro_mincutoff = value;
+                    OnPropertyChanged("test_lightgun_oneeuro_mincutoff");
+                }
+            }
+        }
+
+        private double _test_lightgun_oneeuro_beta = 0.92;
+        public double test_lightgun_oneeuro_beta
+        {
+            get => _test_lightgun_oneeuro_beta;
+            set
+            {
+                if (value >= 0.0 && value <= 1.0)
+                {
+                    _test_lightgun_oneeuro_beta = value;
+                    OnPropertyChanged("test_lightgun_oneeuro_beta");
+                }
             }
         }
 
