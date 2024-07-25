@@ -9,6 +9,7 @@ using Nefarius.ViGEm.Client.Targets.Xbox360;
 using System.Windows;
 using System.Diagnostics;
 using WiiTUIO.Filters;
+using WiiTUIO.Properties;
 
 namespace WiiTUIO.Output.Handlers.Xinput
 {
@@ -16,20 +17,22 @@ namespace WiiTUIO.Output.Handlers.Xinput
     {
         private class StickLightData
         {
-            private const double MIN_CUTOFF_DEFAULT = 1.6;
-            private const double BETA_DEFAULT = 0.92;
             private const double CENTER_PT_DEFAULT = 0.5;
 
-            public OneEuroFilter testLightFilterX = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
-            public OneEuroFilter testLightFilterY = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
+            public OneEuroFilter testLightFilterX = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+                Settings.Default.test_lightgun_oneeuro_beta, 1.0);
+            public OneEuroFilter testLightFilterY = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+                Settings.Default.test_lightgun_oneeuro_beta, 1.0);
             public Point previousLightCursorPoint = new Point(CENTER_PT_DEFAULT, CENTER_PT_DEFAULT);
             public long previousLightTime = Stopwatch.GetTimestamp();
 
             public void Reset()
             {
                 // Create empty smoothing filters on profile reset
-                testLightFilterX = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
-                testLightFilterY = new OneEuroFilter(MIN_CUTOFF_DEFAULT, BETA_DEFAULT, 1.0);
+                testLightFilterX = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+                    Settings.Default.test_lightgun_oneeuro_beta, 1.0);
+                testLightFilterY = new OneEuroFilter(Settings.Default.test_lightgun_oneeuro_mincutoff,
+                    Settings.Default.test_lightgun_oneeuro_beta, 1.0);
 
                 previousLightCursorPoint = new Point(CENTER_PT_DEFAULT, CENTER_PT_DEFAULT);
                 previousLightTime = Stopwatch.GetTimestamp();
