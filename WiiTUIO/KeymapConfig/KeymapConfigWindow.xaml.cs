@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,8 @@ namespace WiiTUIO
         private SolidColorBrush defaultBrush = new SolidColorBrush(Color.FromRgb(46,46,46));
         private SolidColorBrush highlightBrush = new SolidColorBrush(Color.FromRgb(65, 177, 225));
 
+        private HookApplicationViewModel hookAppVM;
+
         private static KeymapConfigWindow defaultInstance;
         public static KeymapConfigWindow Instance
         {
@@ -47,12 +50,12 @@ namespace WiiTUIO
 
         public KeymapConfigWindow()
         {
+            hookAppVM = new HookApplicationViewModel();
+
             InitializeComponent();
 
             this.tbKeymapTitle.Text = this.tbKeymapTitle.Tag.ToString();
             this.tbKeymapTitle.Foreground = new SolidColorBrush(Colors.Gray);
-            this.tbApplicationSearch.Text = this.tbApplicationSearch.Tag.ToString();
-            this.tbApplicationSearch.Foreground = new SolidColorBrush(Colors.Gray);
             this.tbOutputFilter.Text = this.tbOutputFilter.Tag.ToString();
             this.tbOutputFilter.Foreground = new SolidColorBrush(Colors.Gray);
 
@@ -64,8 +67,7 @@ namespace WiiTUIO
             this.tbKeymapTitle.KeyUp += tbKeymapTitle_KeyUp;
             this.tbKeymapTitle.Foreground = new SolidColorBrush(Colors.Black);
 
-            this.tbApplicationSearch.LostFocus += tbApplicationSearch_LostFocus;
-            this.tbApplicationSearch.KeyUp += tbApplicationSearch_KeyUp;
+            hookAppItemsControl.DataContext = hookAppVM;
 
             this.cbLayoutChooser.Checked += cbLayoutChooser_Checked;
             this.cbLayoutChooser.Unchecked += cbLayoutChooser_Unchecked;
@@ -135,17 +137,12 @@ namespace WiiTUIO
             this.currentKeymap = keymap;
 
             this.tbKeymapTitle.Text = keymap.getName();
-            string searchstring = KeymapDatabase.Current.getKeymapSettings().getSearchStringFor(this.currentKeymap);
-            if (searchstring != null && searchstring != "")
-            {
-                this.tbApplicationSearch.Text = searchstring;
-                this.tbApplicationSearch.Foreground = new SolidColorBrush(Colors.Black);
-            }
-            else
-            {
-                this.tbApplicationSearch.Text = this.tbApplicationSearch.Tag.ToString();
-                this.tbApplicationSearch.Foreground = new SolidColorBrush(Colors.Gray);
-            }
+
+            hookAppItemsControl.DataContext = null;
+            hookAppVM.SearchStrings.Clear();
+            hookAppVM.GenerateStringsForKeymap(this.currentKeymap);
+            hookAppItemsControl.DataContext = hookAppVM;
+
             this.cbApplicationSearch.IsChecked = KeymapDatabase.Current.getKeymapSettings().isInApplicationSearch(this.currentKeymap);
             this.cbLayoutChooser.IsChecked = KeymapDatabase.Current.getKeymapSettings().isInLayoutChooser(this.currentKeymap);
 
@@ -391,34 +388,20 @@ namespace WiiTUIO
             KeymapDatabase.Current.getKeymapSettings().removeFromLayoutChooser(this.currentKeymap);
         }
 
-
         private void cbApplicationSearch_Checked(object sender, RoutedEventArgs e)
         {
-            KeymapDatabase.Current.getKeymapSettings().addToApplicationSearch(this.currentKeymap,this.tbApplicationSearch.Text);
+            // Need blank string to add profile to application search list
+            KeymapDatabase.Current.getKeymapSettings().addToApplicationSearch(this.currentKeymap, "");
         }
 
         private void cbApplicationSearch_Unchecked(object sender, RoutedEventArgs e)
         {
-            KeymapDatabase.Current.getKeymapSettings().removeFromApplicationSearch(this.currentKeymap);
-        }
+            // Keep events from updating UI controls for now
+            hookAppItemsControl.DataContext = null;
 
-        private void tbApplicationSearch_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (tbApplicationSearch.Text != "" && tbApplicationSearch.Text != tbApplicationSearch.Tag.ToString())
-            {
-                KeymapDatabase.Current.getKeymapSettings().setSearchStringFor(this.currentKeymap, tbApplicationSearch.Text);
-            }
-        }
-
-        void tbApplicationSearch_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                if (tbApplicationSearch.Text != "" && tbApplicationSearch.Text != tbApplicationSearch.Tag.ToString())
-                {
-                    KeymapDatabase.Current.getKeymapSettings().setSearchStringFor(this.currentKeymap, tbApplicationSearch.Text);
-                }
-            }
+            hookAppVM.ClearApplicationList(this.currentKeymap);
+            // Update UI with updated data
+            hookAppItemsControl.DataContext = hookAppVM;
         }
 
         private void tbDelete_MouseUp(object sender, MouseButtonEventArgs e)
@@ -442,6 +425,228 @@ namespace WiiTUIO
         {
             e.Cancel = true;
             this.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void HookApp_TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            hookAppVM.UpdateKeymapDatabase(this.currentKeymap);
+        }
+
+        private void HookApp_TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                hookAppVM.UpdateKeymapDatabase(this.currentKeymap);
+            }
+        }
+
+        private void AddHookAppEntry(object sender, MouseButtonEventArgs e)
+        {
+            hookAppVM.AddNewSearchString();
+        }
+
+        private void RemoveHookAppEntry(object sender, MouseButtonEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            HookApplicationViewModel.HookAppDataItem item =
+                element.Tag as HookApplicationViewModel.HookAppDataItem;
+
+            hookAppVM.RemoveSearchString(item, this.currentKeymap);
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            hookAppItemsControl.DataContext = null;
+        }
+    }
+
+    public class HookApplicationViewModel
+    {
+        public class HookAppDataItem
+        {
+            private string searchString;
+            public string SearchString
+            {
+                get => searchString;
+                set
+                {
+                    searchString = value;
+                    Placeholder = false;
+                }
+            }
+
+            private bool placeholder;
+            public bool Placeholder
+            {
+                get => placeholder;
+                set
+                {
+                    if (placeholder == value) return;
+                    placeholder = value;
+
+                    PlaceholderChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            public event EventHandler PlaceholderChanged;
+
+            public SolidColorBrush BrushColor
+            {
+                get
+                {
+                    SolidColorBrush brush = null;
+                    if (!placeholder)
+                    {
+                        brush = new SolidColorBrush(Colors.Black);
+                    }
+                    if (placeholder)
+                    {
+                        brush = new SolidColorBrush(Colors.Gray);
+                    }
+
+                    return brush;
+                }
+            }
+            public event EventHandler BrushColorChanged;
+
+            private int index;
+            public int Index
+            {
+                get => index;
+                set => index = value;
+            }
+
+            public HookAppDataItem()
+            {
+                PlaceholderChanged += HookAppDataItem_PlaceholderChanged;
+            }
+
+            public HookAppDataItem(string searchString, bool placeholder) : this()
+            {
+                this.searchString = searchString;
+                this.placeholder = placeholder;
+            }
+
+            private void HookAppDataItem_PlaceholderChanged(object sender, EventArgs e)
+            {
+                BrushColorChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private const string SEARCH_STRING_HELPTEXT = "Search string (process name or window title, e.g. example.exe)";
+        private ObservableCollection<HookAppDataItem> searchStrings = new ObservableCollection<HookAppDataItem>();
+        public ObservableCollection<HookAppDataItem> SearchStrings => searchStrings;
+
+        public HookApplicationViewModel()
+        {
+            searchStrings.CollectionChanged += SearchStrings_CollectionChanged;
+        }
+
+        private void SearchStrings_CollectionChanged(object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                for (int i = e.OldStartingIndex; i < searchStrings.Count; i++)
+                {
+                    searchStrings[i].Index = i;
+                }
+            }
+        }
+
+        public void GenerateStringsForKeymap(Keymap keymap)
+        {
+            string searchstring = KeymapDatabase.Current.getKeymapSettings().getSearchStringFor(keymap);
+            if (searchstring != null && searchstring != "")
+            {
+                List<string> tempList = searchstring.Split(Convert.ToChar(31)).ToList();
+                int index = 0;
+                foreach (string hookString in tempList)
+                {
+                    searchStrings.Add(
+                        new HookAppDataItem(hookString, false)
+                        {
+                            Index = index,
+                        });
+
+                    index++;
+                }
+            }
+            else
+            {
+                searchStrings.Add(
+                    new HookAppDataItem(SEARCH_STRING_HELPTEXT, true)
+                    {
+                        Index = 0,
+                    });
+            }
+        }
+
+        public void AddNewSearchString()
+        {
+            HookAppDataItem item = new HookAppDataItem("", false)
+            {
+                Index = searchStrings.Count,
+            };
+
+            searchStrings.Add(item);
+        }
+
+        public void RemoveSearchString(HookAppDataItem item, Keymap keymap)
+        {
+            int count = searchStrings.Count;
+            if (count <= 1)
+            {
+                return;
+            }
+
+            int index = searchStrings.IndexOf(item);
+            //int index = item.Index;
+            searchStrings.RemoveAt(index);
+            UpdateKeymapDatabase(keymap);
+        }
+
+        public void UpdateKeymapDatabase(Keymap keymap)
+        {
+            StringBuilder sb = new StringBuilder();
+            int count = searchStrings.Count;
+            int idx = 0;
+            foreach (HookAppDataItem item in searchStrings)
+            {
+                if (!string.IsNullOrEmpty(item.SearchString) &&
+                    !item.Placeholder)
+                {
+                    sb.Append(item.SearchString);
+
+                    if (idx < count - 1)
+                    {
+                        sb.Append(Convert.ToChar(31));
+                    }
+                }
+
+                idx++;
+            }
+
+            KeymapDatabase.Current.getKeymapSettings().setSearchStringFor(keymap,
+                sb.ToString());
+        }
+
+        public void AddToApplicationSearch(Keymap keymap)
+        {
+            // Need blank string to add profile to application search list
+            KeymapDatabase.Current.getKeymapSettings().addToApplicationSearch(keymap, "");
+            // Possibly update with current data
+            //UpdateKeymapDatabase(keymap);
+        }
+
+        public void ClearApplicationList(Keymap keymap)
+        {
+            KeymapDatabase.Current.getKeymapSettings().removeFromApplicationSearch(keymap);
+            searchStrings.Clear();
+            searchStrings.Add(
+                new HookAppDataItem(SEARCH_STRING_HELPTEXT, true)
+            {
+                Index = 0,
+            });
         }
     }
 }

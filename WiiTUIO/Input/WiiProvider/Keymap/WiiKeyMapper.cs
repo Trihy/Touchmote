@@ -322,14 +322,17 @@ namespace WiiTUIO.Provider
                 List<ApplicationSearchSetting> applicationConfigurations = KeymapDatabase.Current.getKeymapSettings().getApplicationSearchSettings();
                 foreach (ApplicationSearchSetting searchSetting in applicationConfigurations)
                 {
-                    string search = searchSetting.Search;
-
-                    if (appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
+                    string[] appList = searchSetting.Search.Split(Convert.ToChar(31));
+                    for (int i = 0; i < appList.Length && !keymapFound; i++)
                     {
-                        this.applicationKeymap = this.loadKeyMap(searchSetting.Keymap);
-                        keymapFound = true;
+                        string search = appList[i];
+
+                        if (appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
+                        {
+                            this.applicationKeymap = this.loadKeyMap(searchSetting.Keymap);
+                            keymapFound = true;
+                        }
                     }
-                    
                 }
 
                 // Only switch keymap if search failed but old auto profile
