@@ -68,15 +68,15 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel>
-                                            <Rectangle Cursor="Hand" Width="16" Height="16" Fill="Gray" Tag="{Binding}" MouseUp="AddHookAppEntry" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="8,0,0,0">
-                                                <Rectangle.OpacityMask>
-                                                    <VisualBrush Visual="{StaticResource appbar_add}" Stretch="UniformToFill" />
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-
                                             <Rectangle Cursor="Hand" Width="16" Height="16" Fill="Gray" Tag="{Binding}" MouseUp="RemoveHookAppEntry" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="8,0,0,0">
                                                 <Rectangle.OpacityMask>
                                                     <VisualBrush Visual="{StaticResource appbar_close}" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+
+                                            <Rectangle Cursor="Hand" Width="16" Height="16" Fill="Gray" Tag="{Binding}" MouseUp="AddHookAppEntry" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="8,0,0,0">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush Visual="{StaticResource appbar_add}" Stretch="UniformToFill" />
                                                 </Rectangle.OpacityMask>
                                             </Rectangle>
 
