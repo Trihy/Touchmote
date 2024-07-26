@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="900" MinWidth="900" Height="600">
+  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="900" MinWidth="900" Height="600" Closed="MetroWindow_Closed">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -37,6 +37,16 @@
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                         </Border>
+
+                        <!-- Need hidden Rectangle that uses appbar_close for later hook application usage.
+                             WPF will make appbar_close canvas icon disappear if not previously used.
+                             Weird stuff
+                        -->
+                        <Rectangle Visibility="Collapsed">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Visual="{StaticResource appbar_close}" Stretch="Fill" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
                     </Grid>
                 </StackPanel>
             </ScrollViewer>
@@ -51,9 +61,33 @@
                                 <TextBlock Name="tbDelete" Cursor="Hand" MouseUp="tbDelete_MouseUp" Foreground="Red" FontFamily="Segoe UI Semilight" FontSize="12" Margin="349,10,6,10" TextAlignment="Center" TextDecorations="Underline">Delete</TextBlock>
                         </Grid>
                         <CheckBox Name="cbLayoutChooser" FontFamily="Segoe UI Semilight" Margin="6">Available in Layout Chooser (hold Home 3 sec)</CheckBox>
-                        <DockPanel>
+                        <DockPanel VerticalAlignment="Top">
                             <CheckBox Name="cbApplicationSearch" FontFamily="Segoe UI Semilight" Margin="6,6,6,2">Hook to application</CheckBox>
-                            <TextBox Name="tbApplicationSearch" Tag="Search string (process name or window title, e.g. example.exe)" FontFamily="Segoe UI Semilight" FontSize="12" Padding="2,1" Margin="6,3,6,6"></TextBox>
+
+                            <ItemsControl x:Name="hookAppItemsControl" ItemsSource="{Binding SearchStrings}" IsEnabled="{Binding IsChecked, ElementName=cbApplicationSearch}" DockPanel.Dock="Left" Margin="8,0,20,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <Rectangle Cursor="Hand" Width="16" Height="16" Fill="Gray" Tag="{Binding}" MouseUp="AddHookAppEntry" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="8,0,0,0">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush Visual="{StaticResource appbar_add}" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+
+                                            <Rectangle Cursor="Hand" Width="16" Height="16" Fill="Gray" Tag="{Binding}" MouseUp="RemoveHookAppEntry" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="8,0,0,0">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush Visual="{StaticResource appbar_close}" Stretch="UniformToFill" />
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+
+                                            <TextBox Text="{Binding SearchString,UpdateSourceTrigger=PropertyChanged}" FontFamily="Segoe UI Semilight" FontSize="12" Padding="2,1" Margin="6,3,6,6"
+                                                Foreground="{Binding BrushColor}" Tag="{Binding}" LostFocus="HookApp_TextBox_LostFocus" KeyUp="HookApp_TextBox_KeyUp">
+                                            </TextBox>
+                                        </DockPanel>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </DockPanel>
                     </StackPanel>
                     <Border BorderBrush="#FFCBCBCB" BorderThickness="0,0,0,1" Margin="6"></Border>
