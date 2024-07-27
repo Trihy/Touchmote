@@ -177,6 +177,9 @@ namespace WiiTUIO
             this.spNunchukConnections.Children.Clear();
             this.spClassicConnections.Children.Clear();
 
+            // Need to force garbage collection on a switch
+            GC.Collect(2, GCCollectionMode.Forced);
+
             this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR), keymap, wiimote, defaultKeymap, this.spWiimoteConnections);
             this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE), keymap, wiimote, defaultKeymap, this.spWiimoteConnections);
             this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.NUNCHUK), keymap, wiimote, defaultKeymap, this.spNunchukConnections);
