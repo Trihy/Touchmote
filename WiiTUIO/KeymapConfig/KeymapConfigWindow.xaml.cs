@@ -84,15 +84,17 @@ namespace WiiTUIO
             this.fillOutputList(selectedOutput, null);
 
             List<Keymap> allKeymaps = KeymapDatabase.Current.getAllKeymaps();
+            // Only need to grab default keymap filename once. Was in the loop
+            string defaultKeymapFilename = KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap();
             foreach (Keymap keymap in allKeymaps)
             {
-                if (keymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap())
+                if (keymap.Filename == defaultKeymapFilename)
                 {
                     this.selectKeymap(keymap);
                 }
             }
-            this.fillKeymapList(allKeymaps);
 
+            this.fillKeymapList(allKeymaps);
         }
 
         private void fillKeymapList(List<Keymap> allKeymaps)
@@ -176,6 +178,9 @@ namespace WiiTUIO
             this.spWiimoteConnections.Children.Clear();
             this.spNunchukConnections.Children.Clear();
             this.spClassicConnections.Children.Clear();
+
+            // Need to force garbage collection on a switch
+            GC.Collect(2, GCCollectionMode.Forced);
 
             this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.IR), keymap, wiimote, defaultKeymap, this.spWiimoteConnections);
             this.appendConnectionList(KeymapDatabase.Current.getAvailableInputs(KeymapInputSource.WIIMOTE), keymap, wiimote, defaultKeymap, this.spWiimoteConnections);
