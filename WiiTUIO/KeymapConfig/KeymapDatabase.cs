@@ -281,6 +281,9 @@ namespace WiiTUIO
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Down", "360.stickrdown", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Left", "360.stickrleft", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Stick Right", "360.stickrright", true, true, false, false));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Rumble On Hold", "360.rumble"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Rumble Once", "360.rumble1"));
+            allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Rumble M. Gun", "360.rumble2"));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Trigger", "360.triggerl", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Right Trigger", "360.triggerr", true, true, false, false));
             allOutputs.Add(new KeymapOutput(KeymapOutputType.XINPUT, "Left Bumper", "360.bumperl"));
