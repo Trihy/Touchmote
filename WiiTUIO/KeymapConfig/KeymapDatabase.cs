@@ -57,6 +57,7 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y+", "AccelY+", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z-", "AccelZ-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z+", "AccelZ+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Shake", "Shake"));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "Nunchuk.Z"));

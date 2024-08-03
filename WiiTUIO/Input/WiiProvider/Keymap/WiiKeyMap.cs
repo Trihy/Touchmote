@@ -34,6 +34,15 @@ namespace WiiTUIO.Provider
         private double inputAngle = 0;
         private double prevAngle = 0;
 
+        private const double ShakeThreshold = 0.8; 
+        private const int ShakeCount = 2;
+        private const double SuddenMovementThreshold = 0.8;
+        private const int MaxTimeBetweenShakes = 1000;
+        private const int ShakePressedTime = 100;
+        private int ShakeCounter = 0;
+        private DateTime lastShakeTime;
+        private AccelState lastAccelState;
+
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
             {"Rotation+",false},
@@ -44,6 +53,7 @@ namespace WiiTUIO.Provider
             {"AccelY-",false},
             {"AccelZ+",false},
             {"AccelZ-",false},
+            {"Shake",false},
             {"Nunchuk.StickUp",false},
             {"Nunchuk.StickDown",false},
             {"Nunchuk.StickLeft",false},
@@ -599,6 +609,44 @@ namespace WiiTUIO.Provider
                     PressedButtons["Nunchuk.AccelZ-"] = false;
                     this.executeButtonUp("Nunchuk.AccelZ-");
                 }
+            }
+            if (this.config.TryGetValue("Shake", out outConfig))
+            {
+                var now = DateTime.Now;
+
+                double deltaX = Math.Abs(accelState.Values.X - lastAccelState.Values.X);
+                double deltaY = Math.Abs(accelState.Values.Y - lastAccelState.Values.Y);
+                double deltaZ = Math.Abs(accelState.Values.Z - lastAccelState.Values.Z);
+
+                double magnitude = Math.Sqrt(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2) + Math.Pow(deltaZ, 2));
+
+                if (PressedButtons["Shake"] == false)
+                {
+                    if (magnitude > ShakeThreshold && (deltaX > SuddenMovementThreshold || deltaY > SuddenMovementThreshold || deltaZ > SuddenMovementThreshold))
+                    {
+                        if ((now - lastShakeTime).TotalMilliseconds < MaxTimeBetweenShakes)
+                        {
+                            ShakeCounter++;
+                            if (ShakeCounter >= ShakeCount)
+                            {
+                                PressedButtons["Shake"] = true;
+                                this.executeButtonDown("Shake");
+                                ShakeCounter = 0;
+                            }
+                        }
+                        else
+                        {
+                            ShakeCounter = 1;
+                        }
+                        lastShakeTime = now;
+                    }
+                }
+                else if ((now - lastShakeTime).TotalMilliseconds > ShakePressedTime)
+                {
+                    PressedButtons["Shake"] = false;
+                    this.executeButtonUp("Shake");
+                }
+                lastAccelState = accelState;
             }
         }
 
