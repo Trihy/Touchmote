@@ -34,14 +34,10 @@ namespace WiiTUIO.Provider
         private double inputAngle = 0;
         private double prevAngle = 0;
 
-        private const double ShakeThreshold = 0.8; 
-        private const int ShakeCount = 2;
-        private const double SuddenMovementThreshold = 0.8;
-        private const int MaxTimeBetweenShakes = 1000;
-        private const int ShakePressedTime = 100;
         private int ShakeCounter = 0;
         private DateTime lastShakeTime;
-        private AccelState lastAccelState;
+        private float lastAccel;
+        private float smoothedAccel;
 
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
