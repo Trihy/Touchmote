@@ -614,20 +614,19 @@ namespace WiiTUIO.Provider
             {
                 var now = DateTime.Now;
 
-                double deltaX = Math.Abs(accelState.Values.X - lastAccelState.Values.X);
-                double deltaY = Math.Abs(accelState.Values.Y - lastAccelState.Values.Y);
-                double deltaZ = Math.Abs(accelState.Values.Z - lastAccelState.Values.Z);
+                float totalAccel = (float)Math.Sqrt(Math.Pow(accelState.Values.X, 2) + Math.Pow(accelState.Values.Y, 2) + Math.Pow(accelState.Values.Z, 2));
+                float delta = totalAccel - lastAccel;
+                smoothedAccel = smoothedAccel * 0.9f + delta;
+                Console.WriteLine(smoothedAccel);
 
-                double magnitude = Math.Sqrt(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2) + Math.Pow(deltaZ, 2));
-
-                if (PressedButtons["Shake"] == false)
+                if (!PressedButtons["Shake"])
                 {
-                    if (magnitude > ShakeThreshold && (deltaX > SuddenMovementThreshold || deltaY > SuddenMovementThreshold || deltaZ > SuddenMovementThreshold))
+                    if (Math.Abs(smoothedAccel) > Settings.Default.shake_threshold)
                     {
-                        if ((now - lastShakeTime).TotalMilliseconds < MaxTimeBetweenShakes)
+                        if ((now - lastShakeTime).TotalMilliseconds < Settings.Default.shake_maxTimeInBetween)
                         {
                             ShakeCounter++;
-                            if (ShakeCounter >= ShakeCount)
+                            if (ShakeCounter >= Settings.Default.shake_count)
                             {
                                 PressedButtons["Shake"] = true;
                                 this.executeButtonDown("Shake");
@@ -636,17 +635,17 @@ namespace WiiTUIO.Provider
                         }
                         else
                         {
-                            ShakeCounter = 1;
+                            ShakeCounter = 0;
                         }
                         lastShakeTime = now;
                     }
                 }
-                else if ((now - lastShakeTime).TotalMilliseconds > ShakePressedTime)
+                else if ((now - lastShakeTime).TotalMilliseconds > Settings.Default.shake_pressedTime)
                 {
                     PressedButtons["Shake"] = false;
                     this.executeButtonUp("Shake");
                 }
-                lastAccelState = accelState;
+                lastAccel = totalAccel;
             }
         }
 

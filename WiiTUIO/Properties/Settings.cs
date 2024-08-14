@@ -597,6 +597,50 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private double _shake_threshold = 1.5;
+        public double shake_threshold
+        {
+            get { return _shake_threshold; }
+            set
+            {
+                _shake_threshold = value;
+                OnPropertyChanged("shake_threshold");
+            }
+        }
+
+        private int _shake_count = 2;
+        public int shake_count
+        {
+            get { return _shake_count; }
+            set
+            {
+                _shake_count = value;
+                OnPropertyChanged("shake_count");
+            }
+        }
+
+        private int _shake_maxTimeInBetween = 500;
+        public int shake_maxTimeInBetween
+        {
+            get { return _shake_maxTimeInBetween; }
+            set
+            {
+                _shake_maxTimeInBetween = value;
+                OnPropertyChanged("shake_maxTimeInBetween");
+            }
+        }
+
+        private int _shake_pressedTime = 200;
+        public int shake_pressedTime
+        {
+            get { return _shake_pressedTime; }
+            set
+            {
+                _shake_pressedTime = value;
+                OnPropertyChanged("shake_pressedTime");
+            }
+        }
+
         private int _touch_touchTapThreshold = 40;
         public int touch_touchTapThreshold
         {
