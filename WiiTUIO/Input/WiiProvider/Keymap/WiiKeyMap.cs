@@ -612,6 +612,7 @@ namespace WiiTUIO.Provider
                     this.executeButtonUp("Nunchuk.AccelZ-");
                 }
             }
+            
             if (this.config.TryGetValue("Shake", out outConfig))
             {
                 var now = DateTime.Now;
@@ -648,9 +649,8 @@ namespace WiiTUIO.Provider
                 }
                 lastAccel = totalAccel;
             }
-        }
 
-        if (this.config.TryGetValue("Nunchuk.Shake", out outConfig))
+            if (this.config.TryGetValue("Nunchuk.Shake", out outConfig))
             {
                 var now = DateTime.Now;
 
