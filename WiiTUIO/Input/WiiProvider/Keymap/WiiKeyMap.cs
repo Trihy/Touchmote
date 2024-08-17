@@ -352,6 +352,42 @@ namespace WiiTUIO.Provider
                     this.executeButtonUp("AccelZ-");
                 }
             }
+            if (this.config.TryGetValue("Shake", out outConfig))
+            {
+                var now = DateTime.Now;
+
+                float totalAccel = (float)Math.Sqrt(Math.Pow(accelState.Values.X, 2) + Math.Pow(accelState.Values.Y, 2) + Math.Pow(accelState.Values.Z, 2));
+                float delta = totalAccel - lastAccel;
+                smoothedAccel = smoothedAccel * 0.9f + delta;                
+
+                if (!PressedButtons["Shake"])
+                {
+                    if (Math.Abs(smoothedAccel) > Settings.Default.shake_threshold)
+                    {
+                        if ((now - lastShakeTime).TotalMilliseconds < Settings.Default.shake_maxTimeInBetween)
+                        {
+                            shakeCounter++;
+                            if (shakeCounter >= Settings.Default.shake_count)
+                            {
+                                PressedButtons["Shake"] = true;
+                                this.executeButtonDown("Shake");
+                                shakeCounter = 0;
+                            }
+                        }
+                        else
+                        {
+                            shakeCounter = 0;
+                        }
+                        lastShakeTime = now;
+                    }
+                }
+                else if ((now - lastShakeTime).TotalMilliseconds > Settings.Default.shake_pressedTime)
+                {
+                    PressedButtons["Shake"] = false;
+                    this.executeButtonUp("Shake");
+                }
+                lastAccel = totalAccel;
+            }
         }
 
         public void updateNunchuk(NunchukState nunchuk)
@@ -612,44 +648,6 @@ namespace WiiTUIO.Provider
                     this.executeButtonUp("Nunchuk.AccelZ-");
                 }
             }
-            
-            if (this.config.TryGetValue("Shake", out outConfig))
-            {
-                var now = DateTime.Now;
-
-                float totalAccel = (float)Math.Sqrt(Math.Pow(accelState.Values.X, 2) + Math.Pow(accelState.Values.Y, 2) + Math.Pow(accelState.Values.Z, 2));
-                float delta = totalAccel - lastAccel;
-                smoothedAccel = smoothedAccel * 0.9f + delta;                
-
-                if (!PressedButtons["Shake"])
-                {
-                    if (Math.Abs(smoothedAccel) > Settings.Default.shake_threshold)
-                    {
-                        if ((now - lastShakeTime).TotalMilliseconds < Settings.Default.shake_maxTimeInBetween)
-                        {
-                            shakeCounter++;
-                            if (shakeCounter >= Settings.Default.shake_count)
-                            {
-                                PressedButtons["Shake"] = true;
-                                this.executeButtonDown("Shake");
-                                shakeCounter = 0;
-                            }
-                        }
-                        else
-                        {
-                            shakeCounter = 0;
-                        }
-                        lastShakeTime = now;
-                    }
-                }
-                else if ((now - lastShakeTime).TotalMilliseconds > Settings.Default.shake_pressedTime)
-                {
-                    PressedButtons["Shake"] = false;
-                    this.executeButtonUp("Shake");
-                }
-                lastAccel = totalAccel;
-            }
-
             if (this.config.TryGetValue("Nunchuk.Shake", out outConfig))
             {
                 var now = DateTime.Now;
