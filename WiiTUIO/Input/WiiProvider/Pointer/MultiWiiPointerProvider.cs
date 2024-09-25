@@ -432,10 +432,14 @@ namespace WiiTUIO.Provider
                 }
                 pDeviceMutex.ReleaseMutex();
 
-                pDevice.SetReportType(InputReport.Status, false);
+                try
+                {
+                    pDevice.SetReportType(InputReport.Status, false);
 
-                pDevice.SetRumble(false);
-                pDevice.SetLEDs(true, true, true, true);
+                    pDevice.SetRumble(false);
+                    pDevice.SetLEDs(true, true, true, true);
+                }
+                catch { }
 
                 // Close the connection and dispose of the device.
                 pDevice.Disconnect();
