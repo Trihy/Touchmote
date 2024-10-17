@@ -49,6 +49,7 @@ namespace WiiTUIO
             this.cbMinimizeOnStart.IsChecked = Settings.Default.minimizeOnStart;
             this.cbMinimizeToTray.IsChecked = Settings.Default.minimizeToTray;
             this.cbPairOnStart.IsChecked = Settings.Default.pairOnStart;
+            this.cbPointer_considerRotation.IsChecked = Settings.Default.pointer_considerRotation;
             this.cbUseCustomCursor.IsChecked = Settings.Default.pointer_customCursor;
 
             InputFactory.InputType inputType = InputFactory.getType(Settings.Default.input);
@@ -138,6 +139,16 @@ namespace WiiTUIO
         private void cbMinimizeOnStart_Unchecked(object sender, RoutedEventArgs e)
         {
             Settings.Default.minimizeOnStart = false;
+        }
+
+        private void cbPointer_considerRotation_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.pointer_considerRotation = true;
+        }
+
+        private void cbPointer_considerRotation_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.pointer_considerRotation = false;
         }
 
         private void cbUseCustomCursor_Checked(object sender, RoutedEventArgs e)
