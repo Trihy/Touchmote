@@ -39,7 +39,7 @@
             <CheckBox x:Name="cbMinimizeOnStart" Content="Start minimized" Canvas.Left="125" Canvas.Top="154" FontFamily="Segoe UI Semilight" Checked="cbMinimizeOnStart_Checked" Unchecked="cbMinimizeOnStart_Unchecked" />
             <CheckBox x:Name="cbPointer_considerRotation" Content="Consider Rotation" Canvas.Left="125" Canvas.Top="177" FontFamily="Segoe UI Semilight" Checked="cbPointer_considerRotation_Checked" Unchecked="cbPointer_considerRotation_Unchecked" />
             <CheckBox Visibility="Collapsed" x:Name="cbUseCustomCursor" Content="Use Touchmote cursor (changes on restart)" Canvas.Left="125" Canvas.Top="177" FontFamily="Segoe UI Semilight" Checked="cbUseCustomCursor_Checked" Unchecked="cbUseCustomCursor_Unchecked" />
-            <Button x:Name="btnEditKeymaps" Content="Controller Config" Canvas.Left="125" Canvas.Top="188" Width="135" Click="btnEditKeymaps_Click" Height="30"></Button>
+            <Button x:Name="btnEditKeymaps" Content="Controller Config" Canvas.Left="125" Canvas.Top="205" Width="135" Click="btnEditKeymaps_Click" Height="30"></Button>
 
         </Canvas>
         <StackPanel x:Name="providerSettingsContent" />
