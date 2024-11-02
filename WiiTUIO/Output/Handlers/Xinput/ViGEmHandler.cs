@@ -116,10 +116,10 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 switch (button)
                 {
                     case "sound1":
-                        PlayWavFile(@"C:\Program Files\Touchmote\shoot.wav"); // Ruta del primer archivo
+                        PlayWavFile(@"C:\Program Files\Touchmote\shoot.wav");
                         break;
                     case "sound2":
-                        PlayWavFile(@"C:\Program Files\Touchmote\reload.wav"); // Ruta del segundo archivo
+                        PlayWavFile(@"C:\Program Files\Touchmote\reload.wav");
                         break;
                     case "rumble":
                         OnRumble?.Invoke(255, 255);
