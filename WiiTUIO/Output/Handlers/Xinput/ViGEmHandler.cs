@@ -9,6 +9,7 @@ using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
 using System.Windows;
 using System.Diagnostics;
+using System.Media;
 using WiiTUIO.Filters;
 using WiiTUIO.Properties;
 
