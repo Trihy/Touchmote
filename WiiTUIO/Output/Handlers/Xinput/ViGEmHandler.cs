@@ -93,6 +93,21 @@ namespace WiiTUIO.Output.Handlers.Xinput
         private bool rumble2Running = false;
         private readonly object rumbleLock = new object();
 
+        private void PlayWavFile(string filePath)
+        {
+            try
+            {
+                using (SoundPlayer player = new SoundPlayer(filePath))
+                {
+                    player.Play();
+                }
+            }
+            catch (Exception ex)
+            {                
+                Console.WriteLine($"Error playing file: {ex.Message}");
+            }
+        }
+
         public bool setButtonDown(string key)
         {
             if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals(PREFIX))
@@ -100,6 +115,12 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 string button = key.ToLower().Substring(4);
                 switch (button)
                 {
+                    case "sound1":
+                        PlayWavFile(@"C:\Program Files\Touchmote\shoot.wav"); // Ruta del primer archivo
+                        break;
+                    case "sound2":
+                        PlayWavFile(@"C:\Program Files\Touchmote\reload.wav"); // Ruta del segundo archivo
+                        break;
                     case "rumble":
                         OnRumble?.Invoke(255, 255);
                         break;
