@@ -428,7 +428,18 @@ namespace WiiTUIO.Provider
             this.KeyMap.updateCursorPosition(cursorPos);
             this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
 
-            if(wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
+            if (cursorPos.OutOfReach)
+            {
+                this.KeyMap.executeButtonUp("OnScreen");
+                this.KeyMap.executeButtonDown("OffScreen");
+            }
+            else
+            {
+                this.KeyMap.executeButtonUp("OffScreen");
+                this.KeyMap.executeButtonDown("OnScreen");
+            }
+
+            if (wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
             {
                 this.KeyMap.updateNunchuk(wiimoteState.NunchukState);
 

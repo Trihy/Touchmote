@@ -40,6 +40,8 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, false, true));
             allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Rotation-   ", "Rotation-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Rotation+   ", "Rotation+", true, true, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer On Screen", "OnScreen"));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Off Screen", "OffScreen"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
