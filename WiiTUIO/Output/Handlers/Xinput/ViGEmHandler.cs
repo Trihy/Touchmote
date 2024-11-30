@@ -132,9 +132,9 @@ namespace WiiTUIO.Output.Handlers.Xinput
                                     while (rumble2Running)
                                     {
                                         OnRumble?.Invoke(255, 255);
-                                        Thread.Sleep(90);
+                                        Thread.Sleep(Settings.Default.mGunIntensity10to200);
                                         OnRumble?.Invoke(0, 0);
-                                        Thread.Sleep(90);
+                                        Thread.Sleep(Settings.Default.mGunIntensity10to200);
                                     }
                                 });
                                 rumbleThread.Start();
