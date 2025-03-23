@@ -105,6 +105,7 @@ namespace WiiTUIO
                 bool active = this.currentKeymap.Filename == keymap.Filename;
                 bool defaultk = keymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap();
                 KeymapRow row = new KeymapRow(keymap,active,defaultk);
+                row.OnClick += SavePreviousKeymap;
                 row.OnClick += selectKeymap;
                 this.spLayoutList.Children.Add(row);
             }
@@ -133,6 +134,32 @@ namespace WiiTUIO
             this.fillConnectionLists(currentKeymap, number);
         }
 
+        private void SavePreviousKeymap(Keymap keymap)
+        {
+            List<Keymap> allKeymaps = KeymapDatabase.Current.getAllKeymaps();
+            int index = allKeymaps.FindIndex((t) => t.getFilename() == this.currentKeymap.Filename);
+            if (index > -1)
+            {
+                //KeymapInputSource[] temp = { KeymapInputSource.IR, KeymapInputSource.WIIMOTE,
+                //    KeymapInputSource.NUNCHUK, KeymapInputSource.CLASSIC };
+
+                //for (int i = 0; i < temp.Length; i++)
+                //{
+                //    KeymapInputSource tempSource = temp[i];
+                //    List<KeymapInput> list = KeymapDatabase.Current.getAvailableInputs(tempSource);
+                //    foreach (KeymapInput input in list)
+                //    {
+                //        KeymapOutConfig config = this.currentKeymap.getConfigFor(this.selectedWiimote, input.Key);
+                //        if (config != null)
+                //        {
+                //            this.currentKeymap.setConfigFor(this.selectedWiimote, input, config, runSave: false);
+                //        }
+                //    }
+                //}
+
+                this.currentKeymap.save();
+            }
+        }
 
         private void selectKeymap(Keymap keymap)
         {
@@ -164,11 +191,18 @@ namespace WiiTUIO
                 {
                     KeymapConnectionRow row = new KeymapConnectionRow(input, config, defaultKeymap);
                     row.OnConfigChanged += connectionRow_OnConfigChanged;
+                    row.OnSettingChanged += PersistInputSetting;
                     row.OnDragStart += output_OnDragStart;
                     row.OnDragStop += output_OnDragStop;
                     container.Children.Add(row);
                 }
             }
+        }
+
+
+        private void PersistInputSetting(KeymapInput input, KeymapOutConfig config)
+        {
+            this.currentKeymap.setConfigFor(this.selectedWiimote, input, config, runSave: false);
         }
 
         private void fillConnectionLists(Keymap keymap, int wiimote)
