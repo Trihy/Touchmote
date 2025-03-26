@@ -139,6 +139,8 @@ namespace WiiTUIO.Provider
 
         private ScreenPositionCalculator screenPositionCalculator;
 
+        private bool prevOutOfReach = true;
+
         public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
         {
             this.WiimoteID = wiimoteID;
@@ -465,16 +467,17 @@ namespace WiiTUIO.Provider
             this.KeyMap.updateCursorPosition(cursorPos);
             this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
 
-            if (cursorPos.OutOfReach)
+            if (cursorPos.OutOfReach && !prevOutOfReach)
             {
                 this.KeyMap.executeButtonUp("OnScreen");
                 this.KeyMap.executeButtonDown("OffScreen");
             }
-            else
+            else if (!cursorPos.OutOfReach && prevOutOfReach)
             {
                 this.KeyMap.executeButtonUp("OffScreen");
                 this.KeyMap.executeButtonDown("OnScreen");
             }
+            prevOutOfReach = cursorPos.OutOfReach;
 
             if (wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.Nunchuk)
             {
