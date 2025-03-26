@@ -62,12 +62,12 @@ namespace WiiTUIO
             save();
         }
 
-        private void save()
+        public void save()
         {
             File.WriteAllText(Settings.Default.keymaps_path + this.Filename, this.jsonObj.ToString());
         }
 
-        public void setConfigFor(int controllerId, KeymapInput input, KeymapOutConfig config)
+        public void setConfigFor(int controllerId, KeymapInput input, KeymapOutConfig config, bool runSave=true)
         {
             string key;
             if (controllerId == 0)
