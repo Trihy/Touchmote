@@ -52,7 +52,7 @@
                 <StackPanel>
                     <Grid>
                         <TextBlock Text="Deadzone" Margin="5,5,75,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
-                        <Controls:NumericUpDown Name="deadzone_updown" StringFormat="F2" Value="0.01" Interval="0.1" Maximum="1.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5">
+                        <Controls:NumericUpDown Name="deadzone_updown" StringFormat="F2" Value="0.01" Interval="0.1" Maximum="1.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5" IncrementValue="Deadzone_updown_IncrementValue" DecrementValue="Deadzone_updown_DecrementValue" ValueChanged="Deadzone_updown_ValueChanged">
                             <Controls:NumericUpDown.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
@@ -65,7 +65,7 @@
                     </Grid>
                     <Grid>
                         <TextBlock Text="Scale" Margin="5,5,75,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
-                        <Controls:NumericUpDown Name="scale_updown" StringFormat="F2" Value="1.0" Interval="0.1" Maximum="10.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5" >
+                        <Controls:NumericUpDown Name="scale_updown" StringFormat="F2" Value="1.0" Interval="0.1" Maximum="10.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5" IncrementValue="Scale_updown_IncrementValue" DecrementValue="Scale_updown_DecrementValue" ValueChanged="Scale_updown_ValueChanged">
                             <Controls:NumericUpDown.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
@@ -78,7 +78,7 @@
                     </Grid>
                     <Grid>
                         <TextBlock Text="Threshold" Margin="5,5,75,5" FontSize="11" FontFamily="Segoe UI Semilight" Foreground="Black" TextAlignment="Right" VerticalAlignment="Center" />
-                        <Controls:NumericUpDown Name="threshold_updown" StringFormat="F2" Value="0.8" Interval="0.1" Maximum="1.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="16" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5">
+                        <Controls:NumericUpDown Name="threshold_updown" StringFormat="F2" Value="0.8" Interval="0.1" Maximum="1.0" Margin="34,0,5,0" FontFamily="Segoe UI Semilight" FontSize="16" Minimum="0" BorderBrush="#FFDEDEDE" RenderTransformOrigin="1.0,0.5" IncrementValue="Threshold_updown_IncrementValue" DecrementValue="Threshold_updown_DecrementValue" ValueChanged="Threshold_updown_ValueChanged">
                             <Controls:NumericUpDown.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>

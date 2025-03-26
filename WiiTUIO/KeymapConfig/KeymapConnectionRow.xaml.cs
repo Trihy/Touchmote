@@ -27,6 +27,7 @@ namespace WiiTUIO
         public Action<Adorner> OnDragStart;
         public Action<Adorner> OnDragStop;
         public Action<KeymapInput, KeymapOutConfig> OnConfigChanged;
+        public Action<KeymapInput, KeymapOutConfig> OnSettingChanged;
 
         private bool fromDefault;
 
@@ -277,5 +278,58 @@ namespace WiiTUIO
             this.connection_input_config_closebutton.Visibility = Visibility.Hidden;
         }
 
+        private void Deadzone_updown_IncrementValue(object sender, RoutedEventArgs e)
+        {
+            this.config.Deadzone = Math.Min(this.deadzone_updown.Value.Value + this.deadzone_updown.Interval, this.deadzone_updown.Maximum);
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Deadzone_updown_DecrementValue(object sender, RoutedEventArgs e)
+        {
+            this.config.Deadzone = Math.Max(this.deadzone_updown.Value.Value - this.deadzone_updown.Interval, this.deadzone_updown.Minimum);
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Deadzone_updown_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            this.config.Deadzone = this.deadzone_updown.Value.Value;
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Scale_updown_IncrementValue(object sender, RoutedEventArgs e)
+        {
+            this.config.Scale = Math.Min(this.scale_updown.Value.Value + this.scale_updown.Interval, this.scale_updown.Maximum);
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Scale_updown_DecrementValue(object sender, RoutedEventArgs e)
+        {
+            this.config.Scale = Math.Max(this.scale_updown.Value.Value - this.scale_updown.Interval, this.scale_updown.Minimum);
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Scale_updown_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            this.config.Scale = this.scale_updown.Value.Value;
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Threshold_updown_IncrementValue(object sender, RoutedEventArgs e)
+        {
+            this.config.Threshold = Math.Min(this.threshold_updown.Value.Value + this.threshold_updown.Interval, this.threshold_updown.Maximum);
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Threshold_updown_DecrementValue(object sender, RoutedEventArgs e)
+        {
+            this.config.Threshold = Math.Max(this.threshold_updown.Value.Value - this.threshold_updown.Interval, this.threshold_updown.Minimum);
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
+
+        private void Threshold_updown_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            this.config.Threshold = this.threshold_updown.Value.Value;
+            OnSettingChanged?.Invoke(this.input, this.config);
+        }
     }
 }
