@@ -10,18 +10,27 @@ using System.Windows.Controls;
 using System.Diagnostics;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Security;
+using System.Runtime.InteropServices;
 
 namespace WiiTUIO
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
+    [SuppressUnmanagedCodeSecurity]
     public partial class App : Application
     {
+        [DllImport("winmm.dll")]
+        internal static extern uint timeBeginPeriod(uint period);
+        [DllImport("winmm.dll")]
+        internal static extern uint timeEndPeriod(uint period);
+
+
         /// <summary>
         /// The tray's taskbar icon
         /// </summary>
-       // public static TaskbarIcon TB { get; private set; }
+        // public static TaskbarIcon TB { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -32,6 +41,9 @@ namespace WiiTUIO
                 Application.Current.Shutdown(220);
                 return;
             }
+
+            // Allow sleep time durations less than 16 ms
+            timeBeginPeriod(1);
 
             // Initialise the Tray Icon
             //TB = (TaskbarIcon)FindResource("tbNotifyIcon");
@@ -51,6 +63,9 @@ namespace WiiTUIO
                 WiiTUIO.Properties.Settings.Default.Save();
                 //TB.Dispose();
                 SystemProcessMonitor.Default.Dispose();
+
+                // Reset timer
+                timeEndPeriod(1);
             }
         }
 

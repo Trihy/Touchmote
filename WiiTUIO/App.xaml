@@ -3,6 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Window}" BasedOn="{StaticResource {x:Type Window}}">
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed" />
+            </Style>
+        </ResourceDictionary>
+
         <!--
         <ResourceDictionary>
             <tb:TaskbarIcon x:Key="tbNotifyIcon" IconSource="Resources/icon.ico" ToolTipText="Click to edit Touchmote settings" TrayBalloonTipClicked="TaskbarIcon_TrayBalloonTipClicked_1">
