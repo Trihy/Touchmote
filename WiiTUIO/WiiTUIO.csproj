@@ -131,6 +131,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FakerInputWrapper">
+      <HintPath>.\FakerInputWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=0.13.0.13, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.0.13.0.13-ALPHA\lib\net45\MahApps.Metro.dll</HintPath>
@@ -214,6 +217,9 @@
     <Compile Include="Filters\RadiusBuffer.cs" />
     <Compile Include="Filters\SmoothingBuffer.cs" />
     <Compile Include="Output\CursorPositionHelper.cs" />
+    <Compile Include="Output\FakerInputDevice.cs" />
+    <Compile Include="Output\Handlers\FakerInputKeyboardHandler.cs" />
+    <Compile Include="Output\Handlers\FakerInputMouseHandler.cs" />
     <Compile Include="Output\Handlers\HandlerFactory.cs" />
     <Compile Include="Output\Handlers\ICursorHandler.cs" />
     <Compile Include="Output\Handlers\InputMethods.cs" />
@@ -498,10 +504,11 @@
     <PostBuildEvent>GOTO END
 
 copy "$(ProjectDir)VMultiDll_$(PlatformName).dll" "$(TargetDir)VMultiDll.dll" /Y
+copy "$(ProjectDir)FakerInputDll.dll" "$(TargetDir)FakerInputDll.dll" /Y
 xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
 
-"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.digicert.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"
+::"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.digicert.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"
 
 :END</PostBuildEvent>
   </PropertyGroup>
