@@ -101,7 +101,7 @@ namespace WiiTUIO
             string currentVmultiMonitor = VmultiUtil.getCurrentMonitorDevicePath();
             IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
 
-            if (VmultiDevice.Current.isAvailable())
+            /*if (VmultiDevice.Current.isAvailable())
             {
                 //See if the selected monitor is still connected to the computer
                 if (currentVmultiMonitor != null)
@@ -129,6 +129,7 @@ namespace WiiTUIO
                 }
             }
             else
+            */
             {
                 Settings.Default.primaryMonitor = "";
             }

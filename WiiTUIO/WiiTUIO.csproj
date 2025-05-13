@@ -173,10 +173,11 @@
     <Reference Include="TCD.System.TouchInjection">
       <HintPath>..\packages\TCD.System.TouchInjection.1.0.0\lib\net45\TCD.System.TouchInjection.dll</HintPath>
     </Reference>
-    <Reference Include="VMultiDllWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <!--<Reference Include="VMultiDllWrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\VMultiDllWrapper.dll</HintPath>
     </Reference>
+    -->
     <Reference Include="WiimoteLib, Version=1.7.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\WiimoteLib.dll</HintPath>
@@ -226,7 +227,7 @@
     <Compile Include="Output\Handlers\IOutputHandler.cs" />
     <Compile Include="Output\Handlers\IRumbleFeedback.cs" />
     <Compile Include="Output\Handlers\IStickHandler.cs" />
-    <Compile Include="Output\Handlers\VmultiKeyboardHandler.cs" />
+    <!--<Compile Include="Output\Handlers\VmultiKeyboardHandler.cs" />-->
     <Compile Include="Output\Handlers\Touch\CursorColor.cs" />
     <Compile Include="Output\Handlers\IButtonHandler.cs" />
     <Compile Include="Output\Handlers\KeyboardHandler.cs" />
@@ -267,8 +268,8 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MinimizeToTray.cs" />
-    <Compile Include="Output\VmultiDevice.cs" />
-    <Compile Include="Output\VmultiProviderHandler.cs" />
+    <!--<Compile Include="Output\VmultiDevice.cs" />
+    <Compile Include="Output\VmultiProviderHandler.cs" />-->
     <Compile Include="OverlayNotice.xaml.cs">
       <DependentUpon>OverlayNotice.xaml</DependentUpon>
     </Compile>
@@ -384,7 +385,7 @@
       <DependentUpon>TUIOSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Output\TouchInjectProviderHandler.cs" />
-    <Compile Include="Output\TUIOVmultiProviderHandler.cs" />
+    <!--<Compile Include="Output\TUIOVmultiProviderHandler.cs" />-->
     <Compile Include="Output\TUIOProviderHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -504,8 +505,8 @@
     <PostBuildEvent>GOTO END
 
 copy "$(ProjectDir)VMultiDll_$(PlatformName).dll" "$(TargetDir)VMultiDll.dll" /Y
-copy "$(ProjectDir)FakerInputDll.dll" "$(TargetDir)FakerInputDll.dll" /Y
-xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
+copy "$(ProjectDir)FakerInputDll_$(PlatformName).dll" "$(TargetDir)FakerInputDll.dll" /Y
+::xcopy "$(TargetDir)..\$(ConfigurationName)" "C:\Program Files\Touchmote" /H /Y
 cd "C:\Program Files\Touchmote"
 
 ::"C:\Program Files (x86)\Windows Kits\8.1\bin\$(PlatformName)\signtool.exe" sign /v /a /s ROOT /n Touchmote /t http://timestamp.digicert.com/scripts/timstamp.dll "C:\Program Files\Touchmote\Touchmote.exe"
