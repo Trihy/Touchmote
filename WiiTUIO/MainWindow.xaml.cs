@@ -101,7 +101,7 @@ namespace WiiTUIO
             string currentVmultiMonitor = VmultiUtil.getCurrentMonitorDevicePath();
             IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
 
-            /*if (VmultiDevice.Current.isAvailable())
+            if (VmultiDevice.Current.isAvailable())
             {
                 //See if the selected monitor is still connected to the computer
                 if (currentVmultiMonitor != null)
@@ -129,7 +129,6 @@ namespace WiiTUIO
                 }
             }
             else
-            */
             {
                 Settings.Default.primaryMonitor = "";
             }
@@ -600,15 +599,7 @@ namespace WiiTUIO
             try
             {
                 // Connect a Wiimote, hook events then start.
-                //this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
-                Thread testThread = new Thread(() =>
-                {
-                    this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
-                });
-                testThread.Priority = ThreadPriority.AboveNormal;
-                testThread.IsBackground = true;
-                testThread.Start();
-                testThread.Join();
+                this.pWiiProvider = InputFactory.createInputProvider(Settings.Default.input);
                 //this.pWiiProvider.OnNewFrame += new EventHandler<FrameEventArgs>(pWiiProvider_OnNewFrame);
                 this.pWiiProvider.OnStatusUpdate += new Action<WiimoteStatus>(pWiiProvider_OnStatusUpdate);
                 this.pWiiProvider.OnConnect += new Action<int,int>(pWiiProvider_OnConnect);

@@ -44,7 +44,7 @@ namespace WiiTUIO.Provider
                 this.cbiCenter.IsSelected = true;
             }
 
-            /*if(VmultiDevice.Current.isAvailable())
+            if(VmultiDevice.Current.isAvailable())
             {
                 string currentMonitor = VmultiUtil.getCurrentMonitorDevicePath();
 
@@ -65,7 +65,6 @@ namespace WiiTUIO.Provider
                 this.initializing = false;
             }
             else
-            */
             {
                 ComboBoxItem cbItem = new ComboBoxItem();
                 cbItem.Content = "Requires driver";

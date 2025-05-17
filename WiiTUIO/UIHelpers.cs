@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,7 +13,6 @@ using WiiTUIO.Properties;
 
 namespace WiiTUIO
 {
-    [SuppressUnmanagedCodeSecurity]
     public static class UIHelpers
     {
         public static void animateExpand(FrameworkElement elem)

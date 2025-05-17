@@ -20,31 +20,9 @@ namespace WiiTUIO.Output.Handlers
         private List<IOutputHandler> createOutputHandlers(long id)
         {
             List<IOutputHandler> all = new List<IOutputHandler>();
-            //IOutputHandler keyboardHandler = VmultiDevice.Current.isAvailable() ? (IOutputHandler)(VmultiKeyboardHandler.Default) : (IOutputHandler)(new KeyboardHandler());
-            bool fakerAvailable = FakerInputDevice.Current.isAvailable();
-            IOutputHandler keyboardHandler = null;
-            if (fakerAvailable)
-            {
-                keyboardHandler = FakerInputKeyboardHandler.Default;
-            }
-            else
-            {
-                keyboardHandler = new KeyboardHandler();
-            }
-
+            IOutputHandler keyboardHandler = VmultiDevice.Current.isAvailable() ? (IOutputHandler)(VmultiKeyboardHandler.Default) : (IOutputHandler)(new KeyboardHandler());
             all.Add(keyboardHandler);
-            //all.Add(new MouseHandler());
-            IOutputHandler mouseHandler = null;
-            if (fakerAvailable)
-            {
-                mouseHandler = new FakerInputMouseHandler(FakerInputDevice.Current);
-            }
-            else
-            {
-                mouseHandler = new MouseHandler();
-            }
-
-            all.Add(mouseHandler);
+            all.Add(new MouseHandler());
             all.Add(new ViGEmHandler(id));
             all.Add(new TouchHandler(TouchOutputFactory.getCurrentProviderHandler(),id));
             return all;
