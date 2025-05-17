@@ -3,37 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WiiTUIO.Output.Handlers;
 using WindowsInput;
 using WindowsInput.Native;
-using VMultiDllWrapper;
+using FakerInputWrapper;
 
-namespace WiiTUIO.Output.Handlers
+namespace WiiTUIO.Output
 {
-    public class VmultiKeyboardHandler : IButtonHandler
+    internal class FakerInputKeyboardHandler : IButtonHandler
     {
-        private InputSimulator inputSimulator;
+        private FakerInputDevice fakerDevice;
+
         private KeyboardReport report;
+        private bool reportSync;
 
-        private static VmultiKeyboardHandler defaultInstance;
+        private KeyboardEnhancedReport enhancedKeyReport;
+        private bool enhancedReportSync;
 
-        public static VmultiKeyboardHandler Default
+        private static FakerInputKeyboardHandler defaultInstance;
+
+        public static FakerInputKeyboardHandler Default
         {
             get
             {
                 if (defaultInstance == null)
                 {
-                    defaultInstance = new VmultiKeyboardHandler();
+                    defaultInstance = new FakerInputKeyboardHandler(FakerInputDevice.Current);
                 }
+
                 return defaultInstance;
             }
         }
 
-        private VmultiKeyboardHandler()
+        private FakerInputKeyboardHandler(FakerInputDevice device)
         {
+            this.fakerDevice = device;
             this.report = new KeyboardReport();
-            this.inputSimulator = new InputSimulator();
+            this.enhancedKeyReport = new KeyboardEnhancedReport();
         }
-
 
         public bool reset()
         {
@@ -46,41 +53,59 @@ namespace WiiTUIO.Output.Handlers
             if (Enum.IsDefined(typeof(KeyboardKey), key.ToUpper()))
             {
                 KeyboardKey theKeyCode = (KeyboardKey)Enum.Parse(typeof(KeyboardKey), key, true);
-                report.keyDown(theKeyCode);
+                report.KeyDown(theKeyCode);
+                reportSync = true;
                 return true;
             }
             else if (Enum.IsDefined(typeof(KeyboardModifier), key.ToUpper()))
             {
                 KeyboardModifier theKeyCode = (KeyboardModifier)Enum.Parse(typeof(KeyboardModifier), key, true);
-                report.keyDown(theKeyCode);
+                report.KeyDown(theKeyCode);
+                reportSync = true;
+                return true;
+            }
+            else if (Enum.IsDefined(typeof(EnhancedKey), key.ToUpper()))
+            {
+                EnhancedKey theKeyCode = (EnhancedKey)Enum.Parse(typeof(EnhancedKey), key, true);
+                enhancedKeyReport.KeyDown(theKeyCode);
+                enhancedReportSync = true;
                 return true;
             }
             else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
             {
                 VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
-                
+
                 Enum vmultiKey = VmultiKeycodeAdapter.ConvertVirtualKeyCode(theKeyCode);
-                
-                if(vmultiKey == null)
+                if (vmultiKey == null)
                 {
-                    this.inputSimulator.Keyboard.KeyDown(theKeyCode);
-                    return true;
+                    return false;
                 }
 
                 if (vmultiKey is KeyboardKey)
                 {
                     KeyboardKey keyboardKey = (KeyboardKey)vmultiKey;
-                    report.keyDown(keyboardKey);
+                    report.KeyDown(keyboardKey);
+                    reportSync = true;
                     return true;
                 }
 
-                if (vmultiKey is KeyboardModifier)
+                else if (vmultiKey is KeyboardModifier)
                 {
                     KeyboardModifier keyboardModifier = (KeyboardModifier)vmultiKey;
-                    report.keyDown(keyboardModifier);
+                    report.KeyDown(keyboardModifier);
+                    reportSync = true;
+                    return true;
+                }
+
+                else if (vmultiKey is EnhancedKey)
+                {
+                    EnhancedKey enhanceKey = (EnhancedKey)vmultiKey;
+                    enhancedKeyReport.KeyDown(enhanceKey);
+                    enhancedReportSync = true;
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -89,13 +114,22 @@ namespace WiiTUIO.Output.Handlers
             if (Enum.IsDefined(typeof(KeyboardKey), key.ToUpper()))
             {
                 KeyboardKey theKeyCode = (KeyboardKey)Enum.Parse(typeof(KeyboardKey), key, true);
-                report.keyUp(theKeyCode);
+                report.KeyUp(theKeyCode);
+                reportSync = true;
                 return true;
             }
             else if (Enum.IsDefined(typeof(KeyboardModifier), key.ToUpper()))
             {
                 KeyboardModifier theKeyCode = (KeyboardModifier)Enum.Parse(typeof(KeyboardModifier), key, true);
-                report.keyUp(theKeyCode);
+                report.KeyUp(theKeyCode);
+                reportSync = true;
+                return true;
+            }
+            else if (Enum.IsDefined(typeof(EnhancedKey), key.ToUpper()))
+            {
+                EnhancedKey theKeyCode = (EnhancedKey)Enum.Parse(typeof(EnhancedKey), key, true);
+                enhancedKeyReport.KeyUp(theKeyCode);
+                enhancedReportSync = true;
                 return true;
             }
             else if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
@@ -103,26 +137,33 @@ namespace WiiTUIO.Output.Handlers
                 VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
 
                 Enum vmultiKey = VmultiKeycodeAdapter.ConvertVirtualKeyCode(theKeyCode);
-
                 if (vmultiKey == null)
                 {
-                    this.inputSimulator.Keyboard.KeyUp(theKeyCode);
-                    return true;
+                    return false;
                 }
 
                 if (vmultiKey is KeyboardKey)
                 {
                     KeyboardKey keyboardKey = (KeyboardKey)vmultiKey;
-                    report.keyUp(keyboardKey);
+                    report.KeyUp(keyboardKey);
+                    reportSync = true;
+                    return true;
+                }
+                else if (vmultiKey is KeyboardModifier)
+                {
+                    KeyboardModifier keyboardModifier = (KeyboardModifier)vmultiKey;
+                    report.KeyUp(keyboardModifier);
+                    reportSync = true;
+                    return true;
+                }
+                else if (vmultiKey is EnhancedKey)
+                {
+                    EnhancedKey enhanceKey = (EnhancedKey)vmultiKey;
+                    enhancedKeyReport.KeyUp(enhanceKey);
+                    enhancedReportSync = true;
                     return true;
                 }
 
-                if (vmultiKey is KeyboardModifier)
-                {
-                    KeyboardModifier keyboardModifier = (KeyboardModifier)vmultiKey;
-                    report.keyUp(keyboardModifier);
-                    return true;
-                }
             }
             return false;
         }
@@ -141,7 +182,7 @@ namespace WiiTUIO.Output.Handlers
 
         public bool disconnect()
         {
-            VmultiDevice.Current.updateKeyboard(new KeyboardReport()); //Sets all keys to up state.
+            FakerInputDevice.Current.UpdateKeyboard(new KeyboardReport()); // Sets all keys to up state.
             //VmultiDevice.Current.disconnect();
             return true;
         }
@@ -153,11 +194,25 @@ namespace WiiTUIO.Output.Handlers
 
         public bool endUpdate()
         {
-            return VmultiDevice.Current.updateKeyboard(report);
+            bool status = false;
+            if (reportSync)
+            {
+                status = fakerDevice.UpdateKeyboard(report);
+                reportSync = false;
+            }
+
+            if (enhancedReportSync)
+            {
+                status = fakerDevice.UpdateKeyboardEnhanced(enhancedKeyReport);
+                enhancedReportSync = false;
+            }
+
+            return status;
         }
     }
 
-    public class VmultiKeycodeAdapter {
+    public class VmultiKeycodeAdapter
+    {
         public static Enum ConvertVirtualKeyCode(VirtualKeyCode vkey)
         {
             switch (vkey)
@@ -354,10 +409,15 @@ namespace WiiTUIO.Output.Handlers
                     return KeyboardModifier.LAlt;
                 case VirtualKeyCode.RMENU:
                     return KeyboardModifier.RAlt;
+                case VirtualKeyCode.VOLUME_UP:
+                    return EnhancedKey.VolumeUp;
+                case VirtualKeyCode.VOLUME_DOWN:
+                    return EnhancedKey.VolumeDown;
+                case VirtualKeyCode.VOLUME_MUTE:
+                    return EnhancedKey.Mute;
                 default:
                     return null;
             }
         }
-
     }
 }

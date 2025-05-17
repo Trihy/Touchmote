@@ -12,6 +12,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Security;
 using System.Runtime.InteropServices;
+using WiiTUIO.Output;
 
 namespace WiiTUIO
 {
@@ -52,7 +53,6 @@ namespace WiiTUIO
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             Application.Current.Exit += appWillExit;
 
-
             base.OnStartup(e);
         }
 
@@ -63,6 +63,10 @@ namespace WiiTUIO
                 WiiTUIO.Properties.Settings.Default.Save();
                 //TB.Dispose();
                 SystemProcessMonitor.Default.Dispose();
+                if (FakerInputDevice.Current.isAvailable())
+                {
+                    FakerInputDevice.Current.Disconnect();
+                }
 
                 // Reset timer
                 timeEndPeriod(1);
