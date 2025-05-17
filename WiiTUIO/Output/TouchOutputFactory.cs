@@ -82,7 +82,7 @@ namespace WiiTUIO.Output
             {
                 return OutputType.DRAW;
             }
-            return VmultiDevice.Current.isAvailable() ? OutputType.TOUCHVMULTI : OutputType.TOUCHINJECT; //Default
+            return OutputType.TOUCHINJECT; //Default
         }
 
         private static ITouchProviderHandler createProviderHandler(string name)
@@ -98,12 +98,12 @@ namespace WiiTUIO.Output
                     return new TouchInjectProviderHandler();
                 case OutputType.TOUCHMTV:
                     return new MTVProviderHandler();
-                case OutputType.TOUCHVMULTI:
-                    return new VmultiProviderHandler();
+                //case OutputType.TOUCHVMULTI:
+                //    return new VmultiProviderHandler();
                 case OutputType.TUIO:
                     return new TUIOProviderHandler();
-                case OutputType.TUIOTOUCH:
-                    return new TUIOVmultiProviderHandler();
+                //case OutputType.TUIOTOUCH:
+                //    return new TUIOVmultiProviderHandler();
                 case OutputType.DRAW:
                     return new DrawingProviderHandler();
                 default:
