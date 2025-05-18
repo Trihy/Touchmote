@@ -9,7 +9,6 @@ using FakerInputWrapper;
 using WiiTUIO.Filters;
 using WiiTUIO.Properties;
 using WiiTUIO.Provider;
-using WindowsInput;
 
 namespace WiiTUIO.Output.Handlers
 {

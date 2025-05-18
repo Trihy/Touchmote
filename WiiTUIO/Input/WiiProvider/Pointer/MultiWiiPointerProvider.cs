@@ -8,7 +8,6 @@ using System.Windows;
 using WiimoteLib;
 using System.Runtime.InteropServices;
 using System.Drawing;
-using WindowsInput;
 using WiiTUIO.Properties;
 using System.Windows.Controls;
 using System.Threading;

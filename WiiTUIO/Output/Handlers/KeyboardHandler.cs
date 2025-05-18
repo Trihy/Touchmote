@@ -3,21 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WindowsInput;
-using WindowsInput.Native;
 
 namespace WiiTUIO.Output.Handlers
 {
     public class KeyboardHandler : IButtonHandler
     {
-        //private InputSimulator inputSimulator;
-
         private HashSet<VirtualKeyCode> keysDown;
 
         public KeyboardHandler()
         {
-            //this.inputSimulator = new InputSimulator();
-
             this.keysDown = new HashSet<VirtualKeyCode>();
         }
 
@@ -26,7 +20,6 @@ namespace WiiTUIO.Output.Handlers
             foreach(VirtualKeyCode keyCode in keysDown)
             {
                 DS4Windows.InputMethods.performKeyRelease((ushort)keyCode);
-                //this.inputSimulator.Keyboard.KeyUp(keyCode);
             }
 
             keysDown.Clear();
@@ -39,7 +32,6 @@ namespace WiiTUIO.Output.Handlers
             {
                 VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
                 DS4Windows.InputMethods.performKeyPress((ushort)theKeyCode);
-                //this.inputSimulator.Keyboard.KeyDown(theKeyCode);
                 this.keysDown.Add(theKeyCode);
                 return true;
             }
@@ -52,7 +44,6 @@ namespace WiiTUIO.Output.Handlers
             {
                 VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
                 DS4Windows.InputMethods.performKeyRelease((ushort)theKeyCode);
-                //this.inputSimulator.Keyboard.KeyUp(theKeyCode);
                 this.keysDown.Remove(theKeyCode);
                 return true;
             }

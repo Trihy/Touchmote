@@ -9,8 +9,6 @@ using System.Windows.Forms;
 using WiiTUIO.Filters;
 using WiiTUIO.Properties;
 using WiiTUIO.Provider;
-using WindowsInput;
-using WindowsInput.Native;
 
 namespace WiiTUIO.Output.Handlers
 {

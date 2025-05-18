@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WiiTUIO.Output.Handlers;
-using WindowsInput;
-using WindowsInput.Native;
 using FakerInputWrapper;
 
 namespace WiiTUIO.Output

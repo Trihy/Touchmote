@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using WiimoteLib;
 using WiiTUIO.Output.Handlers;
 using WiiTUIO.Properties;
-using WindowsInput;
-using WindowsInput.Native;
 
 namespace WiiTUIO.Provider
 {
@@ -22,8 +20,6 @@ namespace WiiTUIO.Provider
         public Action<WiiButtonEvent> OnButtonDown;
         public Action<WiiKeyMapConfigChangedEvent> OnConfigChanged;
         public Action<bool> OnRumble;
-
-        private InputSimulator inputSimulator;
 
         private List<IOutputHandler> outputHandlers;
 
@@ -64,8 +60,6 @@ namespace WiiTUIO.Provider
             this.id = id;
 
             this.SetKeymap(keymap);
-
-            this.inputSimulator = new InputSimulator();
 
             this.outputHandlers = outputHandlers;
 

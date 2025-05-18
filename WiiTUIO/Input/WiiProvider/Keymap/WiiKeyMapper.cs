@@ -11,8 +11,6 @@ using System.Windows;
 using WiimoteLib;
 using WiiTUIO.Output.Handlers;
 using WiiTUIO.Properties;
-using WindowsInput;
-using WindowsInput.Native;
 
 namespace WiiTUIO.Provider
 {
