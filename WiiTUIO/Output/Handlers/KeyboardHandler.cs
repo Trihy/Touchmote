@@ -28,6 +28,8 @@ namespace WiiTUIO.Output.Handlers
                 DS4Windows.InputMethods.performKeyRelease((ushort)keyCode);
                 //this.inputSimulator.Keyboard.KeyUp(keyCode);
             }
+
+            keysDown.Clear();
             return true;
         }
 
