@@ -10,13 +10,13 @@ namespace WiiTUIO.Output.Handlers
 {
     public class KeyboardHandler : IButtonHandler
     {
-        private InputSimulator inputSimulator;
+        //private InputSimulator inputSimulator;
 
         private HashSet<VirtualKeyCode> keysDown;
 
         public KeyboardHandler()
         {
-            this.inputSimulator = new InputSimulator();
+            //this.inputSimulator = new InputSimulator();
 
             this.keysDown = new HashSet<VirtualKeyCode>();
         }
@@ -25,7 +25,8 @@ namespace WiiTUIO.Output.Handlers
         {
             foreach(VirtualKeyCode keyCode in keysDown)
             {
-                this.inputSimulator.Keyboard.KeyUp(keyCode);
+                DS4Windows.InputMethods.performKeyRelease((ushort)keyCode);
+                //this.inputSimulator.Keyboard.KeyUp(keyCode);
             }
             return true;
         }
@@ -35,7 +36,8 @@ namespace WiiTUIO.Output.Handlers
             if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
             {
                 VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
-                this.inputSimulator.Keyboard.KeyDown(theKeyCode);
+                DS4Windows.InputMethods.performKeyPress((ushort)theKeyCode);
+                //this.inputSimulator.Keyboard.KeyDown(theKeyCode);
                 this.keysDown.Add(theKeyCode);
                 return true;
             }
@@ -47,7 +49,8 @@ namespace WiiTUIO.Output.Handlers
             if (Enum.IsDefined(typeof(VirtualKeyCode), key.ToUpper()))
             {
                 VirtualKeyCode theKeyCode = (VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), key, true);
-                this.inputSimulator.Keyboard.KeyUp(theKeyCode);
+                DS4Windows.InputMethods.performKeyRelease((ushort)theKeyCode);
+                //this.inputSimulator.Keyboard.KeyUp(theKeyCode);
                 this.keysDown.Remove(theKeyCode);
                 return true;
             }
