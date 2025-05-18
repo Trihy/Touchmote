@@ -92,8 +92,6 @@ namespace WiiTUIO.Output.Handlers
         {
             this.inputSimulator = new InputSimulator();
             cursorPositionHelper = new CursorPositionHelper();
-            this.inputSimulator = new InputSimulator();
-            cursorPositionHelper = new CursorPositionHelper();
             //this.deltaEasingTimeX = new Stopwatch();
             //this.deltaEasingTimeY = new Stopwatch();
             this.outOfReachElapsed = new Stopwatch();
