@@ -92,7 +92,7 @@ namespace DS4Windows
             uint result = SendInput(1, tempInput, Marshal.SizeOf(tempInput[0]));
         }
 
-        public static void MouseEvent(uint mouseButton, int type)
+        public static void MouseEvent(uint mouseButton, uint type)
         {
             INPUT[] tempInput = new INPUT[1];
             ref INPUT temp = ref tempInput[0];

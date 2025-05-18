@@ -16,7 +16,12 @@ namespace WiiTUIO.Output.Handlers
 {
     public class MouseHandler : IButtonHandler, IStickHandler, ICursorHandler
     {
-        private InputSimulator inputSimulator;
+        private const uint MOUSEEVENTF_LEFTDOWN = 2, MOUSEEVENTF_LEFTUP = 4,
+            MOUSEEVENTF_RIGHTDOWN = 8, MOUSEEVENTF_RIGHTUP = 16,
+            MOUSEEVENTF_MIDDLEDOWN = 32, MOUSEEVENTF_MIDDLEUP = 64,
+            MOUSEEVENTF_XBUTTONDOWN = 128, MOUSEEVENTF_XBUTTONUP = 256;
+
+        private const uint XBUTTON1 = 1, XBUTTON2 = 2;
 
         private bool mouseLeftDown = false;
         private bool mouseMiddleDown = false;
@@ -90,7 +95,6 @@ namespace WiiTUIO.Output.Handlers
 
         public MouseHandler()
         {
-            this.inputSimulator = new InputSimulator();
             cursorPositionHelper = new CursorPositionHelper();
             //this.deltaEasingTimeX = new Stopwatch();
             //this.deltaEasingTimeY = new Stopwatch();
@@ -143,29 +147,29 @@ namespace WiiTUIO.Output.Handlers
                 switch (mouseCode)
                 {
                     case MouseCode.MOUSELEFT:
-                        this.inputSimulator.Mouse.LeftButtonDown();
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_LEFTDOWN);
                         mouseLeftDown = true;
                         break;
                     case MouseCode.MOUSEMIDDLE:
-                        this.inputSimulator.Mouse.MiddleButtonDown();
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_MIDDLEDOWN);
                         mouseMiddleDown = true;
                         break;
                     case MouseCode.MOUSERIGHT:
-                        this.inputSimulator.Mouse.RightButtonDown();
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_RIGHTDOWN);
                         mouseRightDown = true;
                         break;
                     case MouseCode.MOUSEWHEELDOWN:
-                        this.inputSimulator.Mouse.VerticalScroll(-1);
+                        DS4Windows.InputMethods.MouseWheel(-120, 0);
                         break;
                     case MouseCode.MOUSEWHEELUP:
-                        this.inputSimulator.Mouse.VerticalScroll(1);
+                        DS4Windows.InputMethods.MouseWheel(120, 0);
                         break;
                     case MouseCode.MOUSEXBUTTON1:
-                        this.inputSimulator.Mouse.XButtonDown(1);
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_XBUTTONDOWN, XBUTTON1);
                         mouseXButton1Down = true;
                         break;
                     case MouseCode.MOUSEXBUTTON2:
-                        this.inputSimulator.Mouse.XButtonDown(2);
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_XBUTTONDOWN, XBUTTON2);
                         mouseXButton2Down = true;
                         break;
                     default:
@@ -184,23 +188,23 @@ namespace WiiTUIO.Output.Handlers
                 switch (mouseCode)
                 {
                     case MouseCode.MOUSELEFT:
-                        this.inputSimulator.Mouse.LeftButtonUp();
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_LEFTUP);
                         mouseLeftDown = false;
                         break;
                     case MouseCode.MOUSEMIDDLE:
-                        this.inputSimulator.Mouse.MiddleButtonUp();
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_MIDDLEUP);
                         mouseMiddleDown = false;
                         break;
                     case MouseCode.MOUSERIGHT:
-                        this.inputSimulator.Mouse.RightButtonUp();
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_RIGHTUP);
                         mouseRightDown = false;
                         break;
                     case MouseCode.MOUSEXBUTTON1:
-                        this.inputSimulator.Mouse.XButtonUp(1);
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_XBUTTONUP, XBUTTON1);
                         mouseXButton1Down = false;
                         break;
                     case MouseCode.MOUSEXBUTTON2:
-                        this.inputSimulator.Mouse.XButtonUp(2);
+                        DS4Windows.InputMethods.MouseEvent(MOUSEEVENTF_XBUTTONUP, XBUTTON2);
                         mouseXButton2Down = false;
                         break;
                     default:
@@ -219,7 +223,8 @@ namespace WiiTUIO.Output.Handlers
                 if (!cursorPos.OutOfReach)
                 {
                     Point smoothedPos = cursorPositionHelper.getRelativePosition(new Point(cursorPos.X, cursorPos.Y));
-                    this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
+                    //this.inputSimulator.Mouse.MoveMouseToPositionOnVirtualDesktop((65535 * smoothedPos.X), (65535 * smoothedPos.Y));
+                    DS4Windows.InputMethods.MoveAbsoluteMouse(smoothedPos.X, smoothedPos.Y);
                     return true;
                 }
             }
@@ -1077,16 +1082,16 @@ namespace WiiTUIO.Output.Handlers
             switch (key)
             {
                 case "mousey+":
-                    this.inputSimulator.Mouse.MoveMouseBy(0, (int)(-30 * value + 0.5));
+                    DS4Windows.InputMethods.MoveCursorBy(0, (int)(-30 * value + 0.5));
                     break;
                 case "mousey-":
-                    this.inputSimulator.Mouse.MoveMouseBy(0, (int)(30 * value + 0.5));
+                    DS4Windows.InputMethods.MoveCursorBy(0, (int)(30 * value + 0.5));
                     break;
                 case "mousex+":
-                    this.inputSimulator.Mouse.MoveMouseBy((int)(30 * value + 0.5), 0);
+                    DS4Windows.InputMethods.MoveCursorBy((int)(30 * value + 0.5), 0);
                     break;
                 case "mousex-":
-                    this.inputSimulator.Mouse.MoveMouseBy((int)(-30 * value + 0.5), 0);
+                    DS4Windows.InputMethods.MoveCursorBy((int)(-30 * value + 0.5), 0);
                     break;
                 default:
                     return false;
