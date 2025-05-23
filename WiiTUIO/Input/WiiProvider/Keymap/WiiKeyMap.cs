@@ -30,6 +30,8 @@ namespace WiiTUIO.Provider
 
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
+            {"OnScreen",false},
+            {"OffScreen",false},
             {"AccelX+",false},
             {"AccelX-",false},
             {"AccelY+",false},
@@ -150,6 +152,7 @@ namespace WiiTUIO.Provider
             }
 
             string inputKey = !cursorPosition.OffScreen ? "Pointer" : "Offscreen.Pointer";
+            // Perform when onscreen or during screen change
             if ((!cursorPosition.OffScreen || changeOffscreen) &&
                 this.config.TryGetValue("Pointer", out outConfig))
             {
@@ -169,6 +172,33 @@ namespace WiiTUIO.Provider
                             }
                         }
                     }
+                }
+
+                if (!prevOffScreen)
+                {
+                    PressedButtons["OnScreen"] = true;
+                    this.executeButtonDown("Pointer");
+                }
+                else if (prevOffScreen && PressedButtons["OnScreen"])
+                {
+                    PressedButtons["OnScreen"] = false;
+                    this.executeButtonUp("Pointer");
+                }
+            }
+
+            // Perform when onscreen or during screen change
+            if ((cursorPosition.OffScreen || changeOffscreen) &&
+                this.config.TryGetValue("OffScreen.Pointer", out outConfig))
+            {
+                if (prevOffScreen)
+                {
+                    PressedButtons["OffScreen"] = true;
+                    this.executeButtonDown("OffScreen.Pointer");
+                }
+                else if (!prevOffScreen && PressedButtons["OffScreen"])
+                {
+                    PressedButtons["OffScreen"] = false;
+                    this.executeButtonUp("OffScreen.Pointer");
                 }
             }
 

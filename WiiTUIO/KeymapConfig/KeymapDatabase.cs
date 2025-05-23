@@ -37,7 +37,7 @@ namespace WiiTUIO
             this.DisableKey = "disable";
 
             allInputs = new List<KeymapInput>();
-            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", false, false, true));
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "Pointer", true, false, true));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "A"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "B"));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "Home"));
