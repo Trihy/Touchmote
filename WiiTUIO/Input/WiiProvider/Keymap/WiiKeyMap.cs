@@ -26,6 +26,7 @@ namespace WiiTUIO.Provider
         public DateTime HomeButtonDown = DateTime.Now;
 
         private long id;
+        private bool prevOffScreen = false;
 
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
@@ -119,8 +120,38 @@ namespace WiiTUIO.Provider
         public void updateCursorPosition(CursorPos cursorPosition)
         {
             KeymapOutConfig outConfig;
+            bool changeOffscreen = cursorPosition.OffScreen != prevOffScreen;
 
-            if (this.config.TryGetValue("Pointer", out outConfig))
+            if (cursorPosition.OffScreen != prevOffScreen) // Change pressed button if OffScreen value changes
+            {
+                foreach (var button in PressedButtons)
+                {
+                    if (button.Value)
+                    {
+                        // Only execute if OnScreen and OffScreen values are different.
+                        // Only handle button up event here. Let later update routines handle
+                        // button down events
+                        if (!this.IsInherited("OffScreen." + button.Key))
+                        {
+                            //Console.WriteLine(button.Key);
+                            if (!cursorPosition.OffScreen)
+                            {
+                                this.executeButtonUp("OffScreen." + button.Key);
+                                //this.executeButtonDown(button.Key);
+                            }
+                            else
+                            {
+                                this.executeButtonUp(button.Key);
+                                //this.executeButtonDown("OffScreen." + button.Key);
+                            }
+                        }
+                    }
+                }
+            }
+
+            string inputKey = !cursorPosition.OffScreen ? "Pointer" : "Offscreen.Pointer";
+            if ((!cursorPosition.OffScreen || changeOffscreen) &&
+                this.config.TryGetValue("Pointer", out outConfig))
             {
                 foreach (IOutputHandler handler in outputHandlers)
                 {
@@ -131,7 +162,7 @@ namespace WiiTUIO.Provider
                         {
                             if (output.Cursor)
                             {
-                                if (cursorHandler.setPosition(output.Key,cursorPosition))
+                                if (cursorHandler.setPosition(output.Key, cursorPosition))
                                 {
                                     break; // we will break for the first accepting handler, for each output key
                                 }
@@ -140,12 +171,20 @@ namespace WiiTUIO.Provider
                     }
                 }
             }
+
+            //prevOffScreen = cursorPosition.OffScreen;
         }
 
         public void updateAccelerometer(AccelState accelState)
         {
+            string offscreen = string.Empty;
+            if (prevOffScreen)
+            {
+                offscreen = "OffScreen.";
+            }
+
             KeymapOutConfig outConfig;
-            if (this.config.TryGetValue("AccelX+", out outConfig))
+            if (this.config.TryGetValue(offscreen + "AccelX+", out outConfig))
             {
                 if (accelState.Values.X > 0)
                 {
@@ -159,15 +198,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.X > outConfig.Threshold && !PressedButtons["AccelX+"])
                 {
                     PressedButtons["AccelX+"] = true;
-                    this.executeButtonDown("AccelX+");
+                    this.executeButtonDown(offscreen + "AccelX+");
                 }
                 else if (accelState.Values.X < outConfig.Threshold && PressedButtons["AccelX+"])
                 {
                     PressedButtons["AccelX+"] = false;
-                    this.executeButtonUp("AccelX+");
+                    this.executeButtonUp(offscreen + "AccelX+");
                 }
             }
-            if (this.config.TryGetValue("AccelX-", out outConfig))
+            if (this.config.TryGetValue(offscreen + "AccelX-", out outConfig))
             {
                 if (accelState.Values.X < 0)
                 {
@@ -181,15 +220,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.X * -1 > outConfig.Threshold && !PressedButtons["AccelX-"])
                 {
                     PressedButtons["AccelX-"] = true;
-                    this.executeButtonDown("AccelX-");
+                    this.executeButtonDown(offscreen + "AccelX-");
                 }
                 else if (accelState.Values.X * -1 < outConfig.Threshold && PressedButtons["AccelX-"])
                 {
                     PressedButtons["AccelX-"] = false;
-                    this.executeButtonUp("AccelX-");
+                    this.executeButtonUp(offscreen + "AccelX-");
                 }
             }
-            if (this.config.TryGetValue("AccelY+", out outConfig))
+            if (this.config.TryGetValue(offscreen + "AccelY+", out outConfig))
             {
                 if (accelState.Values.Y > 0)
                 {
@@ -203,15 +242,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Y > outConfig.Threshold && !PressedButtons["AccelY+"])
                 {
                     PressedButtons["AccelY+"] = true;
-                    this.executeButtonDown("AccelY+");
+                    this.executeButtonDown(offscreen + "AccelY+");
                 }
                 else if (accelState.Values.Y < outConfig.Threshold && PressedButtons["AccelY+"])
                 {
                     PressedButtons["AccelY+"] = false;
-                    this.executeButtonUp("AccelY+");
+                    this.executeButtonUp(offscreen + "AccelY+");
                 }
             }
-            if (this.config.TryGetValue("AccelY-", out outConfig))
+            if (this.config.TryGetValue(offscreen + "AccelY-", out outConfig))
             {
                 if (accelState.Values.Y < 0)
                 {
@@ -225,15 +264,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Y * -1 > outConfig.Threshold && !PressedButtons["AccelY-"])
                 {
                     PressedButtons["AccelY-"] = true;
-                    this.executeButtonDown("AccelY-");
+                    this.executeButtonDown(offscreen + "AccelY-");
                 }
                 else if (accelState.Values.Y * -1 < outConfig.Threshold && PressedButtons["AccelY-"])
                 {
                     PressedButtons["AccelY-"] = false;
-                    this.executeButtonUp("AccelY-");
+                    this.executeButtonUp(offscreen + "AccelY-");
                 }
             }
-            if (this.config.TryGetValue("AccelZ+", out outConfig))
+            if (this.config.TryGetValue(offscreen + "AccelZ+", out outConfig))
             {
                 if (accelState.Values.Z > 0)
                 {
@@ -247,15 +286,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Z > outConfig.Threshold && !PressedButtons["AccelZ+"])
                 {
                     PressedButtons["AccelZ+"] = true;
-                    this.executeButtonDown("AccelZ+");
+                    this.executeButtonDown(offscreen + "AccelZ+");
                 }
                 else if (accelState.Values.Z < outConfig.Threshold && PressedButtons["AccelZ+"])
                 {
                     PressedButtons["AccelZ+"] = false;
-                    this.executeButtonUp("AccelZ+");
+                    this.executeButtonUp(offscreen + "AccelZ+");
                 }
             }
-            if (this.config.TryGetValue("AccelZ-", out outConfig))
+            if (this.config.TryGetValue(offscreen + "AccelZ-", out outConfig))
             {
                 if (accelState.Values.Z < 0)
                 {
@@ -269,21 +308,27 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Z * -1 > outConfig.Threshold && !PressedButtons["AccelZ-"])
                 {
                     PressedButtons["AccelZ-"] = true;
-                    this.executeButtonDown("AccelZ-");
+                    this.executeButtonDown(offscreen + "AccelZ-");
                 }
                 else if (accelState.Values.Z * -1 < outConfig.Threshold && PressedButtons["AccelZ-"])
                 {
                     PressedButtons["AccelZ-"] = false;
-                    this.executeButtonUp("AccelZ-");
+                    this.executeButtonUp(offscreen + "AccelZ-");
                 }
             }
         }
 
         public void updateNunchuk(NunchukState nunchuk)
         {
+            string offscreen = string.Empty;
+            if (prevOffScreen)
+            {
+                offscreen = "OffScreen.";
+            }
+
             KeymapOutConfig outConfig;
 
-            if (this.config.TryGetValue("Nunchuk.StickRight", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.StickRight", out outConfig))
             {
                 if (nunchuk.Joystick.X > 0)
                 {
@@ -297,16 +342,16 @@ namespace WiiTUIO.Provider
                 if (nunchuk.Joystick.X * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickRight"])
                 {
                     PressedButtons["Nunchuk.StickRight"] = true;
-                    this.executeButtonDown("Nunchuk.StickRight");
+                    this.executeButtonDown(offscreen + "Nunchuk.StickRight");
                 }
                 else if (nunchuk.Joystick.X * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickRight"])
                 {
                     PressedButtons["Nunchuk.StickRight"] = false;
-                    this.executeButtonUp("Nunchuk.StickRight");
+                    this.executeButtonUp(offscreen + "Nunchuk.StickRight");
                 }
             }
 
-            if (this.config.TryGetValue("Nunchuk.StickLeft", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.StickLeft", out outConfig))
             {
                 if (nunchuk.Joystick.X < 0)
                 {
@@ -320,15 +365,15 @@ namespace WiiTUIO.Provider
                 if (nunchuk.Joystick.X * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickLeft"])
                 {
                     PressedButtons["Nunchuk.StickLeft"] = true;
-                    this.executeButtonDown("Nunchuk.StickLeft");
+                    this.executeButtonDown(offscreen + "Nunchuk.StickLeft");
                 }
                 else if (nunchuk.Joystick.X * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickLeft"])
                 {
                     PressedButtons["Nunchuk.StickLeft"] = false;
-                    this.executeButtonUp("Nunchuk.StickLeft");
+                    this.executeButtonUp(offscreen + "Nunchuk.StickLeft");
                 }
             }
-            if (this.config.TryGetValue("Nunchuk.StickUp", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.StickUp", out outConfig))
             {
                 if (nunchuk.Joystick.Y > 0)
                 {
@@ -342,16 +387,16 @@ namespace WiiTUIO.Provider
                 if (nunchuk.Joystick.Y * 2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickUp"])
                 {
                     PressedButtons["Nunchuk.StickUp"] = true;
-                    this.executeButtonDown("Nunchuk.StickUp");
+                    this.executeButtonDown(offscreen + "Nunchuk.StickUp");
                 }
                 else if (nunchuk.Joystick.Y * 2 < outConfig.Threshold && PressedButtons["Nunchuk.StickUp"])
                 {
                     PressedButtons["Nunchuk.StickUp"] = false;
-                    this.executeButtonUp("Nunchuk.StickUp");
+                    this.executeButtonUp(offscreen + "Nunchuk.StickUp");
                 }
 
             }
-            if (this.config.TryGetValue("Nunchuk.StickDown", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.StickDown", out outConfig))
             {
                 if (nunchuk.Joystick.Y < 0)
                 {
@@ -365,18 +410,18 @@ namespace WiiTUIO.Provider
                 if (nunchuk.Joystick.Y * -2 > outConfig.Threshold && !PressedButtons["Nunchuk.StickDown"])
                 {
                     PressedButtons["Nunchuk.StickDown"] = true;
-                    this.executeButtonDown("Nunchuk.StickDown");
+                    this.executeButtonDown(offscreen + "Nunchuk.StickDown");
                 }
                 else if (nunchuk.Joystick.Y * -2 < outConfig.Threshold && PressedButtons["Nunchuk.StickDown"])
                 {
                     PressedButtons["Nunchuk.StickDown"] = false;
-                    this.executeButtonUp("Nunchuk.StickDown");
+                    this.executeButtonUp(offscreen + "Nunchuk.StickDown");
                 }
             }
 
             AccelState accelState = nunchuk.AccelState;
 
-            if (this.config.TryGetValue("Nunchuk.AccelX+", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.AccelX+", out outConfig))
             {
                 if (accelState.Values.X > 0)
                 {
@@ -390,15 +435,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.X > outConfig.Threshold && !PressedButtons["Nunchuk.AccelX+"])
                 {
                     PressedButtons["Nunchuk.AccelX+"] = true;
-                    this.executeButtonDown("Nunchuk.AccelX+");
+                    this.executeButtonDown(offscreen + "Nunchuk.AccelX+");
                 }
                 else if (accelState.Values.X < outConfig.Threshold && PressedButtons["Nunchuk.AccelX+"])
                 {
                     PressedButtons["Nunchuk.AccelX+"] = false;
-                    this.executeButtonUp("Nunchuk.AccelX+");
+                    this.executeButtonUp(offscreen + "Nunchuk.AccelX+");
                 }
             }
-            if (this.config.TryGetValue("Nunchuk.AccelX-", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.AccelX-", out outConfig))
             {
                 if (accelState.Values.X < 0)
                 {
@@ -412,15 +457,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.X * -1 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelX-"])
                 {
                     PressedButtons["Nunchuk.AccelX-"] = true;
-                    this.executeButtonDown("Nunchuk.AccelX-");
+                    this.executeButtonDown(offscreen + "Nunchuk.AccelX-");
                 }
                 else if (accelState.Values.X * -1 < outConfig.Threshold && PressedButtons["Nunchuk.AccelX-"])
                 {
                     PressedButtons["Nunchuk.AccelX-"] = false;
-                    this.executeButtonUp("Nunchuk.AccelX-");
+                    this.executeButtonUp(offscreen + "Nunchuk.AccelX-");
                 }
             }
-            if (this.config.TryGetValue("Nunchuk.AccelY+", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.AccelY+", out outConfig))
             {
                 if (accelState.Values.Y > 0)
                 {
@@ -434,15 +479,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Y > outConfig.Threshold && !PressedButtons["Nunchuk.AccelY+"])
                 {
                     PressedButtons["Nunchuk.AccelY+"] = true;
-                    this.executeButtonDown("Nunchuk.AccelY+");
+                    this.executeButtonDown(offscreen + "Nunchuk.AccelY+");
                 }
                 else if (accelState.Values.Y < outConfig.Threshold && PressedButtons["Nunchuk.AccelY+"])
                 {
                     PressedButtons["Nunchuk.AccelY+"] = false;
-                    this.executeButtonUp("Nunchuk.AccelY+");
+                    this.executeButtonUp(offscreen + "Nunchuk.AccelY+");
                 }
             }
-            if (this.config.TryGetValue("Nunchuk.AccelY-", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.AccelY-", out outConfig))
             {
                 if (accelState.Values.Y < 0)
                 {
@@ -456,15 +501,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Y * -1 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelY-"])
                 {
                     PressedButtons["Nunchuk.AccelY-"] = true;
-                    this.executeButtonDown("Nunchuk.AccelY-");
+                    this.executeButtonDown(offscreen + "Nunchuk.AccelY-");
                 }
                 else if (accelState.Values.Y * -1 < outConfig.Threshold && PressedButtons["Nunchuk.AccelY-"])
                 {
                     PressedButtons["Nunchuk.AccelY-"] = false;
-                    this.executeButtonUp("Nunchuk.AccelY-");
+                    this.executeButtonUp(offscreen + "Nunchuk.AccelY-");
                 }
             }
-            if (this.config.TryGetValue("Nunchuk.AccelZ+", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.AccelZ+", out outConfig))
             {
                 if (accelState.Values.Z > 0)
                 {
@@ -478,15 +523,15 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Z > outConfig.Threshold && !PressedButtons["Nunchuk.AccelZ+"])
                 {
                     PressedButtons["Nunchuk.AccelZ+"] = true;
-                    this.executeButtonDown("Nunchuk.AccelZ+");
+                    this.executeButtonDown(offscreen + "Nunchuk.AccelZ+");
                 }
                 else if (accelState.Values.Z < outConfig.Threshold && PressedButtons["Nunchuk.AccelZ+"])
                 {
                     PressedButtons["Nunchuk.AccelZ+"] = false;
-                    this.executeButtonUp("Nunchuk.AccelZ+");
+                    this.executeButtonUp(offscreen + "Nunchuk.AccelZ+");
                 }
             }
-            if (this.config.TryGetValue("Nunchuk.AccelZ-", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Nunchuk.AccelZ-", out outConfig))
             {
                 if (accelState.Values.Z < 0)
                 {
@@ -500,21 +545,27 @@ namespace WiiTUIO.Provider
                 if (accelState.Values.Z * -1 > outConfig.Threshold && !PressedButtons["Nunchuk.AccelZ-"])
                 {
                     PressedButtons["Nunchuk.AccelZ-"] = true;
-                    this.executeButtonDown("Nunchuk.AccelZ-");
+                    this.executeButtonDown(offscreen + "Nunchuk.AccelZ-");
                 }
                 else if (accelState.Values.Z * -1 < outConfig.Threshold && PressedButtons["Nunchuk.AccelZ-"])
                 {
                     PressedButtons["Nunchuk.AccelZ-"] = false;
-                    this.executeButtonUp("Nunchuk.AccelZ-");
+                    this.executeButtonUp(offscreen + "Nunchuk.AccelZ-");
                 }
             }
         }
 
         public void updateClassicController(ClassicControllerState classic)
         {
+            string offscreen = string.Empty;
+            if (prevOffScreen)
+            {
+                offscreen = "OffScreen.";
+            }
+
             KeymapOutConfig outConfig;
 
-            if (this.config.TryGetValue("Classic.StickLRight", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickLRight", out outConfig))
             {
                 if (classic.JoystickL.X > 0)
                 {
@@ -528,15 +579,15 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.X * 2 > outConfig.Threshold && !PressedButtons["Classic.StickLRight"])
                 {
                     PressedButtons["Classic.StickLRight"] = true;
-                    this.executeButtonDown("Classic.StickLRight");
+                    this.executeButtonDown(offscreen + "Classic.StickLRight");
                 }
                 else if (classic.JoystickL.X * 2 < outConfig.Threshold && PressedButtons["Classic.StickLRight"])
                 {
                     PressedButtons["Classic.StickLRight"] = false;
-                    this.executeButtonUp("Classic.StickLRight");
+                    this.executeButtonUp(offscreen + "Classic.StickLRight");
                 }
             }
-            if (this.config.TryGetValue("Classic.StickLLeft", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickLLeft", out outConfig))
             {
                 if (classic.JoystickL.X < 0)
                 {
@@ -550,15 +601,15 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.X * -2 > outConfig.Threshold && !PressedButtons["Classic.StickLLeft"])
                 {
                     PressedButtons["Classic.StickLLeft"] = true;
-                    this.executeButtonDown("Classic.StickLLeft");
+                    this.executeButtonDown(offscreen + "Classic.StickLLeft");
                 }
                 else if (classic.JoystickL.X * -2 < outConfig.Threshold && PressedButtons["Classic.StickLLeft"])
                 {
                     PressedButtons["Classic.StickLLeft"] = false;
-                    this.executeButtonUp("Classic.StickLLeft");
+                    this.executeButtonUp(offscreen + "Classic.StickLLeft");
                 }
             }
-            if (this.config.TryGetValue("Classic.StickLUp", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickLUp", out outConfig))
             {
                 if (classic.JoystickL.Y > 0)
                 {
@@ -572,16 +623,16 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.Y * 2 > outConfig.Threshold && !PressedButtons["Classic.StickLUp"])
                 {
                     PressedButtons["Classic.StickLUp"] = true;
-                    this.executeButtonDown("Classic.StickLUp");
+                    this.executeButtonDown(offscreen + "Classic.StickLUp");
                 }
                 else if (classic.JoystickL.Y * 2 < outConfig.Threshold && PressedButtons["Classic.StickLUp"])
                 {
                     PressedButtons["Classic.StickLUp"] = false;
-                    this.executeButtonUp("Classic.StickLUp");
+                    this.executeButtonUp(offscreen + "Classic.StickLUp");
                 }
 
             }
-            if (this.config.TryGetValue("Classic.StickLDown", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickLDown", out outConfig))
             {
                 if (classic.JoystickL.Y < 0)
                 {
@@ -595,18 +646,18 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.Y * -2 > outConfig.Threshold && !PressedButtons["Classic.StickLDown"])
                 {
                     PressedButtons["Classic.StickLDown"] = true;
-                    this.executeButtonDown("Classic.StickLDown");
+                    this.executeButtonDown(offscreen + "Classic.StickLDown");
                 }
                 else if (classic.JoystickL.Y * -2 < outConfig.Threshold && PressedButtons["Classic.StickLDown"])
                 {
                     PressedButtons["Classic.StickLDown"] = false;
-                    this.executeButtonUp("Classic.StickLDown");
+                    this.executeButtonUp(offscreen + "Classic.StickLDown");
                 }
             }
 
 
 
-            if (this.config.TryGetValue("Classic.StickRRight", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickRRight", out outConfig))
             {
                 if (classic.JoystickR.X > 0)
                 {
@@ -620,15 +671,15 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.X * 2 > outConfig.Threshold && !PressedButtons["Classic.StickRRight"])
                 {
                     PressedButtons["Classic.StickRRight"] = true;
-                    this.executeButtonDown("Classic.StickRRight");
+                    this.executeButtonDown(offscreen + "Classic.StickRRight");
                 }
                 else if (classic.JoystickR.X * 2 < outConfig.Threshold && PressedButtons["Classic.StickRRight"])
                 {
                     PressedButtons["Classic.StickRRight"] = false;
-                    this.executeButtonUp("Classic.StickRRight");
+                    this.executeButtonUp(offscreen + "Classic.StickRRight");
                 }
             }
-            if (this.config.TryGetValue("Classic.StickRLeft", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickRLeft", out outConfig))
             {
                 if (classic.JoystickR.X < 0)
                 {
@@ -642,15 +693,15 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.X * -2 > outConfig.Threshold && !PressedButtons["Classic.StickRLeft"])
                 {
                     PressedButtons["Classic.StickRLeft"] = true;
-                    this.executeButtonDown("Classic.StickRLeft");
+                    this.executeButtonDown(offscreen + "Classic.StickRLeft");
                 }
                 else if (classic.JoystickR.X * -2 < outConfig.Threshold && PressedButtons["Classic.StickRLeft"])
                 {
                     PressedButtons["Classic.StickRLeft"] = false;
-                    this.executeButtonUp("Classic.StickRLeft");
+                    this.executeButtonUp(offscreen + "Classic.StickRLeft");
                 }
             }
-            if (this.config.TryGetValue("Classic.StickRUp", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickRUp", out outConfig))
             {
                 if (classic.JoystickR.Y > 0)
                 {
@@ -664,16 +715,16 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.Y * 2 > outConfig.Threshold && !PressedButtons["Classic.StickRUp"])
                 {
                     PressedButtons["Classic.StickRUp"] = true;
-                    this.executeButtonDown("Classic.StickRUp");
+                    this.executeButtonDown(offscreen + "Classic.StickRUp");
                 }
                 else if (classic.JoystickR.Y * 2 < outConfig.Threshold && PressedButtons["Classic.StickRUp"])
                 {
                     PressedButtons["Classic.StickRUp"] = false;
-                    this.executeButtonUp("Classic.StickRUp");
+                    this.executeButtonUp(offscreen + "Classic.StickRUp");
                 }
 
             }
-            if (this.config.TryGetValue("Classic.StickRDown", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.StickRDown", out outConfig))
             {
                 if (classic.JoystickR.Y < 0)
                 {
@@ -687,20 +738,20 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.Y * -2 > outConfig.Threshold && !PressedButtons["Classic.StickRDown"])
                 {
                     PressedButtons["Classic.StickRDown"] = true;
-                    this.executeButtonDown("Classic.StickRDown");
+                    this.executeButtonDown(offscreen + "Classic.StickRDown");
                 }
                 else if (classic.JoystickR.Y * -2 < outConfig.Threshold && PressedButtons["Classic.StickRDown"])
                 {
                     PressedButtons["Classic.StickRDown"] = false;
-                    this.executeButtonUp("Classic.StickRDown");
+                    this.executeButtonUp(offscreen + "Classic.StickRDown");
                 }
             }
 
-            if (this.config.TryGetValue("Classic.TriggerL", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.TriggerL", out outConfig))
             {
                 updateStickHandlers(outConfig, classic.TriggerL);
             }
-            if (this.config.TryGetValue("Classic.TriggerR", out outConfig))
+            if (this.config.TryGetValue(offscreen + "Classic.TriggerR", out outConfig))
             {
                 updateStickHandlers(outConfig, classic.TriggerR);
             }
@@ -857,8 +908,20 @@ namespace WiiTUIO.Provider
             }
             return false;
         }
-    
-}
+
+        public bool IsInherited(string button)
+        {
+            if (this.config.TryGetValue(button, out KeymapOutConfig currconfig))
+                return currconfig.Inherited;
+
+            return false;
+        }
+
+        public void FinishUpdate(CursorPos cursorPosition)
+        {
+            prevOffScreen = cursorPosition.OffScreen;
+        }
+    }
 
     public class WiiButtonEvent
     {

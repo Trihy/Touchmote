@@ -1,13 +1,10 @@
 ﻿Pointer types
 ------------
-TOUCH
 MOUSE
 GAMINGMOUSE
 
 Special buttons
 ------------
-TOUCHMASTER
-TOUCHSLAVE
 POINTERTOGGLE
 
 Mouse emulation

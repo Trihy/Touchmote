@@ -18,6 +18,7 @@ namespace WiiTUIO.Provider
         public double MarginY;
         public double LightbarX;
         public double LightbarY;
+        public bool OffScreen; // Can be offscreen but still in IR range
 
         public CursorPos(int x, int y, double relativeX, double relativeY, double rotation,
             double marginX = 0.0, double marginY = 0.0, double lightbarX = 0.0, double lightbarY = 0.0)

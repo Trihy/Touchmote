@@ -355,10 +355,9 @@ namespace WiiTUIO.Provider
 
             //System.Diagnostics.Trace.WriteLine($"{marginY} | {relativePosition.Y}");
 
-            lightbarX = Math.Min(1.0,
-                Math.Max(0.0, lightbarXSlope * relativePosition.X + lightbarXIntercept));
-            lightbarY = Math.Min(1.0,
-                Math.Max(0.0, lightbarYSlope * relativePosition.Y + lightbarYIntercept));
+            // Do not clamp values yet. Will perform during offscreen check
+            lightbarX = lightbarXSlope * relativePosition.X + lightbarXIntercept;
+            lightbarY = lightbarYSlope * relativePosition.Y + lightbarYIntercept;
 
             //System.Diagnostics.Trace.WriteLine($"X {lightbarX} | {relativePosition.X}");
             //System.Diagnostics.Trace.WriteLine($"Y {lightbarY} | {relativePosition.Y}");
@@ -385,6 +384,15 @@ namespace WiiTUIO.Provider
             //CursorPos result = new CursorPos(x, y, smoothedPoint.X, smoothedPoint.Y, smoothedRotation);
             CursorPos result = new CursorPos(x, y, relativePosition.X, relativePosition.Y, smoothedRotation,
                 marginX, marginY, lightbarX, lightbarY);
+
+            // Check if lightgun coors are considered offscreen. Clamp here
+            if (lightbarX < 0.0 || lightbarX > 1.0 || lightbarY < 0.0 || lightbarY > 1.0)
+            {
+                result.OffScreen = true;
+                result.LightbarX = Math.Min(1.0, Math.Max(0.0, lightbarX));
+                result.LightbarY = Math.Min(1.0, Math.Max(0.0, lightbarY));
+            }
+
             lastPos = result;
             return result;
         }

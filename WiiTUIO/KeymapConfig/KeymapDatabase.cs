@@ -55,6 +55,8 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y+", "AccelY+", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z-", "AccelZ-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z+", "AccelZ+", true, true, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Shake", "Shake"));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Extension", "Extension"));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "Nunchuk.C"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "Nunchuk.Z"));
@@ -62,13 +64,15 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "Nunchuk.StickDown", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "Nunchuk.StickLeft", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "Nunchuk.StickRight", true, true, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation+", "Nunchuk.Rotation+"));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation-", "Nunchuk.Rotation-"));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X-", "Nunchuk.AccelX-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X+", "Nunchuk.AccelX+", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y-", "Nunchuk.AccelY-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y+", "Nunchuk.AccelY+", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z-", "Nunchuk.AccelZ-", true, true, false));
             allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z+", "Nunchuk.AccelZ+", true, true, false));
-
+            //allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Shake", "Nunchuk.Shake"));
 
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left", "Classic.Left"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right", "Classic.Right"));
@@ -97,6 +101,75 @@ namespace WiiTUIO
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Trigger Push", "Classic.R"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "ZL", "Classic.ZL"));
             allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "ZR", "Classic.ZR"));
+
+            allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer", "OffScreen.Pointer", false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Left", "OffScreen.PointerX-", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Right", "OffScreen.PointerX+", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Up", "OffScreen.PointerY-", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.IR, "Pointer Down", "OffScreen.PointerY+", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "A", "OffScreen.A", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "B", "OffScreen.B", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Home", "OffScreen.Home", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Left", "OffScreen.Left", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Right", "OffScreen.Right", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Up", "OffScreen.Up", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Down", "OffScreen.Down", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Plus", "OffScreen.Plus", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Minus", "OffScreen.Minus", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "One", "OffScreen.One", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Two", "OffScreen.Two", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X-", "OffScreen.AccelX-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt X+", "OffScreen.AccelX+", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y-", "OffScreen.AccelY-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Y+", "OffScreen.AccelY+", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z-", "OffScreen.AccelZ-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Tilt Z+", "OffScreen.AccelZ+", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Shake", "OffScreen.Shake", false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.WIIMOTE, "Extension", "OffScreen.Extension", false));
+
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "C", "OffScreen.Nunchuk.C", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Z", "OffScreen.Nunchuk.Z", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Up", "OffScreen.Nunchuk.StickUp", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Down", "OffScreen.Nunchuk.StickDown", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Left", "OffScreen.Nunchuk.StickLeft", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Right", "OffScreen.Nunchuk.StickRight", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation+", "OffScreen.Nunchuk.Rotation+", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Stick Rotation-", "OffScreen.Nunchuk.Rotation-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X-", "OffScreen.Nunchuk.AccelX-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt X+", "OffScreen.Nunchuk.AccelX+", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y-", "OffScreen.Nunchuk.AccelY-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Y+", "OffScreen.Nunchuk.AccelY+", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z-", "OffScreen.Nunchuk.AccelZ-", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Tilt Z+", "OffScreen.Nunchuk.AccelZ+", true, true, false, false));
+            //allInputs.Add(new KeymapInput(KeymapInputSource.NUNCHUK, "Shake", "OffScreen.Nunchuk.Shake", false));
+
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left", "OffScreen.Classic.Left", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right", "OffScreen.Classic.Right", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Up", "OffScreen.Classic.Up", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Down", "OffScreen.Classic.Down", false));
+
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Left", "OffScreen.Classic.StickLLeft", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Right", "OffScreen.Classic.StickLRight", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Up", "OffScreen.Classic.StickLUp", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Stick Down", "OffScreen.Classic.StickLDown", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Left", "OffScreen.Classic.StickRLeft", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Right", "OffScreen.Classic.StickRRight", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Up", "OffScreen.Classic.StickRUp", true, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Stick Down", "OffScreen.Classic.StickRDown", true, true, false, false));
+
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Minus", "OffScreen.Classic.Minus", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Plus", "OffScreen.Classic.Plus", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Home", "OffScreen.Classic.Home", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Y", "OffScreen.Classic.Y", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "X", "OffScreen.Classic.X", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "A", "OffScreen.Classic.A", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "B", "OffScreen.Classic.B", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Trigger", "OffScreen.Classic.TriggerL", false, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Trigger", "OffScreen.Classic.TriggerR", false, true, false, false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Left Trigger Push", "OffScreen.Classic.L", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "Right Trigger Push", "OffScreen.Classic.R", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "ZL", "OffScreen.Classic.ZL", false));
+            allInputs.Add(new KeymapInput(KeymapInputSource.CLASSIC, "ZR", "OffScreen.Classic.ZR", false));
 
             allOutputs = new List<KeymapOutput>();
             allOutputs.Add(new KeymapOutput(KeymapOutputType.TOUCH, "Touch Cursor", "touch", false, false, true, false));
@@ -344,12 +417,12 @@ namespace WiiTUIO
             return allInputs;
         }
 
-        public List<KeymapInput> getAvailableInputs(KeymapInputSource source)
+        public List<KeymapInput> getAvailableInputs(KeymapInputSource source, bool onscreen)
         {
             List<KeymapInput> list = new List<KeymapInput>();
             foreach (KeymapInput input in allInputs)
             {
-                if (input.Source == source)
+                if ((input.Source == source) && ((onscreen && input.OnScreen) || (!onscreen && !input.OnScreen)))
                 {
                     list.Add(input);
                 }
@@ -514,32 +587,26 @@ namespace WiiTUIO
         {
             JObject buttons = new JObject();
 
-            buttons.Add(new JProperty("Pointer", "Touch"));
+            buttons.Add(new JProperty("Pointer", "360.stickl"));
 
-            buttons.Add(new JProperty("A", "TouchMaster"));
+            buttons.Add(new JProperty("A", "360.a"));
 
-            buttons.Add(new JProperty("B", "TouchSlave"));
+            buttons.Add(new JProperty("B", "360.b"));
 
-            buttons.Add(new JProperty("Home", "LWin"));
+            buttons.Add(new JProperty("Home", "360.Guide"));
 
-            buttons.Add(new JProperty("Left", "Left"));
-            buttons.Add(new JProperty("Right", "Right"));
-            buttons.Add(new JProperty("Up", "Up"));
-            buttons.Add(new JProperty("Down", "Down"));
+            buttons.Add(new JProperty("Left", "360.Left"));
+            buttons.Add(new JProperty("Right", "360.Right"));
+            buttons.Add(new JProperty("Up", "360.Up"));
+            buttons.Add(new JProperty("Down", "360.Down"));
 
-            buttons.Add(new JProperty("Plus", "Volume_Up"));
+            buttons.Add(new JProperty("Plus", "360.Start"));
 
-            buttons.Add(new JProperty("Minus", "Volume_Down"));
+            buttons.Add(new JProperty("Minus", "360.Back"));
 
-            JArray buttonOne = new JArray();
-            buttonOne.Add(new JValue("LWin"));
-            buttonOne.Add(new JValue("VK_C"));
-            buttons.Add(new JProperty("One", buttonOne));
+            buttons.Add(new JProperty("One", "360.X"));
 
-            JArray buttonTwo = new JArray();
-            buttonTwo.Add(new JValue("LWin"));
-            buttonTwo.Add(new JValue("Tab"));
-            buttons.Add(new JProperty("Two", buttonTwo));
+            buttons.Add(new JProperty("Two", "360.Y"));
 
             buttons.Add(new JProperty("AccelX+", "disable"));
             buttons.Add(new JProperty("AccelX-", "disable"));
@@ -548,10 +615,10 @@ namespace WiiTUIO
             buttons.Add(new JProperty("AccelZ+", "disable"));
             buttons.Add(new JProperty("AccelZ-", "disable"));
 
-            buttons.Add(new JProperty("Nunchuk.StickUp", "360.StickLUp"));
-            buttons.Add(new JProperty("Nunchuk.StickDown", "360.StickLDown"));
-            buttons.Add(new JProperty("Nunchuk.StickLeft", "360.StickLLeft"));
-            buttons.Add(new JProperty("Nunchuk.StickRight", "360.StickLRight"));
+            buttons.Add(new JProperty("Nunchuk.StickUp", "360.StickRUp"));
+            buttons.Add(new JProperty("Nunchuk.StickDown", "360.StickRDown"));
+            buttons.Add(new JProperty("Nunchuk.StickLeft", "360.StickRLeft"));
+            buttons.Add(new JProperty("Nunchuk.StickRight", "360.StickRRight"));
             buttons.Add(new JProperty("Nunchuk.C", "360.TriggerL"));
             buttons.Add(new JProperty("Nunchuk.Z", "360.TriggerR"));
 
@@ -581,11 +648,15 @@ namespace WiiTUIO
             buttons.Add(new JProperty("Classic.ZL", "360.BumperL"));
             buttons.Add(new JProperty("Classic.ZR", "360.BumperR"));
 
+            JObject screen = new JObject();
+
+            screen.Add(new JProperty("OnScreen", buttons));
+
             JObject union = new JObject();
 
             union.Add(new JProperty("Title", "Default"));
 
-            union.Add(new JProperty("All", buttons));
+            union.Add(new JProperty("All", screen));
 
             if (File.Exists(Settings.Default.keymaps_path + Settings.Default.keymaps_config))
             {
@@ -623,14 +694,15 @@ namespace WiiTUIO
         public bool Button { get; private set; }
         public bool Continous { get; private set; }
         public bool Cursor { get; private set; }
+        public bool OnScreen { get; private set; }
 
-        public KeymapInput(KeymapInputSource source, string name, string key)
-            : this(source, name, key, true, false, false)
+        public KeymapInput(KeymapInputSource source, string name, string key, bool onScreen = true)
+            : this(source, name, key, true, false, false, onScreen)
         {
 
         }
 
-        public KeymapInput(KeymapInputSource source, string name, string key, bool button, bool continous, bool cursor)
+        public KeymapInput(KeymapInputSource source, string name, string key, bool button, bool continous, bool cursor, bool onScreen = true)
         {
             this.Source = source;
             this.Name = name;
@@ -638,6 +710,7 @@ namespace WiiTUIO
             this.Button = button;
             this.Continous = continous;
             this.Cursor = cursor;
+            this.OnScreen = onScreen;
         }
 
         public bool canHandle(KeymapOutput output)

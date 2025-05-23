@@ -137,6 +137,9 @@ namespace WiiTUIO.Provider
 
         private ScreenPositionCalculator screenPositionCalculator;
 
+        public CursorPos cursorPos;
+        private bool prevOffScreen = true;
+
         public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
         {
             this.WiimoteID = wiimoteID;
@@ -460,7 +463,7 @@ namespace WiiTUIO.Provider
                     handler.startUpdate();
                 }
 
-                CursorPos cursorPos = this.screenPositionCalculator.CalculateCursorPos(wiimoteState);
+                cursorPos = this.screenPositionCalculator.CalculateCursorPos(wiimoteState);
 
                 this.KeyMap.updateCursorPosition(cursorPos);
                 this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
@@ -518,12 +521,16 @@ namespace WiiTUIO.Provider
                 {
                     handler.endUpdate();
                 }
+
+                this.KeyMap.FinishUpdate(cursorPos);
             }
 
             if (significant)
             {
                 Console.WriteLine("********************************significant");
             }
+
+            prevOffScreen = this.cursorPos.OffScreen ? true : false;
 
             return significant;
         }
@@ -588,8 +595,11 @@ namespace WiiTUIO.Provider
             bool significant = false;
             ButtonFlag buttonFlag = getButtonFlag(buttonName);
             bool pressedBefore = isButtonPressed(buttonFlag);
+            string offScreenState = this.cursorPos.OffScreen ? "OffScreen." : "";
+            string offScreenButtonName = $"OffScreen.{buttonName}";
+            string currentButtonName = this.cursorPos.OffScreen ? offScreenButtonName : buttonName;
 
-            if (pressedNow && !pressedBefore) //On down
+            if (pressedNow && !pressedBefore) // On down
             {
                 setPressedButton(buttonFlag, true);
                 significant = true;
@@ -608,10 +618,10 @@ namespace WiiTUIO.Provider
                 }
                 else
                 {
-                    this.KeyMap.executeButtonDown(buttonName);
+                    this.KeyMap.executeButtonDown(currentButtonName);
                 }
             }
-            else if (!pressedNow && pressedBefore) //On up
+            else if (!pressedNow && pressedBefore) // On up
             {
                 setPressedButton(buttonFlag, false);
                 significant = true;
@@ -630,13 +640,33 @@ namespace WiiTUIO.Provider
                     }
                     else
                     {
-                        this.KeyMap.executeButtonDown("Home");
+                        this.KeyMap.executeButtonDown(currentButtonName);
                         this.releaseHomeOnNextUpdate = true;
                     }
                 }
                 else
                 {
-                    this.KeyMap.executeButtonUp(buttonName);
+                    this.KeyMap.executeButtonUp(currentButtonName);
+                }
+            }
+            else if (pressedNow && pressedBefore)
+            {
+                if (this.cursorPos.OffScreen != prevOffScreen) // Change pressed button if OffScreen value changes
+                {
+                    // Only execute if OnScreen and OffScreen values are different
+                    if (!this.KeyMap.IsInherited(offScreenButtonName))
+                    {
+                        if (this.cursorPos.OffScreen)
+                        {
+                            this.KeyMap.executeButtonUp(buttonName);
+                            this.KeyMap.executeButtonDown(offScreenButtonName);
+                        }
+                        else
+                        {
+                            this.KeyMap.executeButtonUp(offScreenButtonName);
+                            this.KeyMap.executeButtonDown(buttonName);
+                        }
+                    }
                 }
             }
 

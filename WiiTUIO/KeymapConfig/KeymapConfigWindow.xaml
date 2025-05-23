@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="900" MinWidth="900" Height="600" Closed="MetroWindow_Closed">
+  Title="Controller Configuration" ResizeMode="CanResize" MinHeight="200" MaxWidth="920" MinWidth="920" Height="600" Closed="MetroWindow_Closed">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -51,7 +51,7 @@
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>
-        <DockPanel Width="420">
+        <DockPanel Width="440">
             <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10" DockPanel.Dock="Top">Edit Layout</Label>
             <ScrollViewer PanningMode="VerticalOnly">
                 <StackPanel>
@@ -92,7 +92,7 @@
                     </StackPanel>
                     <Border BorderBrush="#FFCBCBCB" BorderThickness="0,0,0,1" Margin="6"></Border>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
-                        <Label FontFamily="Segoe UI Semilight" FontSize="13" Margin="20,2,2,2">Controllers</Label>
+                        <Label FontFamily="Segoe UI Semilight" FontSize="13" Margin="2,2,2,2">Controllers</Label>
                         <Border Name="btnAllBorder" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
                             <Button Cursor="Hand" Name="btnAll" Click="btnAll_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">All</Button>
                         </Border>
@@ -107,6 +107,12 @@
                         </Border>
                         <Border Name="btn4Border" Background="#FF2E2E2E" CornerRadius="2" Margin="2">
                             <Button Cursor="Hand" Name="btn4" Click="btn4_Click" Background="{x:Null}" Foreground="White" Padding="8,0" Height="27">4</Button>
+                        </Border>
+                        <Border Name="rad1Border" CornerRadius="2" Margin="20,2,2,2">
+                            <RadioButton Name="rbOnscreen" FontFamily="Segoe UI Semilight" Margin="2">On Screen</RadioButton>
+                        </Border>
+                        <Border Name="rad2Border" CornerRadius="2" Margin="2">
+                            <RadioButton Name="rbOffscreen" FontFamily="Segoe UI Semilight" Margin="2">Off Screen</RadioButton>
                         </Border>
                     </StackPanel>
                     <Label FontFamily="Segoe UI Light" FontSize="18" Padding="10">Wiimote</Label>
