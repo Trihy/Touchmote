@@ -110,7 +110,10 @@ namespace WiiTUIO.Provider
 
         private void Xinput_OnRumble(byte big, byte small)
         {
+#if DEBUG
+            // Only perform console output on debug build
             Console.WriteLine("Xinput rumble: big=" + big + " small=" + small);
+#endif
             if (this.OnRumble != null)
             {
                 OnRumble(big > Settings.Default.xinput_rumbleThreshold_big || small > Settings.Default.xinput_rumbleThreshold_small);

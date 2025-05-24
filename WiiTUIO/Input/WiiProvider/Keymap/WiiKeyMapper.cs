@@ -525,10 +525,13 @@ namespace WiiTUIO.Provider
                 this.KeyMap.FinishUpdate(cursorPos);
             }
 
+#if DEBUG
+            // Only perform console output on debug build
             if (significant)
             {
                 Console.WriteLine("********************************significant");
             }
+#endif
 
             prevOffScreen = this.cursorPos.OffScreen ? true : false;
 
