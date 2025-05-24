@@ -295,7 +295,7 @@ namespace WiiTUIO.Provider
             else if (!foundMidpoint)
             {
                 CursorPos err = lastPos;
-                err.OutOfReach = true;
+                err.OutOfReach = err.OffScreen = true;
                 leftPoint = -1;
                 lastIrPoint1 = -1;
                 lastIrPoint2 = -1;
