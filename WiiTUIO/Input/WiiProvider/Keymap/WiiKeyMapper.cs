@@ -520,10 +520,13 @@ namespace WiiTUIO.Provider
                 }
             }
 
+#if DEBUG
+            // Only perform console output on debug build
             if (significant)
             {
                 Console.WriteLine("********************************significant");
             }
+#endif
 
             return significant;
         }
