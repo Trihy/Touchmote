@@ -28,6 +28,10 @@ namespace WiiTUIO.Provider
         private long id;
         private bool prevOffScreen = false;
 
+        private float smoothedAccelX;
+        private float smoothedAccelY;
+        private float smoothedAccelZ;
+
         private Dictionary<string, bool> PressedButtons = new Dictionary<string, bool>()
         {
             {"OnScreen",false},
@@ -217,23 +221,29 @@ namespace WiiTUIO.Provider
             }
 
             KeymapOutConfig outConfig;
-            if (this.config.TryGetValue(offscreen + "AccelX+", out outConfig))
+
+            // Lean more towards current values
+            smoothedAccelX = smoothedAccelX * 0.1f + accelState.Values.X * 0.9f;
+            smoothedAccelY = smoothedAccelY * 0.1f + accelState.Values.Y * 0.9f;
+            smoothedAccelZ = smoothedAccelZ * 0.1f + accelState.Values.Z * 0.9f;
+
+            if (this.config.TryGetValue("AccelX+", out outConfig))
             {
-                if (accelState.Values.X > 0)
+                if (smoothedAccelX > 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.X);
+                    updateStickHandlers(outConfig, smoothedAccelX);
                 }
-                else if (accelState.Values.X == 0)
+                else if (smoothedAccelX == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (accelState.Values.X > outConfig.Threshold && !PressedButtons["AccelX+"])
+                if (smoothedAccelX > outConfig.Threshold && !PressedButtons["AccelX+"])
                 {
                     PressedButtons["AccelX+"] = true;
                     this.executeButtonDown(offscreen + "AccelX+");
                 }
-                else if (accelState.Values.X < outConfig.Threshold && PressedButtons["AccelX+"])
+                else if (smoothedAccelX < outConfig.Threshold && PressedButtons["AccelX+"])
                 {
                     PressedButtons["AccelX+"] = false;
                     this.executeButtonUp(offscreen + "AccelX+");
@@ -241,21 +251,21 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue(offscreen + "AccelX-", out outConfig))
             {
-                if (accelState.Values.X < 0)
+                if (smoothedAccelX < 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.X * -1);
+                    updateStickHandlers(outConfig, smoothedAccelX * -1);
                 }
-                else if (accelState.Values.X == 0)
+                else if (smoothedAccelX == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (accelState.Values.X * -1 > outConfig.Threshold && !PressedButtons["AccelX-"])
+                if (smoothedAccelX * -1 > outConfig.Threshold && !PressedButtons["AccelX-"])
                 {
                     PressedButtons["AccelX-"] = true;
                     this.executeButtonDown(offscreen + "AccelX-");
                 }
-                else if (accelState.Values.X * -1 < outConfig.Threshold && PressedButtons["AccelX-"])
+                else if (smoothedAccelX * -1 < outConfig.Threshold && PressedButtons["AccelX-"])
                 {
                     PressedButtons["AccelX-"] = false;
                     this.executeButtonUp(offscreen + "AccelX-");
@@ -265,19 +275,19 @@ namespace WiiTUIO.Provider
             {
                 if (accelState.Values.Y > 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Y);
+                    updateStickHandlers(outConfig, smoothedAccelY);
                 }
-                else if (accelState.Values.Y == 0)
+                else if (smoothedAccelY == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (accelState.Values.Y > outConfig.Threshold && !PressedButtons["AccelY+"])
+                if (smoothedAccelY > outConfig.Threshold && !PressedButtons["AccelY+"])
                 {
                     PressedButtons["AccelY+"] = true;
                     this.executeButtonDown(offscreen + "AccelY+");
                 }
-                else if (accelState.Values.Y < outConfig.Threshold && PressedButtons["AccelY+"])
+                else if (smoothedAccelY < outConfig.Threshold && PressedButtons["AccelY+"])
                 {
                     PressedButtons["AccelY+"] = false;
                     this.executeButtonUp(offscreen + "AccelY+");
@@ -285,21 +295,21 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue(offscreen + "AccelY-", out outConfig))
             {
-                if (accelState.Values.Y < 0)
+                if (smoothedAccelY < 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Y * -1);
+                    updateStickHandlers(outConfig, smoothedAccelY * -1);
                 }
-                else if (accelState.Values.Y == 0)
+                else if (smoothedAccelY == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (accelState.Values.Y * -1 > outConfig.Threshold && !PressedButtons["AccelY-"])
+                if (smoothedAccelY * -1 > outConfig.Threshold && !PressedButtons["AccelY-"])
                 {
                     PressedButtons["AccelY-"] = true;
                     this.executeButtonDown(offscreen + "AccelY-");
                 }
-                else if (accelState.Values.Y * -1 < outConfig.Threshold && PressedButtons["AccelY-"])
+                else if (smoothedAccelY * -1 < outConfig.Threshold && PressedButtons["AccelY-"])
                 {
                     PressedButtons["AccelY-"] = false;
                     this.executeButtonUp(offscreen + "AccelY-");
@@ -307,21 +317,21 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue(offscreen + "AccelZ+", out outConfig))
             {
-                if (accelState.Values.Z > 0)
+                if (smoothedAccelZ > 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Z);
+                    updateStickHandlers(outConfig, smoothedAccelZ);
                 }
-                else if (accelState.Values.Z == 0)
+                else if (smoothedAccelZ == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (accelState.Values.Z > outConfig.Threshold && !PressedButtons["AccelZ+"])
+                if (smoothedAccelZ > outConfig.Threshold && !PressedButtons["AccelZ+"])
                 {
                     PressedButtons["AccelZ+"] = true;
                     this.executeButtonDown(offscreen + "AccelZ+");
                 }
-                else if (accelState.Values.Z < outConfig.Threshold && PressedButtons["AccelZ+"])
+                else if (smoothedAccelZ < outConfig.Threshold && PressedButtons["AccelZ+"])
                 {
                     PressedButtons["AccelZ+"] = false;
                     this.executeButtonUp(offscreen + "AccelZ+");
@@ -329,21 +339,21 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue(offscreen + "AccelZ-", out outConfig))
             {
-                if (accelState.Values.Z < 0)
+                if (smoothedAccelZ < 0)
                 {
-                    updateStickHandlers(outConfig, accelState.Values.Z * -1);
+                    updateStickHandlers(outConfig, smoothedAccelZ * -1);
                 }
-                else if (accelState.Values.Z == 0)
+                else if (smoothedAccelZ == 0)
                 {
                     updateStickHandlers(outConfig, 0);
                 }
 
-                if (accelState.Values.Z * -1 > outConfig.Threshold && !PressedButtons["AccelZ-"])
+                if (smoothedAccelZ * -1 > outConfig.Threshold && !PressedButtons["AccelZ-"])
                 {
                     PressedButtons["AccelZ-"] = true;
                     this.executeButtonDown(offscreen + "AccelZ-");
                 }
-                else if (accelState.Values.Z * -1 < outConfig.Threshold && PressedButtons["AccelZ-"])
+                else if (smoothedAccelZ * -1 < outConfig.Threshold && PressedButtons["AccelZ-"])
                 {
                     PressedButtons["AccelZ-"] = false;
                     this.executeButtonUp(offscreen + "AccelZ-");
