@@ -471,6 +471,13 @@ namespace WiiTUIO.Provider
 
                     significant |= checkButtonState(wiimoteState.NunchukState.C, "Nunchuk.C");
                     significant |= checkButtonState(wiimoteState.NunchukState.Z, "Nunchuk.Z");
+
+                    // Only perform slop check if flag is not currently set
+                    if (!significant &&
+                        (Math.Abs(wiimoteState.NunchukState.Joystick.X) > 0.15) || Math.Abs(wiimoteState.NunchukState.Joystick.Y) > 0.15)
+                    {
+                        significant = true;
+                    }
                 }
 
                 if (wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.ClassicController)
