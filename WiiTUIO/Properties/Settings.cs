@@ -336,6 +336,17 @@ namespace WiiTUIO.Properties
             }
         }
 
+        private string _pointer_4IRMode = "none";
+        public string pointer_4IRMode
+        {
+            get { return _pointer_4IRMode; }
+            set
+            {
+                _pointer_4IRMode = value;
+                OnPropertyChanged("pointer_4IRMode");
+            }
+        }
+
         private int _pointer_FPS = 100;
         public int pointer_FPS
         {

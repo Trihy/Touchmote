@@ -137,9 +137,13 @@ namespace WiiTUIO.Provider
 
         private ScreenPositionCalculator screenPositionCalculator;
 
-        public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
+        public CalibrationSettings settings;
+
+        public WiiKeyMapper(Wiimote wiimote, int wiimoteID, HandlerFactory handlerFactory, string serial = null)
         {
             this.WiimoteID = wiimoteID;
+            serial = serial ?? this.WiimoteID.ToString();
+            this.settings = new CalibrationSettings(serial);
             this.outputHandlers = handlerFactory.getOutputHandlers(this.WiimoteID);
             foreach (IOutputHandler handler in outputHandlers)
             {
@@ -148,7 +152,7 @@ namespace WiiTUIO.Provider
 
             // Need process monitor and screen position calculator here
             this.processMonitor = SystemProcessMonitor.Default;
-            this.screenPositionCalculator = new ScreenPositionCalculator();
+            this.screenPositionCalculator = new ScreenPositionCalculator(wiimoteID, new CalibrationSettings(serial));
 
             // Do not launch config changed event yet. Wait.
             this.initialize(callConfigChangedEvt: false);

@@ -18,9 +18,12 @@ namespace WiiTUIO.Provider
         public double MarginY;
         public double LightbarX;
         public double LightbarY;
+        public double Width;
+        public double Height;
+        public bool OffScreen;
 
         public CursorPos(int x, int y, double relativeX, double relativeY, double rotation,
-            double marginX = 0.0, double marginY = 0.0, double lightbarX = 0.0, double lightbarY = 0.0)
+            double marginX = 0.0, double marginY = 0.0, double lightbarX = 0.0, double lightbarY = 0.0, double lightbarWidth = 0.0, double lightbarHeight = 0.0)
         {
             this.X = x;
             this.Y = y;
@@ -32,6 +35,8 @@ namespace WiiTUIO.Provider
             this.MarginY = marginY;
             this.LightbarX = lightbarX;
             this.LightbarY = lightbarY;
+            this.Width = lightbarWidth;
+            this.Height = lightbarHeight;
         }
     }
 }

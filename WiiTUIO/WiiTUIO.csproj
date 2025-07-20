@@ -208,6 +208,7 @@
     <Compile Include="Filters\OneEuroFilter.cs" />
     <Compile Include="Filters\RadiusBuffer.cs" />
     <Compile Include="Filters\SmoothingBuffer.cs" />
+    <Compile Include="Input\WiiProvider\Settings\CalibrationSettings.cs" />
     <Compile Include="KeymapConfig\VirtualKeyCode.cs" />
     <Compile Include="Output\CursorPositionHelper.cs" />
     <Compile Include="Output\FakerInputDevice.cs" />
@@ -310,27 +311,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Input\WiiProvider\Settings\Calibrate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Input\WiiProvider\Settings\CalibrationWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Input\WiiProvider\Settings\WiiPointerProviderSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Input\WiiProvider\Settings\WiiProviderSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -358,13 +343,6 @@
   <ItemGroup>
     <Compile Include="Input\InputFactory.cs" />
     <Compile Include="Output\Handlers\Touch\DuoTouch.cs" />
-    <Compile Include="Input\WiiProvider\Settings\Calibrate.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>Calibrate.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Input\WiiProvider\Settings\CalibrationWindow.xaml.cs">
-      <DependentUpon>CalibrationWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Input\WiiProvider\Keymap\WiiKeyMapper.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="Output\DrawingProviderHandler.cs" />
@@ -395,10 +373,6 @@
     <Compile Include="Input\WiiProvider\SpatiotemporalClassifier.cs" />
     <Compile Include="Input\WiiProvider\Warper.cs" />
     <Compile Include="Input\WiiProvider\WiiContact.cs" />
-    <Compile Include="Input\WiiProvider\WiiProvider.cs" />
-    <Compile Include="Input\WiiProvider\Settings\WiiProviderSettings.xaml.cs">
-      <DependentUpon>WiiProviderSettings.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Output\WinTouch\HumanInterfaceDevice.cs" />
     <Compile Include="Output\WinTouch\MTVProviderHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

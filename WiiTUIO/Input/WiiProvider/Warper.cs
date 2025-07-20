@@ -1,4 +1,4 @@
-﻿using System;
+﻿using WiiTUIO.Properties;
 
 namespace WiiTUIO.Provider
 {
@@ -17,24 +17,37 @@ namespace WiiTUIO.Provider
         private float[] srcMat = new float[16];
         private float[] dstMat = new float[16];
         private float[] warpMat = new float[16];
+        private float[] center = new float[2];
         private bool dirty;
 
+        public CalibrationSettings settings;
+
         /// <summary>
-        /// Construct a new warper class.  Initialise with a perfect mapping.
+        /// Construct a new warper class.
         /// </summary>
-        public Warper()
+        public Warper(CalibrationSettings settings)
         {
+            this.settings = settings;
+            this.settings.PropertyChanged += SettingsChanged;
             setIdentity();
         }
 
         public void setIdentity()
         {
-            // Set the source and destination rectangles to be the same.
-            setSource(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-            setDestination(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+            center[0] = (float)this.settings.CenterX;
+            center[1] = (float)this.settings.CenterY;
+            if (Settings.Default.pointer_4IRMode == "square")
+                setDestination(this.settings.TRled, 1.0f, this.settings.TLled, 1.0f, this.settings.TLled, 0.0f, this.settings.TRled, 0.0f);
+            else if (Settings.Default.pointer_4IRMode == "diamond")
+                setDestination(1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.5f, 0.5f, 0.0f);
+        }
 
-            // Compute the matrix which transforms between the two.  Simples.
-            computeWarp();
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Center" || e.PropertyName == "TLled" || e.PropertyName == "TRled")
+            {
+                setIdentity();
+            }
         }
 
         /// <summary>
@@ -62,9 +75,6 @@ namespace WiiTUIO.Provider
             srcY[2] = y2;
             srcX[3] = x3;
             srcY[3] = y3;
-
-            // Flag we need to change.
-            dirty = true;
         }
 
         /// <summary>
@@ -176,8 +186,8 @@ namespace WiiTUIO.Provider
 
             // invert through adjoint
 
-            float a = mat[0], d = mat[1],	/* ignore */		g = mat[3];
-            float b = mat[4], e = mat[5],	/* 3rd col*/		h = mat[7];
+            float a = mat[0], d = mat[1],   /* ignore */        g = mat[3];
+            float b = mat[4], e = mat[5],   /* 3rd col*/        h = mat[7];
             /* ignore 3rd row */
             float c = mat[12], f = mat[13];
 
@@ -219,34 +229,31 @@ namespace WiiTUIO.Provider
         /// <param name="srcY">Source point, Y coordinate.</param>
         /// <param name="dstX">Destination point, X coordinate.</param>
         /// <param name="dstY">Destination point, Y coordinate.</param>
-        public void warp(float srcX, float srcY, ref float dstX, ref float dstY)
+        public float[] warp()
         {
+            float[] warpedPos = new float[2];
+
             // If our matrix is out of date, recompute it.
             if (dirty)
-                computeWarp();
+            {
+                computeSquareToQuad(dstX[0], dstY[0], dstX[1], dstY[1], dstX[2], dstY[2], dstX[3], dstY[3], dstMat);
+                dirty = false;
+            }
+
+            computeQuadToSquare(srcX[0], srcY[0], srcX[1], srcY[1], srcX[2], srcY[2], srcX[3], srcY[3], srcMat);
+            multMats(srcMat, dstMat, warpMat);
 
             // Compute the coordinate transform.
-            Warper.warp(warpMat, srcX, srcY, ref dstX, ref dstY);
-        }
-
-        /// <summary>
-        /// Use a given matrix to transform a point on one rectangle onto another.
-        /// </summary>
-        /// <param name="mat">A reference to the array which describes the matrix we want to use.</param>
-        /// <param name="srcX">Source point, X coordinate.</param>
-        /// <param name="srcY">Source point, Y coordinate.</param>
-        /// <param name="dstX">Destination point, X coordinate.</param>
-        /// <param name="dstY">Destination point, Y coordinate.</param>
-        public static void warp(float[] mat, float srcX, float srcY, ref float dstX, ref float dstY)
-        {
             float[] result = new float[4];
             float z = 0;
-            result[0] = (float)(srcX * mat[0] + srcY * mat[4] + z * mat[8] + 1 * mat[12]);
-            result[1] = (float)(srcX * mat[1] + srcY * mat[5] + z * mat[9] + 1 * mat[13]);
-            result[2] = (float)(srcX * mat[2] + srcY * mat[6] + z * mat[10] + 1 * mat[14]);
-            result[3] = (float)(srcX * mat[3] + srcY * mat[7] + z * mat[11] + 1 * mat[15]);
-            dstX = result[0] / result[3];
-            dstY = result[1] / result[3];
+            result[0] = center[0] * warpMat[0] + center[1] * warpMat[4] + z * warpMat[8] + 1 * warpMat[12];
+            result[1] = center[0] * warpMat[1] + center[1] * warpMat[5] + z * warpMat[9] + 1 * warpMat[13];
+            result[3] = center[0] * warpMat[3] + center[1] * warpMat[7] + z * warpMat[11] + 1 * warpMat[15];
+
+            warpedPos[0] = result[0] / result[3];
+            warpedPos[1] = result[1] / result[3];
+            return warpedPos;
+
         }
     }
 }
