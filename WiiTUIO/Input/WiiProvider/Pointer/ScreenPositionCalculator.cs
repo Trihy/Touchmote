@@ -544,9 +544,9 @@ namespace WiiTUIO.Provider
 
             //Console.WriteLine("{0} {1} {2}", relativePosition.X, marginX, x / (double)primaryScreen.Bounds.Width);
 
-            //CursorPos result = new CursorPos(x, y, smoothedPoint.X, smoothedPoint.Y, angles);
+            //CursorPos result = new CursorPos(x, y, smoothedPoint.X, smoothedPoint.Y, angle);
             CursorPos result = new CursorPos(x, y, median.X, median.Y, angle,
-                marginX, marginY, lightbarX, lightbarY);
+                marginX, marginY, lightbarX, lightbarY, width, height);
 
             if (lightbarX < 0.0 || lightbarX > 1.0 || lightbarY < 0.0 || lightbarY > 1.0)
             {
