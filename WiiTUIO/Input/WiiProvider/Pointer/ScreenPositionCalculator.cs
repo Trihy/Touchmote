@@ -92,6 +92,7 @@ namespace WiiTUIO.Provider
 
             Settings.Default.PropertyChanged += SettingsChanged;
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            this.settings.PropertyChanged += SettingsChanged;
 
             lastPos = new CursorPos(0, 0, 0, 0, 0);
 
