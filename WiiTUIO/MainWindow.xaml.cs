@@ -27,7 +27,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using MahApps.Metro.Controls;
 using System.Windows.Interop;
-using WiiTUIO.Output.Handlers.Touch;
+//using WiiTUIO.Output.Handlers.Touch;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using WiiTUIO.DeviceUtils;
@@ -56,6 +56,8 @@ namespace WiiTUIO
         private Mutex statusStackMutex = new Mutex();
 
         private SystemProcessMonitor processMonitor;
+
+        private IntPtr previousForegroundWindow = IntPtr.Zero;
 
         /// <summary>
         /// A reference to the WiiProvider we want to use to get/forward input.
@@ -159,15 +161,20 @@ namespace WiiTUIO
 
             overlayUIThread = new Thread(() =>
             {
+                previousForegroundWindow = UIHelpers.GetForegroundWindow();
                 OverlayWindow.Current.Show();
+                CalibrationOverlay.Current.Show();
 
-                if (Settings.Default.pointer_customCursor)
+                //if (Settings.Default.pointer_customCursor)
                 {
                     System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate()
                     {
                         D3DCursorWindow.Current.Start((new WindowInteropHelper(OverlayWindow.Current)).Handle);
                     }));
                 }
+
+                if (previousForegroundWindow != IntPtr.Zero && Settings.Default.minimizeOnStart)
+                    UIHelpers.SetForegroundWindow(previousForegroundWindow);
 
                 // Grab dispatcher for current thread
                 overlayDispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;

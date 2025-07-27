@@ -126,6 +126,7 @@ namespace WiiTUIO.Provider
         private Keymap defaultKeymap; //Always default.json
         private Keymap fallbackKeymap; //Decided by the layout chooser
         private Keymap applicationKeymap; // Loaded by auto profile system
+        private Keymap calibrationKeymap;
 
         private Timer homeButtonTimer;
 
@@ -136,6 +137,8 @@ namespace WiiTUIO.Provider
         private List<IOutputHandler> outputHandlers;
 
         private ScreenPositionCalculator screenPositionCalculator;
+
+        public CursorPos cursorPos;
 
         public CalibrationSettings settings;
 
@@ -177,6 +180,7 @@ namespace WiiTUIO.Provider
         private void initialize(bool callConfigChangedEvt=true)
         {
             this.defaultKeymap = KeymapDatabase.Current.getDefaultKeymap();
+            this.calibrationKeymap = KeymapDatabase.Current.getCalibrationKeymap();
 
             JObject specificKeymap = new JObject();
             JObject commonKeymap = new JObject();
@@ -294,13 +298,27 @@ namespace WiiTUIO.Provider
             this.setKeymap(this.fallbackKeymap); //Switch to fallback even if we did not choose anything in the chooser.
         }
 
+        public void SwitchToCalibration()
+        {
+            this.applicationKeymap = null;
+            this.setKeymap(this.calibrationKeymap);
+        }
+
         void homeButtonTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (isButtonPressed(ButtonFlag.Home))
+            homeButtonTimer.Stop();
+
+            if (isButtonPressed(ButtonFlag.Minus) && !OverlayWindow.Current.OverlayIsOn()) //Prevent calibration overlay from loading if on keymap overlay
+            {
+                CalibrationOverlay.Current.StartCalibration(this);
+            }
+            else if (isButtonPressed(ButtonFlag.Home) && !CalibrationOverlay.Current.OverlayIsOn()) //Prevent keymap overlay from loading if on calibration overlay
             {
                 this.setKeymap(this.defaultKeymap);
                 OverlayWindow.Current.ShowLayoutOverlay(this);
             }
+
+            homeButtonTimer.Start();
         }
 
         private void CheckAppKeymap()
@@ -464,7 +482,7 @@ namespace WiiTUIO.Provider
                     handler.startUpdate();
                 }
 
-                CursorPos cursorPos = this.screenPositionCalculator.CalculateCursorPos(wiimoteState);
+                cursorPos = this.screenPositionCalculator.CalculateCursorPos(wiimoteState);
 
                 this.KeyMap.updateCursorPosition(cursorPos);
                 this.KeyMap.updateAccelerometer(wiimoteState.AccelState);
@@ -610,7 +628,7 @@ namespace WiiTUIO.Provider
                 if (buttonName == "Home")
                 {
                     Console.WriteLine("home down");
-                    if (OverlayWindow.Current.OverlayIsOn())
+                    if (OverlayWindow.Current.OverlayIsOn() || CalibrationOverlay.Current.OverlayIsOn())
                     {
                         this.hideOverlayOnUp = true;
                         Console.WriteLine("hide overlay on up");
@@ -637,7 +655,8 @@ namespace WiiTUIO.Provider
                     if (this.hideOverlayOnUp)
                     {
                         this.hideOverlayOnUp = false;
-                        OverlayWindow.Current.HideOverlay();
+                        if (OverlayWindow.Current.OverlayIsOn()) OverlayWindow.Current.HideOverlay();
+                        if (CalibrationOverlay.Current.OverlayIsOn()) CalibrationOverlay.Current.CancelCalibration();
                     }
                     else if (OverlayWindow.Current.OverlayIsOn()) //We opened the overlay on this down
                     {

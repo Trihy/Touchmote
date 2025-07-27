@@ -15,5 +15,6 @@
   ],
   "Applications": [
   ],
-  "Default": "default.json"
+  "Default": "default.json",
+  "Calibration": "Calibration.json"
 }
