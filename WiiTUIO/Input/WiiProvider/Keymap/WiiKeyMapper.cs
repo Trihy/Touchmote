@@ -140,9 +140,13 @@ namespace WiiTUIO.Provider
         public CursorPos cursorPos;
         private bool prevOffScreen = true;
 
-        public WiiKeyMapper(int wiimoteID, HandlerFactory handlerFactory)
+        public CalibrationSettings settings;
+
+        public WiiKeyMapper(Wiimote wiimote, int wiimoteID, HandlerFactory handlerFactory, string serial = null)
         {
             this.WiimoteID = wiimoteID;
+            serial = serial ?? this.WiimoteID.ToString();
+            this.settings = new CalibrationSettings(serial);
             this.outputHandlers = handlerFactory.getOutputHandlers(this.WiimoteID);
             foreach (IOutputHandler handler in outputHandlers)
             {
@@ -151,7 +155,7 @@ namespace WiiTUIO.Provider
 
             // Need process monitor and screen position calculator here
             this.processMonitor = SystemProcessMonitor.Default;
-            this.screenPositionCalculator = new ScreenPositionCalculator();
+            this.screenPositionCalculator = new ScreenPositionCalculator(wiimoteID, this.settings);
 
             // Do not launch config changed event yet. Wait.
             this.initialize(callConfigChangedEvt: false);
@@ -474,6 +478,13 @@ namespace WiiTUIO.Provider
 
                     significant |= checkButtonState(wiimoteState.NunchukState.C, "Nunchuk.C");
                     significant |= checkButtonState(wiimoteState.NunchukState.Z, "Nunchuk.Z");
+
+                    // Only perform slop check if flag is not currently set
+                    if (!significant &&
+                        (Math.Abs(wiimoteState.NunchukState.Joystick.X) > 0.15) || Math.Abs(wiimoteState.NunchukState.Joystick.Y) > 0.15)
+                    {
+                        significant = true;
+                    }
                 }
 
                 if (wiimoteState.Extension && wiimoteState.ExtensionType == ExtensionType.ClassicController)

@@ -494,6 +494,29 @@ namespace HidLibrary
             if (Removed != null) Removed();
         }
 
+        public bool ReadSerialNumber(out byte[] data)
+        {
+            data = new byte[254];
+            IntPtr intPtr = IntPtr.Zero;
+            bool flag = false;
+            try
+            {
+                intPtr = ((!IsOpen) ? OpenDeviceIO(_devicePath, 0u) : ReadHandle);
+                return NativeMethods.HidD_GetSerialNumberString(intPtr, data, (ulong)data.Length);
+            }
+            catch (Exception innerException)
+            {
+                throw new Exception($"Error accessing HID device '{_devicePath}'.", innerException);
+            }
+            finally
+            {
+                if (intPtr != IntPtr.Zero && intPtr != ReadHandle)
+                {
+                    CloseDeviceIO(intPtr);
+                }
+            }
+        }
+
         public void Dispose()
         {
             if (MonitorDeviceEvents) MonitorDeviceEvents = false;

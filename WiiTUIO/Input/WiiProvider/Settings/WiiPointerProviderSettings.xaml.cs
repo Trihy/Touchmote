@@ -29,52 +29,38 @@ namespace WiiTUIO.Provider
         {
             InitializeComponent();
 
-            //this.cbSystemCursor.IsChecked = Settings.Default.pointer_changeSystemCursor;
-            //this.cbMoveCursor.IsChecked = Settings.Default.pointer_moveCursor;
-            if (Settings.Default.pointer_sensorBarPos == "top")
+            if (Settings.Default.pointer_4IRMode == "none")
             {
-                this.cbiTop.IsSelected = true;
-            }
-            else if (Settings.Default.pointer_sensorBarPos == "bottom")
-            {
-                this.cbiBottom.IsSelected = true;
-            }
-            else
-            {
-                this.cbiCenter.IsSelected = true;
-            }
-
-            /*if(VmultiDevice.Current.isAvailable())
-            {
-                string currentMonitor = VmultiUtil.getCurrentMonitorDevicePath();
-
-                IEnumerable<MonitorInfo> monInfos = DeviceUtil.GetMonitorList();
-
-                foreach (MonitorInfo monInfo in monInfos)
+                switch (Settings.Default.pointer_sensorBarPos)
                 {
-                    ComboBoxItem cbItem = new ComboBoxItem();
-                    cbItem.Content = monInfo.FriendlyName;
-                    cbItem.DataContext = monInfo;
-                    this.MonitorComboBox.Items.Add(cbItem);
-
-                    if (monInfo.DevicePath == currentMonitor)
-                    {
-                        this.MonitorComboBox.SelectedItem = cbItem;
-                    }
+                    case "top":
+                        this.cbiTop.IsSelected = true;
+                        break;
+                    case "bottom":
+                        this.cbiBottom.IsSelected = true;
+                        break;
+                    default:
+                        this.cbiCenter.IsSelected = true;
+                        break;
                 }
-                this.initializing = false;
             }
             else
-            */
             {
-                ComboBoxItem cbItem = new ComboBoxItem();
-                cbItem.Content = "Requires driver";
-                this.MonitorComboBox.Items.Add(cbItem);
-                this.MonitorComboBox.IsEnabled = false;
-                this.MonitorComboBox.SelectedIndex = 0;
-                this.initializing = false;
+                switch (Settings.Default.pointer_4IRMode)
+                {
+                    case "square":
+                        this.cbiSquare.IsSelected = true;
+                        break;
+                    case "diamond":
+                        this.cbiDiamond.IsSelected = true;
+                        break;
+                    default:
+                        this.cbiCenter.IsSelected = true;
+                        break;
+                }
             }
 
+            this.initializing = false;
         }
 
         private void SBPositionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -83,30 +69,31 @@ namespace WiiTUIO.Provider
             {
                 if (this.cbiTop.IsSelected)
                 {
+                    Settings.Default.pointer_4IRMode = "none";
                     Settings.Default.pointer_sensorBarPos = "top";
                 }
                 else if (this.cbiBottom.IsSelected)
                 {
+                    Settings.Default.pointer_4IRMode = "none";
                     Settings.Default.pointer_sensorBarPos = "bottom";
                 }
-                else
+                else if (this.cbiCenter.IsSelected)
                 {
+                    Settings.Default.pointer_4IRMode = "none";
                     Settings.Default.pointer_sensorBarPos = "center";
+                }
+                else if (this.cbiSquare.IsSelected)
+                {
+                    Settings.Default.pointer_4IRMode = "square";
+                }
+
+                else if (this.cbiDiamond.IsSelected)
+                {
+                    Settings.Default.pointer_4IRMode = "diamond";
                 }
             }
         }
 
-        private void MonitorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!this.initializing)
-            {
-                MonitorInfo monInfo = ((ComboBoxItem)this.MonitorComboBox.SelectedItem).DataContext as MonitorInfo;
-                if(monInfo != null)
-                {
-                    VmultiUtil.setCurrentMonitor(monInfo);
-                }
-            }
-        }
         /*
         private void systemCursor_Checked(object sender, RoutedEventArgs e)
         {
