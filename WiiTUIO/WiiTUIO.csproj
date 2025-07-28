@@ -473,7 +473,12 @@
   <ItemGroup>
     <Resource Include="Resources\openhand.cur" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="FakerInputDll_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>FakerInputDll.dll</Link>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>GOTO END
