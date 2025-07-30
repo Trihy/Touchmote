@@ -1,6 +1,8 @@
 ﻿<Window x:Class="WiiTUIO.Provider.CalibrationOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:this="clr-namespace:WiiTUIO.Provider"
     Topmost="True"
     Top="0"
@@ -43,22 +45,35 @@
                      Visibility="{Binding DisplayDoneVis, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Label Content="Top Left X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" Height="30" />
-            <TextBox Text="{Binding TopLeftXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding TopLeftXCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+
+            <!--<TextBox Text="{Binding TopLeftXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
 
             <Label Content="Top Left Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
-            <TextBox Text="{Binding TopLeftYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding TopLeftYCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding TopLeftYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />--><!---->
 
             <Label Content="Bottom Right X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
-            <TextBox Text="{Binding BottomRightXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding BottomRightXCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding BottomRightXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
 
             <Label Content="Bottom Right Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
-            <TextBox Text="{Binding BottomRightYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding BottomRightYCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding BottomRightYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
 
             <Label Content="Center X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
-            <TextBox Text="{Binding CenterXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding CenterXCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding CenterXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
 
             <Label Content="Center Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
-            <TextBox Text="{Binding CenterYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding CenterYCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding CenterYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
 
         </UniformGrid>
     </Canvas>
