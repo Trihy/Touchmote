@@ -656,7 +656,10 @@ namespace WiiTUIO.Provider
                     {
                         this.hideOverlayOnUp = false;
                         if (OverlayWindow.Current.OverlayIsOn()) OverlayWindow.Current.HideOverlay();
-                        if (CalibrationOverlay.Current.OverlayIsOn()) CalibrationOverlay.Current.CancelCalibration();
+                        if (CalibrationOverlay.Current.OverlayIsOn())
+                        {
+                            CalibrationOverlay.Current.CloseCalibration();
+                        }
                     }
                     else if (OverlayWindow.Current.OverlayIsOn()) //We opened the overlay on this down
                     {

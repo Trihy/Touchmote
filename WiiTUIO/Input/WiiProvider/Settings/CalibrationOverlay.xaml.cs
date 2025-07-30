@@ -20,6 +20,17 @@ namespace WiiTUIO.Provider
     /// </summary>
     public partial class CalibrationOverlay : Window
     {
+        private enum CalibrationStep : ushort
+        {
+            None,
+            CenterScreen,
+            BottomRight,
+            TopLeft,
+            Done,
+        }
+
+        private const string CALIB_TEST_INTRO_TEXT = " Calib Test. Press A or B to start calibration. \nPress Home to Close.";
+
         private WiiKeyMapper keyMapper;
         private static CalibrationOverlay defaultInstance;
 
@@ -31,7 +42,7 @@ namespace WiiTUIO.Provider
         private bool hidden = true;
         private bool timerElapsed = false;
 
-        private int step = 0;
+        private CalibrationStep step = CalibrationStep.None;
 
         private float topOffset;
         private float bottomOffset;
@@ -158,6 +169,7 @@ namespace WiiTUIO.Provider
 
                     this.wiimoteNo.Text = "Wiimote " + keyMapper.WiimoteID;
                     this.wiimoteNo.Foreground = brush;
+                    this.insText2.Text = CALIB_TEST_INTRO_TEXT;
 
                     this.TextBorder.SetValue(Canvas.LeftProperty, 0.5 * this.ActualWidth - (this.TextBorder.ActualWidth / 2));
                     this.TextBorder.SetValue(Canvas.TopProperty, 0.25 * this.ActualHeight - (this.TextBorder.ActualHeight / 2));
@@ -169,6 +181,14 @@ namespace WiiTUIO.Provider
                     this.elipse.Fill = new SolidColorBrush(Colors.Black);
                     this.elipse.Fill.Opacity = 0.9;
 
+                    this.elipseTL.Stroke = this.lineXTL.Stroke = this.lineYTL.Stroke = brush;
+                    this.elipseTL.Fill = new SolidColorBrush(Colors.Black);
+                    this.elipseTL.Fill.Opacity = 0.9;
+
+                    this.elipseBR.Stroke = this.lineXBR.Stroke = this.lineYBR.Stroke = brush;
+                    this.elipseBR.Fill = new SolidColorBrush(Colors.Black);
+                    this.elipseBR.Fill.Opacity = 0.9;
+
                     DoubleAnimation animation = UIHelpers.createDoubleAnimation(1.0, 200, false);
                     animation.FillBehavior = FillBehavior.HoldEnd;
                     animation.Completed += delegate (object sender, EventArgs pEvent)
@@ -176,51 +196,13 @@ namespace WiiTUIO.Provider
 
                     };
                     this.CalibrationCanvas.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
+
+                    this.CalibrationTopLeftPoint.Visibility = Visibility.Visible;
+                    this.CalibrationBottomRightPoint.Visibility = Visibility.Visible;
                 }), null);
 
-                //marginXBackup = Settings.Default.CalibrationMarginX;
-                //marginYBackup = Settings.Default.CalibrationMarginY;
-
-                topBackup = this.keyMapper.settings.Top;
-                bottomBackup = this.keyMapper.settings.Bottom;
-                leftBackup = this.keyMapper.settings.Left;
-                rightBackup = this.keyMapper.settings.Right;
-
-                if (Settings.Default.pointer_4IRMode == "none")
-                {
-                    this.movePoint(1 - marginXBackup, 1 - marginYBackup);
-
-                    step = 1;
-                }
-                else
-                {
-                    //Settings.Default.CalibrationMarginX = 0;
-                    //Settings.Default.CalibrationMarginY = 0;
-
-                    centerXBackup = this.keyMapper.settings.CenterX;
-                    centerYBackup = this.keyMapper.settings.CenterY;
-                    tlBackup = this.keyMapper.settings.TLled;
-                    trBackup = this.keyMapper.settings.TRled;
-
-                    this.keyMapper.settings.Top = 0;
-                    this.keyMapper.settings.Bottom = 1;
-                    this.keyMapper.settings.Left = 0;
-                    this.keyMapper.settings.Right = 1;
-
-                    this.keyMapper.settings.CenterX = 0.5f;
-                    this.keyMapper.settings.CenterY = 0.5f;
-                    this.keyMapper.settings.TLled = 0.25f;
-                    this.keyMapper.settings.TRled = 0.75f;
-
-                    topOffset = 0;
-                    bottomOffset = 1;
-                    leftOffset = 0;
-                    rightOffset = 1;
-
-                    this.movePoint(0.5, 0.5);
-
-                    step = 0;
-                }
+                this.movePoint(0.5, 0.5);
+                step = CalibrationStep.None;
             }
         }
 
@@ -262,7 +244,7 @@ namespace WiiTUIO.Provider
                     };
                     this.CalibrationCanvas.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
                 }), null);
-                step = 0;
+                step = CalibrationStep.None;
             }
         }
 
@@ -275,7 +257,31 @@ namespace WiiTUIO.Provider
 
             this.keyMapper.settings.SaveCalibrationData();
 
-            this.HideOverlay();
+            // Need to back up current values now. Keeps a cancel from
+            // resetting settings to zero.
+            topBackup = this.keyMapper.settings.Top;
+            bottomBackup = this.keyMapper.settings.Bottom;
+            leftBackup = this.keyMapper.settings.Left;
+            rightBackup = this.keyMapper.settings.Right;
+
+            centerXBackup = this.keyMapper.settings.CenterX;
+            centerYBackup = this.keyMapper.settings.CenterY;
+            tlBackup = this.keyMapper.settings.TLled;
+            trBackup = this.keyMapper.settings.TRled;
+
+            //this.HideOverlay();
+        }
+
+        public void CloseCalibration()
+        {
+            if (step == CalibrationStep.None || step == CalibrationStep.Done)
+            {
+                HideOverlay();
+            }
+            else
+            {
+                CancelCalibration();
+            }
         }
 
         public void CancelCalibration()
@@ -320,22 +326,76 @@ namespace WiiTUIO.Provider
                     this.TextBorder.SetValue(Canvas.TopProperty, 0.25 * this.ActualHeight - (this.TextBorder.ActualHeight / 2));
                 }), null);
 
-                if (this.timerElapsed)
+                if (this.timerElapsed || step == CalibrationStep.None ||
+                    step == CalibrationStep.Done)
                 {
                     switch (step)
                     {
-                        case 0:
+                        case CalibrationStep.None:
+                            Dispatcher.BeginInvoke(new Action(delegate ()
+                            {
+                                this.CalibrationTopLeftPoint.Visibility = Visibility.Hidden;
+                                this.CalibrationBottomRightPoint.Visibility = Visibility.Hidden;
+                            }), null);
+
+                            //marginXBackup = Settings.Default.CalibrationMarginX;
+                            //marginYBackup = Settings.Default.CalibrationMarginY;
+
+                            topBackup = this.keyMapper.settings.Top;
+                            bottomBackup = this.keyMapper.settings.Bottom;
+                            leftBackup = this.keyMapper.settings.Left;
+                            rightBackup = this.keyMapper.settings.Right;
+
+                            if (Settings.Default.pointer_4IRMode == "none")
+                            {
+                                this.movePoint(1 - marginXBackup, 1 - marginYBackup);
+
+                                step = CalibrationStep.BottomRight;
+                            }
+                            else
+                            {
+                                //Settings.Default.CalibrationMarginX = 0;
+                                //Settings.Default.CalibrationMarginY = 0;
+
+                                centerXBackup = this.keyMapper.settings.CenterX;
+                                centerYBackup = this.keyMapper.settings.CenterY;
+                                tlBackup = this.keyMapper.settings.TLled;
+                                trBackup = this.keyMapper.settings.TRled;
+
+                                this.keyMapper.settings.Top = 0;
+                                this.keyMapper.settings.Bottom = 1;
+                                this.keyMapper.settings.Left = 0;
+                                this.keyMapper.settings.Right = 1;
+
+                                this.keyMapper.settings.CenterX = 0.5f;
+                                this.keyMapper.settings.CenterY = 0.5f;
+                                this.keyMapper.settings.TLled = 0.25f;
+                                this.keyMapper.settings.TRled = 0.75f;
+
+                                topOffset = 0;
+                                bottomOffset = 1;
+                                leftOffset = 0;
+                                rightOffset = 1;
+
+                                this.movePoint(0.5, 0.5);
+
+                                step = CalibrationStep.CenterScreen;
+                            }
+
+                            break;
+
+                        case CalibrationStep.CenterScreen:
                             this.movePoint(1 - marginXBackup, 1 - marginYBackup);
 
-                            step = 1;
+                            step = CalibrationStep.BottomRight;
                             break;
-                        case 1:
+                        case CalibrationStep.BottomRight:
                             this.movePoint(marginXBackup, marginYBackup);
 
-                            step = 2;
+                            step = CalibrationStep.TopLeft;
                             break;
 
-                        case 2:
+                        case CalibrationStep.TopLeft:
                             if (Settings.Default.pointer_4IRMode != "none")
                             {
                                 this.keyMapper.settings.Top = topOffset;
@@ -347,9 +407,12 @@ namespace WiiTUIO.Provider
                                 //Settings.Default.CalibrationMarginY = marginYBackup;
                             }
 
+                            this.movePoint(0.5, 0.5);
                             Dispatcher.BeginInvoke(new Action(delegate ()
                             {
-                                this.CalibrationPoint.Visibility = Visibility.Hidden;
+                                // Show all three calibration points for final review
+                                this.CalibrationTopLeftPoint.Visibility = Visibility.Visible;
+                                this.CalibrationBottomRightPoint.Visibility = Visibility.Visible;
 
                                 this.wiimoteNo.Text = null;
                                 this.insText2.Text = "Press A confirm calibration, press B to restart calibration";
@@ -359,7 +422,26 @@ namespace WiiTUIO.Provider
                                 this.TextBorder.SetValue(Canvas.TopProperty, 0.25 * this.ActualHeight - (this.TextBorder.ActualHeight / 2));
                             }), null);
 
-                            step = 3;
+                            step = CalibrationStep.Done;
+                            break;
+                        case CalibrationStep.Done:
+                            step = CalibrationStep.None;
+                            this.movePoint(0.5, 0.5);
+
+                            Dispatcher.BeginInvoke(new Action(delegate ()
+                            {
+                                this.wiimoteNo.Text = "Wiimote " + keyMapper.WiimoteID;
+                                this.insText2.Text = CALIB_TEST_INTRO_TEXT;
+
+                                this.TextBorder.UpdateLayout();
+                                this.TextBorder.SetValue(Canvas.LeftProperty, 0.5 * this.ActualWidth - (this.TextBorder.ActualWidth / 2));
+                                this.TextBorder.SetValue(Canvas.TopProperty, 0.25 * this.ActualHeight - (this.TextBorder.ActualHeight / 2));
+
+                                // Show all three calibration points
+                                this.CalibrationTopLeftPoint.Visibility = Visibility.Visible;
+                                this.CalibrationBottomRightPoint.Visibility = Visibility.Visible;
+                            }), null);
+
                             break;
 
                         default: break;
@@ -373,7 +455,7 @@ namespace WiiTUIO.Provider
         private void keyMapper_OnButtonDown(WiiButtonEvent e)
         {
             e.Button = e.Button.Replace("OffScreen.", "");
-            if (step == 3)
+            if (step == CalibrationStep.Done)
             {
                 if (e.Button.ToLower().Equals("a"))
                 {
@@ -381,16 +463,45 @@ namespace WiiTUIO.Provider
                 }
                 else if (e.Button.ToLower().Equals("b"))
                 {
-                     if (Settings.Default.pointer_4IRMode == "none")
+                    if (Settings.Default.pointer_4IRMode == "none")
                     {
                         this.movePoint(1 - marginXBackup, 1 - marginYBackup);
-                        step = 1;
+
+                        Dispatcher.BeginInvoke(new Action(delegate ()
+                        {
+                            this.CalibrationTopLeftPoint.Visibility = Visibility.Hidden;
+                            this.CalibrationBottomRightPoint.Visibility = Visibility.Hidden;
+                        }), null);
+
+                        step = CalibrationStep.BottomRight;
                     }
                     else
                     {
                         this.movePoint(0.5, 0.5);
-                        step = 0;
+
+                        Dispatcher.BeginInvoke(new Action(delegate ()
+                        {
+                            this.CalibrationTopLeftPoint.Visibility = Visibility.Hidden;
+                            this.CalibrationBottomRightPoint.Visibility = Visibility.Hidden;
+                        }), null);
+
+                        step = CalibrationStep.CenterScreen;
                     }
+                }
+            }
+            else if (step == CalibrationStep.None)
+            {
+                if (e.Button.ToLower().Equals("a") || e.Button.ToLower().Equals("b"))
+                {
+                    Dispatcher.BeginInvoke(new Action(delegate ()
+                    {
+                        this.wiimoteNo.Text = null;
+                        this.insText2.Text = " Release to Begin";
+
+                        this.TextBorder.UpdateLayout();
+                        this.TextBorder.SetValue(Canvas.LeftProperty, 0.5 * this.ActualWidth - (this.TextBorder.ActualWidth / 2));
+                        this.TextBorder.SetValue(Canvas.TopProperty, 0.25 * this.ActualHeight - (this.TextBorder.ActualHeight / 2));
+                    }), null);
                 }
             }
             else if (e.Button.ToLower().Equals("a") || e.Button.ToLower().Equals("b"))
@@ -440,7 +551,7 @@ namespace WiiTUIO.Provider
 
             switch (step)
             {
-                case 0:
+                case CalibrationStep.CenterScreen:
                     //this.keyMapper.settings.CenterX = (float)((this.keyMapper.cursorPos.RelativeX - 2) * Math.Cos(this.keyMapper.cursorPos.Rotation) - (this.keyMapper.cursorPos.RelativeY - 2) * Math.Sin(this.keyMapper.cursorPos.Rotation) + 2);
                     //this.keyMapper.settings.CenterY = (float)((this.keyMapper.cursorPos.RelativeX - 2) * Math.Sin(-this.keyMapper.cursorPos.Rotation) + (this.keyMapper.cursorPos.RelativeY - 2) * Math.Cos(-this.keyMapper.cursorPos.Rotation) + 2);
 
@@ -459,7 +570,7 @@ namespace WiiTUIO.Provider
                     this.keyMapper.settings.TLled = (float)(0.5 - ((this.keyMapper.cursorPos.Width / this.keyMapper.cursorPos.Height) / 4));
                     this.keyMapper.settings.TRled = (float)(0.5 + ((this.keyMapper.cursorPos.Width / this.keyMapper.cursorPos.Height) / 4));
                     break;
-                case 1:
+                case CalibrationStep.BottomRight:
                     if (Settings.Default.pointer_4IRMode == "none")
                     {
                         this.keyMapper.settings.Bottom = (float)this.keyMapper.cursorPos.RelativeY;
@@ -471,7 +582,7 @@ namespace WiiTUIO.Provider
                         rightOffset = (float)this.keyMapper.cursorPos.LightbarX;
                     }
                     break;
-                case 2:
+                case CalibrationStep.TopLeft:
                     if (Settings.Default.pointer_4IRMode == "none")
                     {
                         this.keyMapper.settings.Top = (float)this.keyMapper.cursorPos.RelativeY;

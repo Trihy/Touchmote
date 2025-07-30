@@ -21,5 +21,17 @@
             <Line Name="lineY" X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="5" />
             <Line Name="lineX" X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="5" />
         </Canvas>
+
+        <Canvas Name="CalibrationTopLeftPoint" Height="100" Width="100" ClipToBounds="False" Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="999">
+            <Ellipse Name="elipseTL" Stroke="Black" Fill="White" Height="50" Width="50" Canvas.Top="25" Canvas.Left="25" StrokeThickness="6"/>
+            <Line Name="lineYTL" X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="5" />
+            <Line Name="lineXTL" X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="5" />
+        </Canvas>
+
+        <Canvas Name="CalibrationBottomRightPoint" Height="100" Width="100" ClipToBounds="False" Canvas.Bottom="0" Canvas.Right="0" Panel.ZIndex="999">
+            <Ellipse Name="elipseBR" Stroke="Black" Fill="White" Height="50" Width="50" Canvas.Top="25" Canvas.Left="25" StrokeThickness="6"/>
+            <Line Name="lineYBR" X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="5" />
+            <Line Name="lineXBR" X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="5" />
+        </Canvas>
     </Canvas>
 </Window>
