@@ -144,9 +144,10 @@ namespace WiiTUIO.Output.Handlers
                     smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
                     smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
 
-                    var shitter = new System.Windows.Point(smoothedPos.X * this.width, smoothedPos.Y * this.height);
+                    //var tester = new System.Windows.Point(smoothedPos.X * this.width, smoothedPos.Y * this.height);
+                    //Trace.WriteLine($"{smoothedPos.X * this.width} {smoothedPos.Y * this.height} {this.width} {this.height}");
+
                     this.cursor.SetPosition(new System.Windows.Point(smoothedPos.X * this.width, smoothedPos.Y * this.height));
-                    Trace.WriteLine($"{smoothedPos.X * this.width} {smoothedPos.Y * this.height} {this.width} {this.height}");
                     previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
                 }
                 else
