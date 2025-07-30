@@ -762,15 +762,15 @@ namespace WiiTUIO
             buttons.Add(new JProperty("Classic.ZL", "disable"));
             buttons.Add(new JProperty("Classic.ZR", "disable"));
 
-            //JObject screen = new JObject();
+            JObject screen = new JObject();
 
-            //screen.Add(new JProperty("OnScreen", buttons));
+            screen.Add(new JProperty("OnScreen", buttons));
 
             JObject union = new JObject();
 
             union.Add(new JProperty("Title", "Calibration"));
 
-            union.Add(new JProperty("All", buttons));
+            union.Add(new JProperty("All", screen));
 
             File.WriteAllText(Settings.Default.keymaps_path + CALIBRATION_JSON_FILENAME, union.ToString()); //Prevent user from editing this
             return union;
