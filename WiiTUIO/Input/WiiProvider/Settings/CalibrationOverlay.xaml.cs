@@ -61,6 +61,8 @@ namespace WiiTUIO.Provider
         private double marginXBackup;
         private double marginYBackup;
 
+        private CalibPointsViewModel calibPointVM;
+
         /// <summary>
         /// An event which is raised once calibration is finished.
         /// </summary>
@@ -93,6 +95,9 @@ namespace WiiTUIO.Provider
             buttonTimer.Interval = 1000;
             buttonTimer.AutoReset = true;
             buttonTimer.Elapsed += buttonTimer_Elapsed;
+
+            calibPointVM = new CalibPointsViewModel();
+            SetupCalibPointEvents();
 
             //Compensate for DPI settings
 
@@ -199,11 +204,67 @@ namespace WiiTUIO.Provider
 
                     this.CalibrationTopLeftPoint.Visibility = Visibility.Visible;
                     this.CalibrationBottomRightPoint.Visibility = Visibility.Visible;
+
+                    DataContext = null;
+                    calibPointVM.DisplayDoneVis = true;
+                    PopulateCalibPointVM();
+                    DataContext = calibPointVM;
                 }), null);
 
                 this.movePoint(0.5, 0.5);
                 step = CalibrationStep.None;
             }
+        }
+
+        private void PopulateCalibPointVM()
+        {
+            calibPointVM.TopLeftXCoorAdj = this.keyMapper.settings.Left;
+            calibPointVM.TopLeftYCoorAdj = this.keyMapper.settings.Top;
+            calibPointVM.BottomRightXCoorAdj = this.keyMapper.settings.Right;
+            calibPointVM.BottomRightYCoorAdj = this.keyMapper.settings.Bottom;
+
+            calibPointVM.CenterXCoorAdj = this.keyMapper.settings.CenterX;
+            calibPointVM.CenterYCoorAdj = this.keyMapper.settings.CenterY;
+        }
+
+        private void SetupCalibPointEvents()
+        {
+            calibPointVM.TopLeftXCoorAdjChanged += CalibPointVM_TopLeftXCoorAdjChanged;
+            calibPointVM.TopLeftYCoorAdjChanged += CalibPointVM_TopLeftYCoorAdjChanged;
+            calibPointVM.BottomRightXCoorAdjChanged += CalibPointVM_BottomRightXCoorAdjChanged;
+            calibPointVM.BottomRightYCoorAdjChanged += CalibPointVM_BottomRightYCoorAdjChanged;
+            calibPointVM.CenterXCoorAdjChanged += CalibPointVM_CenterXCoorAdjChanged;
+            calibPointVM.CenterYCoorAdjChanged += CalibPointVM_CenterYCoorAdjChanged;
+        }
+
+        private void CalibPointVM_CenterYCoorAdjChanged(object sender, EventArgs e)
+        {
+            this.keyMapper.settings.CenterY = (float)calibPointVM.CenterYCoorAdj;
+        }
+
+        private void CalibPointVM_CenterXCoorAdjChanged(object sender, EventArgs e)
+        {
+            this.keyMapper.settings.CenterX = (float)calibPointVM.CenterXCoorAdj;
+        }
+
+        private void CalibPointVM_BottomRightYCoorAdjChanged(object sender, EventArgs e)
+        {
+            this.keyMapper.settings.Bottom = (float)calibPointVM.BottomRightYCoorAdj;
+        }
+
+        private void CalibPointVM_BottomRightXCoorAdjChanged(object sender, EventArgs e)
+        {
+            this.keyMapper.settings.Right = (float)calibPointVM.BottomRightXCoorAdj;
+        }
+
+        private void CalibPointVM_TopLeftYCoorAdjChanged(object sender, EventArgs e)
+        {
+            this.keyMapper.settings.Top = (float)calibPointVM.TopLeftYCoorAdj;
+        }
+
+        private void CalibPointVM_TopLeftXCoorAdjChanged(object sender, EventArgs e)
+        {
+            this.keyMapper.settings.Left = (float)calibPointVM.TopLeftXCoorAdj;
         }
 
         void OverlayWindow_KeyUp(object sender, KeyEventArgs e)
@@ -243,7 +304,10 @@ namespace WiiTUIO.Provider
 
                     };
                     this.CalibrationCanvas.BeginAnimation(FrameworkElement.OpacityProperty, animation, HandoffBehavior.SnapshotAndReplace);
+
+                    calibPointVM.DisplayDoneVis = false;
                 }), null);
+
                 step = CalibrationStep.None;
             }
         }
@@ -270,6 +334,14 @@ namespace WiiTUIO.Provider
             trBackup = this.keyMapper.settings.TRled;
 
             //this.HideOverlay();
+
+            Dispatcher.BeginInvoke(new Action(delegate ()
+            {
+                DataContext = null;
+                calibPointVM.DisplayDoneVis = true;
+                PopulateCalibPointVM();
+                DataContext = calibPointVM;
+            }), null);
         }
 
         public void CloseCalibration()
@@ -382,6 +454,13 @@ namespace WiiTUIO.Provider
                                 step = CalibrationStep.CenterScreen;
                             }
 
+                            Dispatcher.BeginInvoke(new Action(delegate ()
+                            {
+                                calibPointVM.DisplayDoneVis = false;
+                                DataContext = null;
+                                DataContext = calibPointVM;
+                            }), null);
+
                             break;
 
                         case CalibrationStep.CenterScreen:
@@ -423,9 +502,9 @@ namespace WiiTUIO.Provider
                             }), null);
 
                             step = CalibrationStep.Done;
+
                             break;
                         case CalibrationStep.Done:
-                            step = CalibrationStep.None;
                             this.movePoint(0.5, 0.5);
 
                             Dispatcher.BeginInvoke(new Action(delegate ()
@@ -440,7 +519,13 @@ namespace WiiTUIO.Provider
                                 // Show all three calibration points
                                 this.CalibrationTopLeftPoint.Visibility = Visibility.Visible;
                                 this.CalibrationBottomRightPoint.Visibility = Visibility.Visible;
+
+                                DataContext = null;
+                                PopulateCalibPointVM();
+                                DataContext = calibPointVM;
                             }), null);
+
+                            step = CalibrationStep.None;
 
                             break;
 
@@ -637,5 +722,99 @@ namespace WiiTUIO.Provider
 
             return result;
         }
+    }
+
+    class CalibPointsViewModel
+    {
+        private bool displayDoneVis = true;
+        public bool DisplayDoneVis
+        {
+            get => displayDoneVis;
+            set
+            {
+                if (displayDoneVis == value) return;
+                displayDoneVis = value;
+            }
+        }
+        public event EventHandler DisplayDoneVisChanged;
+
+        private double topLeftXCoorAdj;
+        public double TopLeftXCoorAdj
+        {
+            get => topLeftXCoorAdj;
+            set
+            {
+                if (topLeftXCoorAdj == value) return;
+                topLeftXCoorAdj = value;
+                Trace.WriteLine($"MADE IT {value}");
+                TopLeftXCoorAdjChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler TopLeftXCoorAdjChanged;
+
+        private double topLeftYCoorAdj;
+        public double TopLeftYCoorAdj
+        {
+            get => topLeftYCoorAdj;
+            set
+            {
+                if (topLeftYCoorAdj == value) return;
+                topLeftYCoorAdj = value;
+                TopLeftYCoorAdjChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler TopLeftYCoorAdjChanged;
+
+        private double bottomRightXCoorAdj;
+        public double BottomRightXCoorAdj
+        {
+            get => bottomRightXCoorAdj;
+            set
+            {
+                if (bottomRightXCoorAdj == value) return;
+                bottomRightXCoorAdj = value;
+                BottomRightXCoorAdjChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler BottomRightXCoorAdjChanged;
+
+        private double bottomRightYCoorAdj;
+        public double BottomRightYCoorAdj
+        {
+            get => bottomRightYCoorAdj;
+            set
+            {
+                if (bottomRightYCoorAdj == value) return;
+                bottomRightYCoorAdj = value;
+                BottomRightYCoorAdjChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler BottomRightYCoorAdjChanged;
+
+        private double centerXCoorAdj;
+        public double CenterXCoorAdj
+        {
+            get => centerXCoorAdj;
+            set
+            {
+                if (centerXCoorAdj == value) return;
+                centerXCoorAdj = value;
+                CenterXCoorAdjChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler CenterXCoorAdjChanged;
+
+        private double centerYCoorAdj;
+        public double CenterYCoorAdj
+        {
+            get => centerYCoorAdj;
+            set
+            {
+                if (centerYCoorAdj == value) return;
+                centerYCoorAdj = value;
+                CenterYCoorAdjChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public event EventHandler CenterYCoorAdjChanged;
     }
 }
