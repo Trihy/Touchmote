@@ -167,17 +167,20 @@ namespace WiiTUIO
                     {
                         string name = config.Title;
                         string filename = config.Keymap;
-                        LayoutSelectionRow row = new LayoutSelectionRow(name, filename, bordercolor);
-                        //row.OnClick += row_OnClick;
-
-                        if(this.keyMapper.GetFallbackKeymap().Equals(filename))
+                        if (filename != KeymapDatabase.Current.getKeymapSettings().getCalibrationKeymap())//Hide calibration keymap from layout chooser
                         {
-                            row.setSelected(true);
-                        }
+                            LayoutSelectionRow row = new LayoutSelectionRow(name, filename, bordercolor);
+                            //row.OnClick += row_OnClick;
 
-                        row.MouseDown += row_MouseDown;
-                        row.TouchDown += row_TouchDown;
-                        this.layoutList.Children.Add(row);
+                            if (this.keyMapper.GetFallbackKeymap().Equals(filename))
+                            {
+                                row.setSelected(true);
+                            }
+
+                            row.MouseDown += row_MouseDown;
+                            row.TouchDown += row_TouchDown;
+                            this.layoutList.Children.Add(row);
+                        }
                     }
 
                     DoubleAnimation animation = UIHelpers.createDoubleAnimation(1.0, 200, false);

@@ -46,7 +46,8 @@ namespace WiiTUIO.Output.Handlers
 
             all.Add(mouseHandler);
             all.Add(new ViGEmHandler(id));
-            all.Add(new TouchHandler(TouchOutputFactory.getCurrentProviderHandler(),id));
+            //all.Add(new TouchHandler(TouchOutputFactory.getCurrentProviderHandler(),id));
+            all.Add(new CursorHandler(id));
             return all;
         }
 

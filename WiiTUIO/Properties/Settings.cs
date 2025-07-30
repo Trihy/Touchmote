@@ -662,7 +662,71 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("xinput_rumbleThreshold_small");
             }
         }
-      
+
+        private int[] _color_ID1 = { 128, 255, 0 };
+        public int[] Color_ID1
+        {
+            get { return _color_ID1; }
+            set
+            {
+                if (value.Length == 3)
+                {
+                    _color_ID1[0] = Math.Max(0, Math.Min(255, value[0]));
+                    _color_ID1[1] = Math.Max(0, Math.Min(255, value[1]));
+                    _color_ID1[2] = Math.Max(0, Math.Min(255, value[2]));
+                    OnPropertyChanged("Color_ID");
+                }
+            }
+        }
+
+        private int[] _color_ID2 = { 197, 0, 255 };
+        public int[] Color_ID2
+        {
+            get { return _color_ID2; }
+            set
+            {
+                if (value.Length == 3)
+                {
+                    _color_ID2[0] = Math.Max(0, Math.Min(255, value[0]));
+                    _color_ID2[1] = Math.Max(0, Math.Min(255, value[1]));
+                    _color_ID2[2] = Math.Max(0, Math.Min(255, value[2]));
+                    OnPropertyChanged("Color_ID");
+                }
+            }
+        }
+
+        private int[] _color_ID3 = { 0, 220, 255 };
+        public int[] Color_ID3
+        {
+            get { return _color_ID3; }
+            set
+            {
+                if (value.Length == 3)
+                {
+                    _color_ID3[0] = Math.Max(0, Math.Min(255, value[0]));
+                    _color_ID3[1] = Math.Max(0, Math.Min(255, value[1]));
+                    _color_ID3[2] = Math.Max(0, Math.Min(255, value[2]));
+                    OnPropertyChanged("Color_ID");
+                }
+            }
+        }
+
+        private int[] _color_ID4 = { 255, 255, 0 };
+        public int[] Color_ID4
+        {
+            get { return _color_ID4; }
+            set
+            {
+                if (value.Length == 3)
+                {
+                    _color_ID4[0] = Math.Max(0, Math.Min(255, value[0]));
+                    _color_ID4[1] = Math.Max(0, Math.Min(255, value[1]));
+                    _color_ID4[2] = Math.Max(0, Math.Min(255, value[2]));
+                    OnPropertyChanged("Color_ID");
+                }
+            }
+        }
+
         private static string SETTINGS_FILENAME = System.AppDomain.CurrentDomain.BaseDirectory+"settings.json";
 
         private static Settings defaultInstance;

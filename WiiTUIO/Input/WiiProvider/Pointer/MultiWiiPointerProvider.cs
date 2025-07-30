@@ -11,7 +11,7 @@ using System.Drawing;
 using WiiTUIO.Properties;
 using System.Windows.Controls;
 using System.Threading;
-using WiiTUIO.Output.Handlers.Touch;
+//using WiiTUIO.Output.Handlers.Touch;
 using WiiTUIO.Output;
 
 namespace WiiTUIO.Provider
@@ -535,7 +535,7 @@ namespace WiiTUIO.Provider
 
                         TouchOutputFactory.getCurrentProviderHandler().processEventFrame();
 
-                        if (Settings.Default.pointer_customCursor)
+                        //if (Settings.Default.pointer_customCursor)
                         {
                             D3DCursorWindow.Current.RefreshCursors();
                         }

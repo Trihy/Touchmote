@@ -102,12 +102,15 @@ namespace WiiTUIO
             this.spLayoutList.Children.Clear();
             foreach (Keymap keymap in allKeymaps)
             {
-                bool active = this.currentKeymap.Filename == keymap.Filename;
-                bool defaultk = keymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap();
-                KeymapRow row = new KeymapRow(keymap,active,defaultk);
-                row.OnClick += SavePreviousKeymap;
-                row.OnClick += selectKeymap;
-                this.spLayoutList.Children.Add(row);
+                if (keymap.Filename != KeymapDatabase.Current.getKeymapSettings().getCalibrationKeymap()) //Hide calibration keymap from config window
+                {
+                    bool active = this.currentKeymap.Filename == keymap.Filename;
+                    bool defaultk = keymap.Filename == KeymapDatabase.Current.getKeymapSettings().getDefaultKeymap();
+                    KeymapRow row = new KeymapRow(keymap, active, defaultk);
+                    row.OnClick += SavePreviousKeymap;
+                    row.OnClick += selectKeymap;
+                    this.spLayoutList.Children.Add(row);
+                }
             }
         }
 

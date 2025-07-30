@@ -208,10 +208,17 @@
     <Compile Include="Filters\OneEuroFilter.cs" />
     <Compile Include="Filters\RadiusBuffer.cs" />
     <Compile Include="Filters\SmoothingBuffer.cs" />
+    <Compile Include="IDColor.cs" />
+    <Compile Include="Input\WiiProvider\Settings\CalibrationOverlay.xaml.cs">
+      <DependentUpon>CalibrationOverlay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Input\WiiProvider\Settings\CalibrationSettings.cs" />
     <Compile Include="KeymapConfig\VirtualKeyCode.cs" />
     <Compile Include="Output\CursorPositionHelper.cs" />
     <Compile Include="Output\FakerInputDevice.cs" />
+    <Compile Include="Output\Handlers\Cursor\CursorHandler.cs" />
+    <Compile Include="Output\Handlers\Cursor\D3DCursor.cs" />
+    <Compile Include="Output\Handlers\Cursor\D3DCursorWindow.cs" />
     <Compile Include="Output\Handlers\FakerInputKeyboardHandler.cs" />
     <Compile Include="Output\Handlers\FakerInputMouseHandler.cs" />
     <Compile Include="Output\Handlers\HandlerFactory.cs" />
@@ -282,6 +289,10 @@
     <Page Include="AppSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Input\WiiProvider\Settings\CalibrationOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="KeymapConfig\KeymapOutputRow.xaml">
       <Generator>MSBuild:Compile</Generator>

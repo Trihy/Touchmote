@@ -1,0 +1,80 @@
+﻿<Window x:Class="WiiTUIO.Provider.CalibrationOverlay"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:this="clr-namespace:WiiTUIO.Provider"
+    Topmost="True"
+    Top="0"
+    Left="0"
+    AllowsTransparency="True"
+    WindowStyle="None"
+    Background="Transparent"
+    ShowInTaskbar="False"
+    WindowStartupLocation="Manual" Width="800" Height="600">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Thickness x:Key="SpaceMargin" Top="8" Bottom="0" Left="0" Right="0" />
+    </Window.Resources>
+    <Canvas Name="CalibrationCanvas" Background="#88000000">
+        <Border Name="TextBorder" Background="#00FFFFFF" BorderThickness="0" BorderBrush="Transparent" Margin="0,0,0,10">
+            <TextBlock Name="TextBlock" FontSize="30" FontFamily="Segoe UI Semilight" Foreground="White" Margin="10" TextAlignment="Center">
+                    <Run Name="wiimoteNo" Text="Wiimote" Foreground="Gray"/><Run Name="insText2" Text=" aim at the targets and press A or B to calibrate" Foreground="White"/>
+            </TextBlock>
+        </Border>
+        <Canvas Name="CalibrationPoint" Height="100" Width="100" ClipToBounds="False" Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="999">
+            <Ellipse Name="elipse" Stroke="Black" Fill="White" Height="50" Width="50" Canvas.Top="25" Canvas.Left="25" StrokeThickness="6"/>
+            <Line Name="lineY" X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="5" />
+            <Line Name="lineX" X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="5" />
+        </Canvas>
+
+        <Canvas Name="CalibrationTopLeftPoint" Height="100" Width="100" ClipToBounds="False" Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="999">
+            <Ellipse Name="elipseTL" Stroke="Black" Fill="White" Height="50" Width="50" Canvas.Top="25" Canvas.Left="25" StrokeThickness="6"/>
+            <Line Name="lineYTL" X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="5" />
+            <Line Name="lineXTL" X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="5" />
+        </Canvas>
+
+        <Canvas Name="CalibrationBottomRightPoint" Height="100" Width="100" ClipToBounds="False" Canvas.Bottom="0" Canvas.Right="0" Panel.ZIndex="999">
+            <Ellipse Name="elipseBR" Stroke="Black" Fill="White" Height="50" Width="50" Canvas.Top="25" Canvas.Left="25" StrokeThickness="6"/>
+            <Line Name="lineYBR" X1="50" Y1="0" X2="50" Y2="100" Stroke="Black" StrokeThickness="5" />
+            <Line Name="lineXBR" X1="0" Y1="50" X2="100" Y2="50" Stroke="Black" StrokeThickness="5" />
+        </Canvas>
+
+        <UniformGrid Columns="2" Canvas.Bottom="100" Canvas.Left="0" MinWidth="200"
+                     Margin="8,0,0,0"
+                     Visibility="{Binding DisplayDoneVis, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <Label Content="Top Left X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" Height="30" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding TopLeftXCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+
+            <!--<TextBox Text="{Binding TopLeftXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
+
+            <Label Content="Top Left Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding TopLeftYCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding TopLeftYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />--><!---->
+
+            <Label Content="Bottom Right X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding BottomRightXCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding BottomRightXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
+
+            <Label Content="Bottom Right Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding BottomRightYCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding BottomRightYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
+
+            <Label Content="Center X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding CenterXCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding CenterXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
+
+            <Label Content="Center Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
+            <Controls:NumericUpDown StringFormat="F3" Value="{Binding CenterYCoorAdj}" Interval="0.01" Maximum="1.0" Margin="8,8,0,0" FontFamily="Segoe UI Semilight" FontSize="15" Minimum="0.0" MinWidth="100" Height="30" BorderBrush="#FFDEDEDE" Background="White">
+            </Controls:NumericUpDown>
+            <!--<TextBox Text="{Binding CenterYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />-->
+
+        </UniformGrid>
+    </Canvas>
+</Window>
