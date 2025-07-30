@@ -42,22 +42,22 @@
                      Margin="8,0,0,0"
                      Visibility="{Binding DisplayDoneVis, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-            <Label Content="Top Left X:" Margin="{StaticResource SpaceMargin}" Background="AntiqueWhite" Height="30" />
+            <Label Content="Top Left X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" Height="30" />
             <TextBox Text="{Binding TopLeftXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
 
-            <Label Content="Top Left Y:" Margin="{StaticResource SpaceMargin}" Background="AntiqueWhite" />
+            <Label Content="Top Left Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
             <TextBox Text="{Binding TopLeftYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
 
-            <Label Content="Bottom Right X:" Margin="{StaticResource SpaceMargin}" Background="AntiqueWhite" />
+            <Label Content="Bottom Right X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
             <TextBox Text="{Binding BottomRightXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
 
-            <Label Content="Bottom Right Y:" Margin="{StaticResource SpaceMargin}" Background="AntiqueWhite" />
+            <Label Content="Bottom Right Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
             <TextBox Text="{Binding BottomRightYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
 
-            <Label Content="Center X:" Margin="{StaticResource SpaceMargin}" Background="AntiqueWhite" />
+            <Label Content="Center X:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
             <TextBox Text="{Binding CenterXCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
 
-            <Label Content="Center Y:" Margin="{StaticResource SpaceMargin}" Background="AntiqueWhite" />
+            <Label Content="Center Y:" Margin="{StaticResource SpaceMargin}" FontFamily="Segoe UI Semilight" Foreground="White" />
             <TextBox Text="{Binding CenterYCoorAdj, UpdateSourceTrigger=LostFocus, StringFormat='F3'}" Width="100" Height="30" Margin="8,8,0,0" />
 
         </UniformGrid>
