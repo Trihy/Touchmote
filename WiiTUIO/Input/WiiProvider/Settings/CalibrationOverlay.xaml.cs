@@ -746,7 +746,6 @@ namespace WiiTUIO.Provider
             {
                 if (topLeftXCoorAdj == value) return;
                 topLeftXCoorAdj = value;
-                Trace.WriteLine($"MADE IT {value}");
                 TopLeftXCoorAdjChanged?.Invoke(this, EventArgs.Empty);
             }
         }
