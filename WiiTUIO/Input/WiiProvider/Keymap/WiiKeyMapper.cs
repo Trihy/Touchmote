@@ -627,7 +627,7 @@ namespace WiiTUIO.Provider
             ButtonFlag buttonFlag = getButtonFlag(buttonName);
             bool pressedBefore = isButtonPressed(buttonFlag);
             string offScreenState = this.cursorPos.OffScreen ? "OffScreen." : "";
-            string offScreenButtonName = $"OffScreen.{buttonName}";
+            string offScreenButtonName = string.Concat("OffScreen.", buttonName);
             string currentButtonName = this.cursorPos.OffScreen ? offScreenButtonName : buttonName;
 
             if (pressedNow && !pressedBefore) // On down

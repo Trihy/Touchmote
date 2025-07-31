@@ -140,12 +140,13 @@ namespace WiiTUIO.Provider
                         // Only execute if OnScreen and OffScreen values are different.
                         // Only handle button up event here. Let later update routines handle
                         // button down events
-                        if (!this.IsInherited("OffScreen." + button.Key))
+                        string tempBtn = string.Concat("Offscreen", button.Key);
+                        if (!this.IsInherited(tempBtn))
                         {
                             //Console.WriteLine(button.Key);
                             if (!cursorPosition.OffScreen)
                             {
-                                this.executeButtonUp("OffScreen." + button.Key);
+                                this.executeButtonUp(tempBtn);
                                 //this.executeButtonDown(button.Key);
                             }
                             else
