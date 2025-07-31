@@ -209,7 +209,7 @@ namespace WiiTUIO.Provider
                 }
             }
 
-            //prevOffScreen = cursorPosition.OffScreen;
+            prevOffScreen = cursorPosition.OffScreen;
         }
 
         public void updateAccelerometer(AccelState accelState)
