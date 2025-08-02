@@ -229,6 +229,10 @@ namespace WiiTUIO
         {
             if(!hidden)
             {
+                // Strip offscreen status to obtain raw button name
+                StringBuilder sb = new StringBuilder(e.Button);
+                sb.Replace("OffScreen.", "");
+                e.Button = sb.ToString();
                 if (e.Button.ToLower().Equals("down"))
                 {
                     highlightNext();
