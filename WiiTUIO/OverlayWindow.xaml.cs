@@ -233,15 +233,16 @@ namespace WiiTUIO
                 StringBuilder sb = new StringBuilder(e.Button);
                 sb.Replace("OffScreen.", "");
                 e.Button = sb.ToString();
-                if (e.Button.ToLower().Equals("down"))
+                string tempBtn = e.Button.ToLower();
+                if (tempBtn.Equals("down"))
                 {
                     highlightNext();
                 }
-                else if (e.Button.ToLower().Equals("up"))
+                else if (tempBtn.Equals("up"))
                 {
                     highlightPrev();
                 }
-                else if (e.Button.ToLower().Equals("right") || e.Button.ToLower().Equals("a"))
+                else if (tempBtn.Equals("right") || tempBtn.Equals("a"))
                 {
                     selectHighlighted();
                 }
