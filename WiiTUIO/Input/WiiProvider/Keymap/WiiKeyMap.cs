@@ -274,7 +274,7 @@ namespace WiiTUIO.Provider
             }
             if (this.config.TryGetValue(offscreen + "AccelY+", out outConfig))
             {
-                if (accelState.Values.Y > 0)
+                if (smoothedAccelY > 0)
                 {
                     updateStickHandlers(outConfig, smoothedAccelY);
                 }
