@@ -1007,7 +1007,7 @@ namespace WiiTUIO.Output.Handlers
 
                 const double LIGHT_FUZZ = 0.003;
                 const bool useFuzz = false;
-                if (!cursorPos.OutOfReach)
+                if (!cursorPos.OffScreen)
                 {
                     //Point smoothedPos = cursorPositionHelper.GetLightbarRelativePosition(new Point(cursorPos.LightbarX, cursorPos.LightbarY));
                     Point smoothedPos = new Point();
@@ -1085,11 +1085,67 @@ namespace WiiTUIO.Output.Handlers
                 }
                 else
                 {
+                    double finalX = 0.0;
+                    double finalY = 0.0;
+
                     //testLightFilterX.Filter(0.5, 1.0 / 0.008);
                     //testLightFilterY.Filter(0.5, 1.0 / 0.008);
                     // Save last known position to smoothing buffer
-                    testLightFilterX.Filter(previousLightCursorCoorPoint.X * 1.001, 1.0 / elapsedMs);
-                    testLightFilterY.Filter(previousLightCursorCoorPoint.Y * 1.001, 1.0 / elapsedMs);
+                    double halfX = previousLightCursorCoorPoint.X - 0.5;
+                    double halfY = previousLightCursorCoorPoint.Y - 0.5;
+                    double signX = Math.Sign(halfX);
+                    double signY = Math.Sign(halfY);
+
+                    double angle = Math.Atan2(halfY, halfX);
+
+                    if (angle == 0)
+                    {
+                        finalX = finalY = 0.5;
+                    }
+                    else if (Math.Abs(halfX) >= Math.Abs(halfY))
+                    {
+                        finalX = 0.5 * signX;
+                        double temp = Math.Cos(angle);
+                        double tempHyp = temp != 0.0 ? finalX / temp : 0.0;
+                        finalY = tempHyp * Math.Sin(angle);
+
+                        finalX += 0.5;
+                        finalY += 0.5;
+                    }
+                    else
+                    {
+                        finalY = 0.5 * signY;
+                        double temp = Math.Sin(angle);
+                        double tempHyp = temp != 0.0 ? finalY / temp : 0.0;
+                        finalX = tempHyp * Math.Cos(angle);
+
+                        finalX += 0.5;
+                        finalY += 0.5;
+                    }
+
+                    /*Point smoothedPos = new Point();
+                    smoothedPos.X = testLightFilterX.Filter(finalX * 1.001, 1.0 / elapsedMs);
+                    smoothedPos.Y = testLightFilterY.Filter(finalY * 1.001, 1.0 / elapsedMs);
+
+                    // Filter does not go back to absolute zero for reasons. Check
+                    // for low number and reset to zero
+                    if (Math.Abs(smoothedPos.X) < 0.0001) smoothedPos.X = 0.0;
+                    if (Math.Abs(smoothedPos.Y) < 0.0001) smoothedPos.Y = 0.0;
+
+                    // Clamp values
+                    smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
+                    smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
+                    */
+
+                    absoluteMouseReport.MouseX = (ushort)(finalX * 32767);
+                    absoluteMouseReport.MouseY = (ushort)(finalY * 32767);
+                    absMouseSync = true;
+
+                    // Save current IR position
+                    previousLightCursorCoorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
+
+                    //testLightFilterX.Filter(previousLightCursorCoorPoint.X * 1.001, 1.0 / elapsedMs);
+                    //testLightFilterY.Filter(previousLightCursorCoorPoint.Y * 1.001, 1.0 / elapsedMs);
 
                     wasInReach = false;
                 }
