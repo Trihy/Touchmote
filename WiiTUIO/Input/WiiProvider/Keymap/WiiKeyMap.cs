@@ -636,7 +636,8 @@ namespace WiiTUIO.Provider
 
             KeymapOutConfig outConfig;
 
-            if (this.config.TryGetValue(offscreen + "Classic.StickLRight", out outConfig))
+            string tempBtnKey = string.Concat(offscreen, "Classic.StickLRight");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickL.X > 0)
                 {
@@ -650,15 +651,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.X * 2 > outConfig.Threshold && !PressedButtons["Classic.StickLRight"])
                 {
                     PressedButtons["Classic.StickLRight"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickLRight");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickL.X * 2 < outConfig.Threshold && PressedButtons["Classic.StickLRight"])
                 {
                     PressedButtons["Classic.StickLRight"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickLRight");
+                    this.executeButtonUp(tempBtnKey);
                 }
             }
-            if (this.config.TryGetValue(offscreen + "Classic.StickLLeft", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.StickLLeft");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickL.X < 0)
                 {
@@ -672,15 +675,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.X * -2 > outConfig.Threshold && !PressedButtons["Classic.StickLLeft"])
                 {
                     PressedButtons["Classic.StickLLeft"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickLLeft");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickL.X * -2 < outConfig.Threshold && PressedButtons["Classic.StickLLeft"])
                 {
                     PressedButtons["Classic.StickLLeft"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickLLeft");
+                    this.executeButtonUp(tempBtnKey);
                 }
             }
-            if (this.config.TryGetValue(offscreen + "Classic.StickLUp", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.StickLUp");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickL.Y > 0)
                 {
@@ -694,16 +699,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.Y * 2 > outConfig.Threshold && !PressedButtons["Classic.StickLUp"])
                 {
                     PressedButtons["Classic.StickLUp"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickLUp");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickL.Y * 2 < outConfig.Threshold && PressedButtons["Classic.StickLUp"])
                 {
                     PressedButtons["Classic.StickLUp"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickLUp");
+                    this.executeButtonUp(tempBtnKey);
                 }
-
             }
-            if (this.config.TryGetValue(offscreen + "Classic.StickLDown", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.StickLDown");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickL.Y < 0)
                 {
@@ -717,18 +723,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickL.Y * -2 > outConfig.Threshold && !PressedButtons["Classic.StickLDown"])
                 {
                     PressedButtons["Classic.StickLDown"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickLDown");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickL.Y * -2 < outConfig.Threshold && PressedButtons["Classic.StickLDown"])
                 {
                     PressedButtons["Classic.StickLDown"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickLDown");
+                    this.executeButtonUp(tempBtnKey);
                 }
             }
 
-
-
-            if (this.config.TryGetValue(offscreen + "Classic.StickRRight", out outConfig))
+            tempBtnKey = string.Concat(offscreen, "Classic.StickRRight");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickR.X > 0)
                 {
@@ -742,15 +747,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.X * 2 > outConfig.Threshold && !PressedButtons["Classic.StickRRight"])
                 {
                     PressedButtons["Classic.StickRRight"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickRRight");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickR.X * 2 < outConfig.Threshold && PressedButtons["Classic.StickRRight"])
                 {
                     PressedButtons["Classic.StickRRight"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickRRight");
+                    this.executeButtonUp(tempBtnKey);
                 }
             }
-            if (this.config.TryGetValue(offscreen + "Classic.StickRLeft", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.StickRLeft");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickR.X < 0)
                 {
@@ -764,15 +771,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.X * -2 > outConfig.Threshold && !PressedButtons["Classic.StickRLeft"])
                 {
                     PressedButtons["Classic.StickRLeft"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickRLeft");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickR.X * -2 < outConfig.Threshold && PressedButtons["Classic.StickRLeft"])
                 {
                     PressedButtons["Classic.StickRLeft"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickRLeft");
+                    this.executeButtonUp(tempBtnKey);
                 }
             }
-            if (this.config.TryGetValue(offscreen + "Classic.StickRUp", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.StickRUp");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickR.Y > 0)
                 {
@@ -786,16 +795,17 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.Y * 2 > outConfig.Threshold && !PressedButtons["Classic.StickRUp"])
                 {
                     PressedButtons["Classic.StickRUp"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickRUp");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickR.Y * 2 < outConfig.Threshold && PressedButtons["Classic.StickRUp"])
                 {
                     PressedButtons["Classic.StickRUp"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickRUp");
+                    this.executeButtonUp(tempBtnKey);
                 }
-
             }
-            if (this.config.TryGetValue(offscreen + "Classic.StickRDown", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.StickRDown");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 if (classic.JoystickR.Y < 0)
                 {
@@ -809,20 +819,23 @@ namespace WiiTUIO.Provider
                 if (classic.JoystickR.Y * -2 > outConfig.Threshold && !PressedButtons["Classic.StickRDown"])
                 {
                     PressedButtons["Classic.StickRDown"] = true;
-                    this.executeButtonDown(offscreen + "Classic.StickRDown");
+                    this.executeButtonDown(tempBtnKey);
                 }
                 else if (classic.JoystickR.Y * -2 < outConfig.Threshold && PressedButtons["Classic.StickRDown"])
                 {
                     PressedButtons["Classic.StickRDown"] = false;
-                    this.executeButtonUp(offscreen + "Classic.StickRDown");
+                    this.executeButtonUp(tempBtnKey);
                 }
             }
 
-            if (this.config.TryGetValue(offscreen + "Classic.TriggerL", out outConfig))
+            tempBtnKey = string.Concat(offscreen, "Classic.TriggerL");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 updateStickHandlers(outConfig, classic.TriggerL);
             }
-            if (this.config.TryGetValue(offscreen + "Classic.TriggerR", out outConfig))
+
+            tempBtnKey = string.Concat(offscreen, "Classic.TriggerR");
+            if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
                 updateStickHandlers(outConfig, classic.TriggerR);
             }
