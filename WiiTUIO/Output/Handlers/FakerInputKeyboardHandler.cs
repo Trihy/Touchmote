@@ -413,6 +413,14 @@ namespace WiiTUIO.Output
                     return EnhancedKey.VolumeDown;
                 case VirtualKeyCode.VOLUME_MUTE:
                     return EnhancedKey.Mute;
+                case VirtualKeyCode.MEDIA_PLAY_PAUSE:
+                    return EnhancedKey.PlayPause;
+                case VirtualKeyCode.MEDIA_NEXT_TRACK:
+                    return EnhancedKey.ScanNextTrack;
+                case VirtualKeyCode.MEDIA_PREV_TRACK:
+                    return EnhancedKey.ScanPreviousTrack;
+                case VirtualKeyCode.MEDIA_STOP:
+                    return EnhancedKey.Stop;
                 default:
                     return null;
             }
