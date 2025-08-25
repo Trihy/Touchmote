@@ -279,7 +279,7 @@ namespace WiiTUIO.Provider
             tempBtnKey = string.Concat(offscreen, "AccelY+");
             if (this.config.TryGetValue(tempBtnKey, out outConfig))
             {
-                if (accelState.Values.Y > 0)
+                if (smoothedAccelY > 0)
                 {
                     updateStickHandlers(outConfig, smoothedAccelY);
                 }
