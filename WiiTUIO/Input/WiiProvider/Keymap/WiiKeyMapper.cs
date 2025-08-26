@@ -337,9 +337,10 @@ namespace WiiTUIO.Provider
         {
             try
             {
-                string[] appStringsToMatch = null;
+                string[] appStringsToMatch;
                 IntPtr currentForegroundWindow = UIHelpers.GetForegroundWindow();
-                if (currentForegroundWindow != null)
+
+                if (currentForegroundWindow != IntPtr.Zero)
                 {
                     string currentWindowTitle = UIHelpers.GetWindowTextRaw(currentForegroundWindow);
                     appStringsToMatch = new string[]
@@ -360,52 +361,63 @@ namespace WiiTUIO.Provider
                     };
                 }
 
-                string appStringToMatch = evt.Process.MainModule.FileVersionInfo.FileDescription + evt.Process.MainModule.FileVersionInfo.OriginalFilename + evt.Process.MainModule.FileVersionInfo.FileName;
-
                 bool keymapFound = false;
 
                 List<ApplicationSearchSetting> applicationConfigurations = KeymapDatabase.Current.getKeymapSettings().getApplicationSearchSettings();
                 foreach (ApplicationSearchSetting searchSetting in applicationConfigurations)
                 {
                     string[] appList = searchSetting.Search.Split(Convert.ToChar(31));
-                    for (int i = 0; i < appList.Length && !keymapFound; i++)
+                    foreach (string rawSearch in appList)
                     {
-                        string search = appList[i];
-                        for (int j = 0; j < appStringsToMatch.Length && !keymapFound; j++)
+                        string search = rawSearch.ToLower().Replace(" ", "");
+
+                        foreach (string rawAppStr in appStringsToMatch)
                         {
-                            appStringToMatch = appStringsToMatch[j];
-                            if (appStringToMatch != null)
+                            if (keymapFound || string.IsNullOrEmpty(rawAppStr))
+                                continue;
+
+                            string appStr = rawAppStr.ToLower().Replace(" ", "");
+
+                            bool isExecutableName = search.EndsWith(".exe") && !search.Contains("\\");
+                            if (isExecutableName)
                             {
-                                const int WINDOW_TITLE_IDX = 3;
-                                // Match executable filename or file description
-                                if (j != WINDOW_TITLE_IDX && appStringToMatch.ToLower().Replace(" ", "").Equals(search.ToLower().Replace(" ", "")))
+                                string fileNameOnly = Path.GetFileName(appStr);
+                                if (fileNameOnly.Equals(search))
                                 {
                                     this.applicationKeymap = this.loadKeyMap(searchSetting.Keymap);
                                     keymapFound = true;
+                                    break;
                                 }
-                                // Check for substring in current foreground window title
-                                else if (j == WINDOW_TITLE_IDX && appStringToMatch.ToLower().Replace(" ", "").Contains(search.ToLower().Replace(" ", "")))
+                            }
+                            else
+                            {
+                                if (appStr.Contains(search))
                                 {
                                     this.applicationKeymap = this.loadKeyMap(searchSetting.Keymap);
                                     keymapFound = true;
+                                    break;
                                 }
                             }
                         }
+
+                        if (keymapFound)
+                            break;
                     }
+
+                    if (keymapFound)
+                        break;
                 }
 
-                // Only switch keymap if search failed but old auto profile
-                // is still in use
+                // Revert to fallback if no keymap matched
                 if (!keymapFound && this.applicationKeymap != null)
                 {
                     this.setKeymap(this.fallbackKeymap);
                     this.applicationKeymap = null;
                 }
-
             }
             catch (Exception e)
             {
-                Console.WriteLine("Could not change keymap config for " + evt.Process);
+                Console.WriteLine("Could not change keymap config for " + evt.Process + " - " + e.Message);
             }
         }
 
