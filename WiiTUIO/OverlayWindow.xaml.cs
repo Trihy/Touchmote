@@ -152,7 +152,7 @@ namespace WiiTUIO
                     this.layoutChooserOverlay.Visibility = Visibility.Visible;
                     this.Activate();
 
-                    Color bordercolor = CursorColor.getColor(keyMapper.WiimoteID);
+                    Color bordercolor = IDColor.getColor(keyMapper.WiimoteID);
                     //bordercolor.ScA = 0.5f;
                     bordercolor.R = (byte)(bordercolor.R * 0.8);
                     bordercolor.G = (byte)(bordercolor.G * 0.8);
