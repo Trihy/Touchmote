@@ -563,10 +563,12 @@ namespace WiiTUIO
         {
             if (!this.tryingToConnect)
             {
-                Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
+                Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0306*\"", new Action(delegate ()
+                {
+                    Launcher.Launch("Driver", "devcon", " enable \"BTHENUM*_VID*57e*_PID&0330*\"", null);
+                }));
 
                 this.startProvider();
-
             }
         }
 
@@ -653,8 +655,10 @@ namespace WiiTUIO
             //this.pWiiProvider = null;
             if (Settings.Default.completelyDisconnect)
             {
-                //Disable Wiimote in device manager to disconnect it from the computer (so it doesn't drain battery when not used)
-                Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0306*\"", null);
+                Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0306*\"", new Action(delegate ()
+                {
+                    Launcher.Launch("Driver", "devcon", " disable \"BTHENUM*_VID*57e*_PID&0330*\"", null);
+                }));
             }
         }
         #endregion
