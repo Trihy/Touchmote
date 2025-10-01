@@ -93,9 +93,10 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
         public bool setButtonDown(string key)
         {
-            if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals(PREFIX))
+            string lowerKey = key.ToLower();
+            if (key.Length > 4 && lowerKey.Substring(0, 4).Equals(PREFIX))
             {
-                string button = key.ToLower().Substring(4);
+                string button = lowerKey.Substring(4);
                 switch (button)
                 {
                     case "triggerr":
@@ -183,9 +184,10 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
         public bool setButtonUp(string key)
         {
-            if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals(PREFIX))
+            string lowerKey = key.ToLower();
+            if (key.Length > 4 && lowerKey.Substring(0, 4).Equals(PREFIX))
             {
-                string button = key.ToLower().Substring(4);
+                string button = lowerKey.Substring(4);
                 switch (button)
                 {
                     case "triggerr":
@@ -428,9 +430,10 @@ namespace WiiTUIO.Output.Handlers.Xinput
 
         public bool setValue(string key, double value)
         {
-            if (key.Length > 4 && key.ToLower().Substring(0, 4).Equals(PREFIX))
+            string lowerKey = key.ToLower();
+            if (key.Length > 4 && lowerKey.Substring(0, 4).Equals(PREFIX))
             {
-                key = key.ToLower().Substring(4);
+                key = lowerKey.Substring(4);
                 //Make sure value is in range 0-1
                 value = value > 1 ? 1 : value;
                 value = value < 0 ? 0 : value;
