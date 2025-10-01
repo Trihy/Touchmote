@@ -58,6 +58,9 @@ namespace WiiTUIO.Output.Handlers.Xinput
             cursorPositionHelper = new CursorPositionHelper();
             device = new ViGEmBus360Device(viGEmClient.VigemTestClient);
             device.OnRumble += Device_OnRumble;
+
+            leftStickLight.Reset();
+            rightStickLight.Reset();
         }
 
         private void Device_OnRumble(byte arg1, byte arg2)
@@ -309,12 +312,14 @@ namespace WiiTUIO.Output.Handlers.Xinput
                 //Trace.WriteLine($"ELAPSED DUR: {elapsed}");
                 tempStickData.previousLightTime = currentTime;
 
-                if (!cursorPos.OutOfReach)
+                if (!cursorPos.OffScreen)
                 {
                     Point smoothedPos = new Point();
                     // Adjust sensitivity to work around rounding in filter method
                     smoothedPos.X = tempStickData.testLightFilterX.Filter(cursorPos.LightbarX * 1.001, 1.0 / elapsedMs);
                     smoothedPos.Y = tempStickData.testLightFilterY.Filter(cursorPos.LightbarY * 1.001, 1.0 / elapsedMs);
+
+                    double tempX = smoothedPos.X;
 
                     // Filter does not go back to absolute zero for reasons. Check
                     // for low number and reset to zero
@@ -325,21 +330,93 @@ namespace WiiTUIO.Output.Handlers.Xinput
                     smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
                     smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
 
+                    short axisX = AxisScale(smoothedPos.X, false);
+                    short axisY = AxisScale(smoothedPos.Y, true);
+
+                    //Console.WriteLine($"X: {cursorPos.LightbarX} | Y {cursorPos.LightbarY}");
+                    //Console.WriteLine($"AXIS X: {axisX} | AXIS Y {axisY} | {smoothedPos.X} | {tempX}");
+
                     device.Cont.SetAxisValue(useLeftStick ? Xbox360Axis.LeftThumbX : Xbox360Axis.RightThumbX,
-                        AxisScale(smoothedPos.X, false));
+                        axisX);
 
                     device.Cont.SetAxisValue(useLeftStick ? Xbox360Axis.LeftThumbY : Xbox360Axis.RightThumbY,
-                        AxisScale(smoothedPos.Y, true));
+                        axisY);
 
                     tempStickData.previousLightCursorPoint = new Point(cursorPos.LightbarX, cursorPos.LightbarY);
                 }
                 else
                 {
-                    //testLightFilterX.Filter(0.5, 1.0 / 0.008);
-                    //testLightFilterY.Filter(0.5, 1.0 / 0.008);
+                    // Transform coord system to -0.5 to 0.5
+                    double finalX = 0.0;
+                    double finalY = 0.0;
+
+                    double halfX = tempStickData.previousLightCursorPoint.X - 0.5;
+                    double halfY = tempStickData.previousLightCursorPoint.Y - 0.5;
+                    double signX = Math.Sign(halfX);
+                    double signY = Math.Sign(halfY);
+
+                    // Take accel angle and max side. Find approximate value for other
+                    // side
+                    double angle = Math.Atan2(halfY, halfX);
+
+                    if (angle == 0)
+                    {
+                        finalX = finalY = 0.5;
+                    }
+                    else if (Math.Abs(halfX) >= Math.Abs(halfY))
+                    {
+                        finalX = 0.5 * signX;
+                        double temp = Math.Cos(angle);
+                        double tempHyp = temp != 0.0 ? finalX / temp : 0.0;
+                        finalY = tempHyp * Math.Sin(angle);
+
+                        finalX += 0.5;
+                        finalY += 0.5;
+                    }
+                    else
+                    {
+                        finalY = 0.5 * signY;
+                        double temp = Math.Sin(angle);
+                        double tempHyp = temp != 0.0 ? finalY / temp : 0.0;
+                        finalX = tempHyp * Math.Cos(angle);
+
+                        finalX += 0.5;
+                        finalY += 0.5;
+                    }
+
+                    Point smoothedPos = new Point();
+                    // Adjust sensitivity to work around rounding in filter method
+                    smoothedPos.X = tempStickData.testLightFilterX.Filter(finalX * 1.001, 1.0 / elapsedMs);
+                    smoothedPos.Y = tempStickData.testLightFilterY.Filter(finalY * 1.001, 1.0 / elapsedMs);
+
+                    //double tempX = smoothedPos.X;
+
+                    // Filter does not go back to absolute zero for reasons. Check
+                    // for low number and reset to zero
+                    if (Math.Abs(smoothedPos.X) < 0.0001) smoothedPos.X = 0.0;
+                    if (Math.Abs(smoothedPos.Y) < 0.0001) smoothedPos.Y = 0.0;
+
+                    // Clamp values
+                    smoothedPos.X = Math.Min(1.0, Math.Max(0.0, smoothedPos.X));
+                    smoothedPos.Y = Math.Min(1.0, Math.Max(0.0, smoothedPos.Y));
+
+                    short axisX = AxisScale(finalX, false);
+                    short axisY = AxisScale(finalY, true);
+
+                    //Console.WriteLine($"X: {cursorPos.LightbarX} | Y {cursorPos.LightbarY}");
+                    //Console.WriteLine($"AXIS X: {axisX} | AXIS Y {axisY} | {smoothedPos.X} | {tempX}");
+
+                    device.Cont.SetAxisValue(useLeftStick ? Xbox360Axis.LeftThumbX : Xbox360Axis.RightThumbX,
+                        axisX);
+
+                    device.Cont.SetAxisValue(useLeftStick ? Xbox360Axis.LeftThumbY : Xbox360Axis.RightThumbY,
+                        axisY);
+
+                    ////testLightFilterX.Filter(0.5, 1.0 / 0.008);
+                    ////testLightFilterY.Filter(0.5, 1.0 / 0.008);
                     // Save last known position to smoothing buffer
-                    tempStickData.testLightFilterX.Filter(tempStickData.previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
-                    tempStickData.testLightFilterY.Filter(tempStickData.previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
+                    //tempStickData.testLightFilterX.Filter(tempStickData.previousLightCursorPoint.X * 1.001, 1.0 / elapsedMs);
+                    //tempStickData.testLightFilterY.Filter(tempStickData.previousLightCursorPoint.Y * 1.001, 1.0 / elapsedMs);
                 }
 
                 return true;
