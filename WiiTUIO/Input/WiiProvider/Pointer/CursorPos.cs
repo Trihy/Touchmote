@@ -18,6 +18,8 @@ namespace WiiTUIO.Provider
         public double MarginY;
         public double LightbarX;
         public double LightbarY;
+        public double RawLightbarX; // Keep non-clamped raw X value. Used for offscreen angle estimation
+        public double RawLightbarY; // Keep non-clamped raw Y value. Used for offscreen angle estimation
         public bool OffScreen; // Can be offscreen but still in IR range
         public double Width;
         public double Height;
@@ -33,8 +35,8 @@ namespace WiiTUIO.Provider
             this.OutOfReach = false;
             this.MarginX = marginX;
             this.MarginY = marginY;
-            this.LightbarX = lightbarX;
-            this.LightbarY = lightbarY;
+            this.LightbarX = this.RawLightbarX = lightbarX;
+            this.LightbarY = this.RawLightbarY = lightbarY;
             this.Width = lightbarWidth;
             this.Height = lightbarHeight;
         }

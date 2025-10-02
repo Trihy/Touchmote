@@ -510,11 +510,11 @@ namespace WiiTUIO.Provider
             Vector smoothedPoint = smoothingBuffer.AddAndGet(new Vector(relativePosition.X, relativePosition.Y));
             */
 
-
-            x = Convert.ToInt32((float)maxWidth * (1 - median.X) + minXPos);
+            median.X = 1 - median.X;
+            x = Convert.ToInt32((float)maxWidth * (median.X) + minXPos);
             y = Convert.ToInt32((float)maxHeight * median.Y + minYPos) + offsetY;
 
-            marginX = Math.Min(1.0, Math.Max(0.0, (1 - median.X - midMarginX) * marginBoundsX));
+            marginX = Math.Min(1.0, Math.Max(0.0, (median.X - midMarginX) * marginBoundsX));
             marginY = Math.Min(1.0, Math.Max(0.0, (median.Y - (marginOffsetY + midMarginX)) * marginBoundsY));
 
             //System.Diagnostics.Trace.WriteLine($"{marginY} | {relativePosition.Y}");
@@ -557,6 +557,7 @@ namespace WiiTUIO.Provider
                 result.LightbarY = Math.Min(1.0, Math.Max(0.0, lightbarY));
             }
 
+            //Console.WriteLine($"SHITTER {lightbarX} | {lightbarY} | {result.OffScreen}");
             lastPos = result;
             return result;
         }

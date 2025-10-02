@@ -1065,8 +1065,13 @@ namespace WiiTUIO.Output.Handlers
                     //testLightFilterX.Filter(0.5, 1.0 / 0.008);
                     //testLightFilterY.Filter(0.5, 1.0 / 0.008);
                     // Save last known position to smoothing buffer
-                    double halfX = previousLightCursorCoorPoint.X - 0.5;
-                    double halfY = previousLightCursorCoorPoint.Y - 0.5;
+
+                    // If IR cursor is still in range, use raw lightbar coords to find angle. Else, use previous coords
+                    double tempX = cursorPos.OutOfReach ? previousLightCursorCoorPoint.X : cursorPos.RawLightbarX;
+                    double tempY = cursorPos.OutOfReach ? previousLightCursorCoorPoint.Y : cursorPos.RawLightbarY;
+
+                    double halfX = tempX - 0.5;
+                    double halfY = tempY - 0.5;
                     double signX = Math.Sign(halfX);
                     double signY = Math.Sign(halfY);
 
