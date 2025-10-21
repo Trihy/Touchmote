@@ -717,6 +717,17 @@ namespace WiiTUIO.Properties
                 OnPropertyChanged("shake_nunchukcount");
             }
         }
+
+        private int _mGunIntensity10to200 = 90;
+        public int mGunIntensity10to200
+        {
+            get { return _mGunIntensity10to200; }
+            set
+            {
+                _mGunIntensity10to200 = value;
+                OnPropertyChanged("mGunIntensity10to200");
+            }
+        }
         
         private int _xinput_rumbleThreshold_big = 200;
         public int xinput_rumbleThreshold_big
