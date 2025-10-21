@@ -352,8 +352,12 @@ namespace WiiTUIO.Output.Handlers.Xinput
                     double finalX = 0.0;
                     double finalY = 0.0;
 
-                    double halfX = tempStickData.previousLightCursorPoint.X - 0.5;
-                    double halfY = tempStickData.previousLightCursorPoint.Y - 0.5;
+                    // If IR cursor is still in range, use raw lightbar coords to find angle. Else, use previous coords
+                    double tempX = cursorPos.OutOfReach ? tempStickData.previousLightCursorPoint.X : cursorPos.RawLightbarX;
+                    double tempY = cursorPos.OutOfReach ? tempStickData.previousLightCursorPoint.Y : cursorPos.RawLightbarY;
+
+                    double halfX = tempX - 0.5;
+                    double halfY = tempY - 0.5;
                     double signX = Math.Sign(halfX);
                     double signY = Math.Sign(halfY);
 
