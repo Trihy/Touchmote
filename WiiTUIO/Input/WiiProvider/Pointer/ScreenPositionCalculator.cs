@@ -299,7 +299,8 @@ namespace WiiTUIO.Provider
                 //int offsetY = 0;
                 //double marginOffsetY = 0.0;
 
-                median.X = 1 - median.X;
+                // No need to invert here. It will be done later
+                //median.X = 1 - median.X;
 
                 if (Properties.Settings.Default.pointer_sensorBarPos == "top")
                 {
@@ -313,6 +314,8 @@ namespace WiiTUIO.Provider
                 }
 
                 resultPos = median;
+                // Need to invert X coordinate for resultPos here
+                resultPos.X = 1 - resultPos.X;
             }
             else
             {
